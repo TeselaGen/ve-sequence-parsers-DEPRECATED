@@ -1,4 +1,4 @@
-##Teselagen Sequence Parsers
+##Bio Parsers
 This repo contains a set of parsers to convert between datatypes through a generalized JSON format. 
 
 Use the following files to convert to a generalized JSON format: 
@@ -46,6 +46,18 @@ The generalized JSON format looks like:
 }
 ```
 You can see more examples by looking at the tests.
+
+##Useage:
+`npm install -S bio-parsers`
+```js
+var fastaParser = require('bio-parsers/parsers/FastaToJSON');
+var fastaString = '>ssrA_tag_enhance\
+GTA\
+AGT'
+FastaToJSON(fastaParser, function(result) {
+	console.log(result[0].features)
+})
+```
 
 
 ##Contributing:
