@@ -25,7 +25,7 @@ describe('JbeiseqToJSON', function (argument) {
                 type: 'CDS',
                 strand: 1
             });
-            result[0].parsedSequence.sequence.length.should.equal(81);
+            result[0].parsedSequence.sequence.length.should.equal(82);
             done();
         });
     });

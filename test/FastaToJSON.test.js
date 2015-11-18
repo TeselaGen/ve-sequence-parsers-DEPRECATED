@@ -1,3 +1,5 @@
+// var tap = require('tap');
+// tap.mochaGlobals();
 /**
  * testing file for the FASTA parser, which should be able to handle multiple sequences in the same file, comments, and any other sort of vaild FASTA format
  * @author Joshua P Nixon
@@ -8,6 +10,7 @@ var fs = require('fs');
 var chai = require('chai');
 chai.use(require('chai-things'));
 chai.should();
+
 describe('FASTA tests', function() {
     it('tests a basic fasta file', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/fasta/example.fas'), "utf8");
@@ -19,6 +22,7 @@ describe('FASTA tests', function() {
     });
     it('test a multiFASTA', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/fasta/multi_test.fas'), "utf8");
+        debugger;
         FastaToJSON(string, function(result) {
             result.length.should.equal(7);
             result.should.include.something.that.deep.equals({
@@ -28,7 +32,8 @@ describe('FASTA tests', function() {
                     name: 'Sequence_5',
                     extraLines: [],
                     size: 4,
-                    circular: false
+                    circular: false,
+                    type: 'DNA'
                 },
                 success: true,
                 messages: []
@@ -40,7 +45,8 @@ describe('FASTA tests', function() {
                     size: 4,
                     circular: false,
                     extraLines: [],
-                    features: []
+                    features: [],
+                    type: 'DNA'
                 },
                 success: true,
                 messages: []
@@ -52,7 +58,8 @@ describe('FASTA tests', function() {
                     size: 4,
                     extraLines: [],
                     circular: false,
-                    features: []
+                    features: [],
+                    type: 'DNA'
                 },
                 success: true,
                 messages: []

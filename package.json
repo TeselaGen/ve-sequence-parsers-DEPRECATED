@@ -1,19 +1,20 @@
 {
-  "name": "ve-sequence-parsers",
+  "name": "bio-parsers",
   "version": "0.0.0",
   "description": "A library of parsers for interconverting between genbank, fasta, jbeiSeq and (eventually) sbol through Teselagen's intermediary json format",
-  "main": "index.js",
+  "main": "parsers/anyToJSON.js",
   "scripts": {
     "test": "mocha ./test"
   },
-  "author": "",
+  "author": "teselagen",
   "license": "ISC",
   "devDependencies": {
     "async": "^1.5.0",
     "chai": "^3.4.1",
     "chai-subset": "^1.1.0",
     "chai-things": "^0.2.0",
-    "mocha": "^2.3.4"
+    "mocha": "^2.3.4",
+    "tap": "^2.3.0"
   },
   "dependencies": {
     "flatmap": "0.0.3",
@@ -24,5 +25,28 @@
     "ve-sequence-utils": "^1.0.2",
     "waldojs": "^0.1.9",
     "xml2js": "^0.4.15"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TeselaGen/sequence-parsers.git"
+  },
+  "keywords": [
+    "genbank",
+    "fasta",
+    "parser",
+    "dna",
+    "rna",
+    "protein",
+    "sbol",
+    "json",
+    "jbei",
+    "teselagen"
+  ],
+  "bugs": {
+    "url": "https://github.com/TeselaGen/sequence-parsers/issues"
+  },
+  "homepage": "https://github.com/TeselaGen/sequence-parsers#readme"
 }
