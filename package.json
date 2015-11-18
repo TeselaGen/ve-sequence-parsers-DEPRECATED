@@ -2,7 +2,7 @@
   "name": "ve-sequence-parsers",
   "version": "0.0.0",
   "description": "A library of parsers for interconverting between genbank, fasta, jbeiSeq and (eventually) sbol through Teselagen's intermediary json format",
-  "main": "index.js",
+  "main": "parsers/anyToJSON.js",
   "scripts": {
     "test": "mocha ./test"
   },
@@ -13,7 +13,8 @@
     "chai": "^3.4.1",
     "chai-subset": "^1.1.0",
     "chai-things": "^0.2.0",
-    "mocha": "^2.3.4"
+    "mocha": "^2.3.4",
+    "tap":"^2.3.0"
   },
   "dependencies": {
     "flatmap": "0.0.3",
