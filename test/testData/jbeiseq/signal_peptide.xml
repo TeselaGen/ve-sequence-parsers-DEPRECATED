@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<seq:seq
+    xmlns:seq="http://jbei.org/sequence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jbei.org/sequence seq.xsd"
+>
+<seq:name>signal_pep</seq:name>
+<seq:circular>false</seq:circular>
+<seq:features>
+    <seq:feature>
+        <seq:type>CDS</seq:type>
+        <seq:location>
+            <seq:genbankStart>1</seq:genbankStart>
+            <seq:end>63</seq:end>
+        </seq:location>
+        <seq:complement>false</seq:complement>
+        <seq:label>signal_peptide</seq:label>
+        <seq:attribute name="translation">GSKVYGKEQFLRMRQSMFPDR</seq:attribute>
+    </seq:feature>
+</seq:features>
+<seq:sequence>GGCAGCAAGGTCTACGGCAAGGAACAGTTTTTGCGGATGCGCCAGAGCATGTTCCCCGATCGC</seq:sequence>
+</seq:seq>
