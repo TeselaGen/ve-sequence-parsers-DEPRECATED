@@ -1,3 +1,5 @@
+// var tap = require('tap');
+// tap.mochaGlobals();
 var GenbankToJSON = require('../parsers/GenbankToJSON');
 var addOneFlag = 1; //flag to use to add 1 to annotation starts (hopefully we'll take this flag out soon)
 var path = require("path");
@@ -8,13 +10,23 @@ chai.use(chaiSubset);
 chai.use(require('chai-things'));
 chai.should();
 describe('GenbankToJSON tests', function() {
+    it('handles parsing of a protein genbank correctly, making sure not to have too long of feature names', function(done) {
+        var string = fs.readFileSync(path.join(__dirname, './testData/genbank/proteinTestSeq1.gp'), "utf8");
+        GenbankToJSON(string, function(result) {
+           result.should.be.an('array');
+            result[0].success.should.be.true;
+            result[0].parsedSequence.features.forEach(function(feat){
+                feat.name.length.should.be.below(101);
+            });
+            done();
+        }, true);
+    });
     it('handles parsing of a protein genbank correctly', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/sequence.gp'), "utf8");
         GenbankToJSON(string, function(result) {
             result.should.be.an('array');
             result[0].success.should.be.true;
             result[0].parsedSequence.features.should.be.length(4);
-            console.log('JSON.stringify(result,null,4): ' + JSON.stringify(result,null,4));
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {product: ["Rfp"]},
                 name: 'red fluorescent protein',
@@ -98,7 +110,6 @@ describe('GenbankToJSON tests', function() {
     it('parses plasmid with run-on feature note (pBbS0c-RFP.gb) correctly', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP.gb'), "utf8");
         GenbankToJSON(string, function(result) {
-            // console.log('JSON.stringify(result,null,4): ' + JSON.stringify(result,null,4));
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {
                     note: [
@@ -118,7 +129,6 @@ describe('GenbankToJSON tests', function() {
             result.should.be.length(1);
             result[0].parsedSequence.features.should.be.length(5);
             result[0].parsedSequence.circular.should.equal(true);
-            // console.log('result: ' + JSON.stringify(result,null,4));
             result[0].parsedSequence.size.should.equal(4224);
             done();
         });
@@ -130,7 +140,6 @@ describe('GenbankToJSON tests', function() {
             result.should.be.length(1);
             result[0].parsedSequence.features.should.be.length(4);
             result[0].parsedSequence.circular.should.equal(true);
-            // console.log('result: ' + JSON.stringify(result,null,4));
             result[0].parsedSequence.size.should.equal(2815);
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {
@@ -153,7 +162,6 @@ describe('GenbankToJSON tests', function() {
             result.should.be.an('array');
             result.should.be.length(4);
             result[0].parsedSequence.features.should.be.length(0);
-            // console.log('result: ' + JSON.stringify(result,null,4));
             result[0].parsedSequence.size.should.equal(109);
 
             result.forEach(function(innerResult) {
@@ -189,21 +197,16 @@ describe('GenbankToJSON tests', function() {
 
 });
 // var string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
-// console.log('string', string);
 // var string = fs.readFileSync(__dirname + '/testGenbankFile.gb', "utf8");
 
 // var string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
-// console.log('string', string);
 // GenbankToJSON(string, function(result) {
-//     console.log('result', JSON.stringify(result, null, 4));
-//     console.log(result[0].parsedSequence.name);
 //     assert.equal(result[0].parsedSequence.name, 'CYP106A2__AdR__A');
 //     // assert.equal(result[0].parsedSequence.name, 'CYP106A2__AdR__A'); //names are currently parsed to remove "special characters"
 //     assert.equal(result[0].parsedSequence.circular, true);
 //     assert.equal(result[0].parsedSequence.extraLines.length, 7);
 //     assert.equal(result[0].parsedSequence.features.length, 38);
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
-//         console.log('feature', feature);
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
 //         if (feature.name === 'origin' && feature.start === 3883+ addOneFlag && feature.end === 3884 && feature.type === 'origin' && feature.strand === 1) {
@@ -211,7 +214,6 @@ describe('GenbankToJSON tests', function() {
 //         }
 //     }).length);
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
-//         console.log('feature', feature);
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
 //         if (feature.name === 'T7 promoter' && feature.start === 518+ addOneFlag && feature.end === 536 && feature.type === 'promoter' && feature.strand === -1) {
@@ -219,7 +221,6 @@ describe('GenbankToJSON tests', function() {
 //         }
 //     }).length);
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
-//         console.log('feature', feature);
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
 //         if (feature.name === 'RBS' && feature.start === 6722+ addOneFlag && feature.end === 6729 && feature.type === 'protein_bind' && feature.strand === -1) {
@@ -227,7 +228,6 @@ describe('GenbankToJSON tests', function() {
 //         }
 //     }).length);
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
-//         console.log('feature', feature);
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
 //         if (feature.name === 'RBS' && feature.start === 22+ addOneFlag && feature.end === 122 && feature.type === 'protein_bind' && feature.strand === -1) {

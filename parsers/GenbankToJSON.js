@@ -489,10 +489,17 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
             feat.name = feat.notes.locus_tag[0];
         }
         else if (feat.notes.note) {
-            feat.name = feat.notes.note[0];
+            //if the name is coming from a note, shorten the name to 100 chars long
+            feat.name = feat.notes.note[0].substr(0,100);
         }
         else {
             feat.name = '';
+        }
+        //shorten the name to a reasonable length if necessary and warn the user about it
+        var oldName = feat.name;
+        feat.name = feat.name.substr(0,100);
+        if (feat.name !== oldName) {
+            addMessage('Warning: Shortening name of sequence (max 100 chars)')
         }
         return feat;
     }
