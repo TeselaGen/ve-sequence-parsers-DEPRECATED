@@ -54,7 +54,8 @@ var fastaParser = require('bio-parsers/parsers/FastaToJSON');
 var fastaString = '>ssrA_tag_enhance\
 GTA\
 AGT'
-FastaToJSON(fastaParser, function(result) {
+fastaParser(function(result) {
+	//result is always an array of sequences, even if there is just 1
 	console.log(result[0].features)
 })
 ```
