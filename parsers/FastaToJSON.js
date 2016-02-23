@@ -7,9 +7,9 @@ var validateSequenceArray = require('./utils/validateSequenceArray');
  * @param  {[function]} onFileParsed [callback for a parsed sequence]
  * @author Joshua P Nixon
  */
-module.exports = function parseFastaFileToOurTeselagenDataType(fileString, onFileParsedUnwrapped, isProtein) {
+module.exports = function parseFastaFileToOurTeselagenDataType(fileString, onFileParsedUnwrapped, options) {
     onFileParsed = function(sequences) { //before we call the onFileParsed callback, we want to validate it
-        onFileParsedUnwrapped(validateSequenceArray(sequences, isProtein));
+        onFileParsedUnwrapped(validateSequenceArray(sequences, options));
     };
     var resultArray = [];
     try {

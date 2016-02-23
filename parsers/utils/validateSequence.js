@@ -13,7 +13,10 @@ var addOneFlag = 0; //one based end indicies, change to 1 for zero based indicie
     messages: [],
   };
  */
-module.exports = function validateSequence(sequence, isProtein) {
+module.exports = function validateSequence(sequence, options) {
+    options = options || {}
+    var isProtein = options.isProtein || false;
+
     var response = {
         validatedAndCleanedSequence: {},
         messages: []

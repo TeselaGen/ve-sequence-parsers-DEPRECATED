@@ -1,6 +1,6 @@
 {
   "name": "bio-parsers",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A library of parsers for interconverting between genbank, fasta, jbeiSeq and (eventually) sbol through Teselagen's intermediary json format",
   "main": "parsers/anyToJSON.js",
   "scripts": {

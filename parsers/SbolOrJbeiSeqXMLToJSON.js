@@ -10,76 +10,80 @@ var validateSequenceArray = require('./utils/validateSequenceArray');
 //   messages:
 //   success: 
 // }
-module.exports = function SbolOrJbeiSeqXMLToJSONString(string, onFileParsedUnwrapped, isProtein) {
+module.exports = function SbolOrJbeiSeqXMLToJSONString(string, onFileParsedUnwrapped, options) {
     onFileParsed = function(sequences) { //before we call the onFileParsed callback, we need to validate the sequence
-        onFileParsedUnwrapped(validateSequenceArray(sequences));
+        onFileParsedUnwrapped(validateSequenceArray(sequences, options));
     };
     var response = {
         parsedSequence: null,
         messages: [],
         success: true
     };
-
-    parseString(string, function(err, result) {
-        if (err) {
-            onFileParsed({
-                success: false,
-                messages: ('Error parsing XML to JSO')
-            });
-            return;
-        }
-        // console.log('parse xml result', result);
-        var jbeiJsonMatches = waldo.byName('seq:seq', result);
-        // console.log('jbeiJson', jbeiJsonMatches);
-        var sbolJsonMatches = waldo.byName('DnaComponent', result);
-        // console.log('ASGASHADHEHEHAERH');
-        // console.log('sbolJson', sbolJsonMatches);
-        // console.log('ASGASHADHEHEHAERH');
-        if (jbeiJsonMatches[0]) { //check if the file matches jbei format
-            try {
-                response.parsedSequence = parseJbeiJson(jbeiJsonMatches[0].value);
-            }
-            catch (e) {
-                console.warn('e.trace', e.trace);
+    try {
+        parseString(string, function(err, result) {
+            if (err) {
                 onFileParsed({
                     success: false,
-                    messages: ('Error while parsing Jbei format')
+                    messages: ('Error parsing XML to JSO')
                 });
+                return;
             }
-            onFileParsed(response);
-        }
-        else if (sbolJsonMatches[0]) {
-            var resultArray = [];
-            for (var i = 0; i < sbolJsonMatches[0].value.length; i++) {
+            // console.log('parse xml result', result);
+            var jbeiJsonMatches = waldo.byName('seq:seq', result);
+            // console.log('jbeiJson', jbeiJsonMatches);
+            var sbolJsonMatches = waldo.byName('DnaComponent', result);
+            // console.log('ASGASHADHEHEHAERH');
+            // console.log('sbolJson', sbolJsonMatches);
+            // console.log('ASGASHADHEHEHAERH');
+            if (jbeiJsonMatches[0]) { //check if the file matches jbei format
                 try {
-                    response = {
-                        parsedSequence: null,
-                        messages: [],
-                        success: true
-                    };
-                    response.parsedSequence = parseSbolJson(sbolJsonMatches[0].value[i]);
-                }
-                catch (e) {
+                    response.parsedSequence = parseJbeiJson(jbeiJsonMatches[0].value);
+                } catch (e) {
                     console.warn('e.trace', e.trace);
-                    resultArray.push({
+                    onFileParsed({
                         success: false,
-                        messages: ('Error while parsing Sbol format')
+                        messages: ('Error while parsing Jbei format')
                     });
                 }
-                if (response.parsedSequence.features.length > 0) {
-                    response.messages.push('SBOL feature types are stored in feature notes');
+                onFileParsed(response);
+            } else if (sbolJsonMatches[0]) {
+                var resultArray = [];
+                for (var i = 0; i < sbolJsonMatches[0].value.length; i++) {
+                    try {
+                        response = {
+                            parsedSequence: null,
+                            messages: [],
+                            success: true
+                        };
+                        response.parsedSequence = parseSbolJson(sbolJsonMatches[0].value[i]);
+                    } catch (e) {
+                        console.warn('e.trace', e.trace);
+                        resultArray.push({
+                            success: false,
+                            messages: ('Error while parsing Sbol format')
+                        });
+                    }
+                    if (response.parsedSequence.features.length > 0) {
+                        response.messages.push('SBOL feature types are stored in feature notes');
+                    }
+                    resultArray.push(response);
                 }
-                resultArray.push(response);
+                onFileParsed(resultArray);
+            } else {
+                onFileParsed({
+                    success: false,
+                    messages: ('XML is not valid Jbei or Sbol format')
+                });
             }
-            onFileParsed(resultArray);
-        }
-        else {
-            onFileParsed({
-                success: false,
-                messages: ('XML is not valid Jbei or Sbol format')
-            });
-        }
-    });
+        });
+    } catch (e) {
+        console.warn('Error while trying to parse XML to JSON');
+        console.warn('e.trace', e);
+        onFileParsed({
+            success: false,
+            messages: ('Error while trying to parse XML to JSON')
+        });
+    }
 };
 // Converts SBOL formats.
 //  * Specifications for SBOL can be found at http://www.sbolstandard.org/specification/core-data-model
@@ -95,8 +99,7 @@ function parseSbolJson(sbolJson) {
     var name;
     if (access(sbolJson, 'name[0]')) {
         name = access(sbolJson, 'name[0]');
-    }
-    else {
+    } else {
         name = access(sbolJson, 'displayId[0]');
     }
     return {
@@ -114,8 +117,7 @@ function parseSbolJson(sbolJson) {
                 notes.forEach(function(note) {
                     if (newNotes[note.prop]) {
                         newNotes[note.prop].push(note.value);
-                    }
-                    else {
+                    } else {
                         newNotes[note.prop] = [note.value];
                     }
                 });
@@ -123,8 +125,7 @@ function parseSbolJson(sbolJson) {
                 var nameMatches = waldo.byName('name', feature);
                 if (nameMatches[0] && nameMatches[0].value && nameMatches[0].value[0]) {
                     featureName = nameMatches[0].value[0];
-                }
-                else {
+                } else {
                     var displayMatches = waldo.byName('displayId', feature);
                     if (displayMatches[0] && displayMatches[0].value && displayMatches[0].value[0]) {
                         // console.log('displayMatches[0].value', displayMatches[0].value);
@@ -173,7 +174,7 @@ function parseJbeiJson(jbeiJson) {
                     start: parseInt(access(location, "seq:genbankStart[0]")) - 1,
                     end: parseInt(access(location, "seq:end[0]")), //tnrtodo: add a -1 here once we convert end from bioEnd to 0-based
                     strand: access(feature, "seq:complement[0]") === "true" ? -1 : 1
-                    // notes: feature['seq:label'],
+                        // notes: feature['seq:label'],
                 };
             });
         })

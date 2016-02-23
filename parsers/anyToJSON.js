@@ -5,7 +5,6 @@ var jsonParser = require('./JbeiseqToJSON');
 var xmlParser = require('./SbolOrJbeiSeqXMLToJSON');
 var extractFileExtension = require('./utils/extractFileExtension.js');
 var parseString = require('xml2js').parseString;
-var ac = require('ve-api-check');
 
 /**
  * takes in file content string and its file name and determines what parser it needs to be sent to.
@@ -14,24 +13,26 @@ var ac = require('ve-api-check');
  * @param  {string} fileName          file name including extension
  * @param  {callback} onFileParsed    //tnr: fill this out
  */
-module.exports = function anyToJSON(fileContentString, fileName, isProtein, onFileParsed) {
-    ac.warn([ac.string, ac.string, ac.bool, ac.func], arguments);
+module.exports = function anyToJSON(fileContentString, onFileParsed, options) {
+    options = options || {}
+    // var isProtein = options.isProtein || false;
+    var fileName = options.fileName || '';
     var parsedOutput = {};
     var ext = extractFileExtension(fileName);
     if (/^(fasta|fas|fa|fna|ffn)$/.test(ext)) { // FASTA
-        FastaToJSON(fileContentString, onFileParsed, isProtein);
+        FastaToJSON(fileContentString, onFileParsed, options);
     }
     else if (/^(gb|gp|gbk)$/.test(ext)) { // GENBANK
-        GenbankToJSON(fileContentString, onFileParsed, isProtein);
+        GenbankToJSON(fileContentString, onFileParsed, options);
     }
     else if (/^(gp)$/.test(ext)) { // PROTEIN GENBANK
-        GenbankToJSON(fileContentString, onFileParsed, isProtein, true);
+        GenbankToJSON(fileContentString, onFileParsed, options, true);
     }
     else if (/^(json)$/.test(ext)) { // JSON
-        jsonParser(fileContentString, onFileParsed, isProtein);
+        jsonParser(fileContentString, onFileParsed, options);
     }
     else if (/^(xml|rdf)$/.test(ext)) { // XML/RDF
-        xmlParser(fileContentString, onFileParsed, isProtein);
+        xmlParser(fileContentString, onFileParsed, options);
     }
     else {
         //runs from BOTTOM to TOP
@@ -49,7 +50,7 @@ module.exports = function anyToJSON(fileContentString, fileName, isProtein, onFi
         //evaluates to something like: 
         //xmlParser(fileContentString, onFileParsedWrapped)
         var parser = parsersToTry.pop();
-        parser.fn(fileContentString, onFileParsedWrapped, isProtein);
+        parser.fn(fileContentString, onFileParsedWrapped, options);
     }
 
     function onFileParsedWrapped(resultArray) {
@@ -64,7 +65,7 @@ module.exports = function anyToJSON(fileContentString, fileName, isProtein, onFi
             //unsuccessful parsing, so try the next parser in the array
             if (parsersToTry.length) {
                 parser = parsersToTry.pop();
-                parser.fn(fileContentString, onFileParsedWrapped, isProtein); //pop the next parser off the array and try to parse with it, using the modified onFileParsed callback
+                parser.fn(fileContentString, onFileParsedWrapped, options); //pop the next parser off the array and try to parse with it, using the modified onFileParsed callback
             }
             else {
                 //none of the parsers worked

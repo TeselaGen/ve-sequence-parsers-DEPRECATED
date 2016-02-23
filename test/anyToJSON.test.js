@@ -39,34 +39,34 @@ function runTest(done, options) {
     async.series([
             function(done) {
                 var string = fs.readFileSync(path.join(__dirname, './testData/', options.fastaFilePath), "utf8");
-                anyToJSON(string, options.fastaFilePath, false, function(result) {
+                anyToJSON(string, function(result) {
                     fastaResult = result;
                     done();
-                });
+                }, {fileName: options.fastaFilePath, isProtein: false});
             },
             function(done) {
                 var string = fs.readFileSync(path.join(__dirname, './testData/', options.genbankFilePath), "utf8");
-                anyToJSON(string, options.genbankFilePath, false, function(result) {
+                anyToJSON(string, function(result) {
                     genbankResult = result;
                     done();
-                });
+                }, {fileName: options.genbankFilePath, isProtein: false});
             },
 
             function(done) {
                 var string = fs.readFileSync(path.join(__dirname, './testData/', options.sbolFilePath), "utf8");
-                anyToJSON(string, options.sbolFilePath, false, function(result) {
+                anyToJSON(string, function(result) {
                     sbolXMLResult = result;
                     done();
-                });
+                }, {fileName: options.sbolFilePath, isProtein: false});
             },
 
 
             function(done) {
                 var string = fs.readFileSync(path.join(__dirname, './testData/', options.jbeiFilePath), "utf8");
-                anyToJSON(string, options.jbeiFilePath, false, function(result) {
+                anyToJSON(string, function(result) {
                     jbeiXMLResult = result;
                     done();
-                });
+                }, {fileName: options.jbeiFilePath, isProtein: false});
             },
 
         ],

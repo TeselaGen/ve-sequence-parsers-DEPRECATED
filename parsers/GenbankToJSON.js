@@ -4,9 +4,9 @@ var some = require('lodash/collection/some');
 var splitStringIntoLines = require('./utils/splitStringIntoLines.js');
 var addOneFlag = 1; //change to 0 when we convert to 0-based indices
 
-function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped, isProtein) {
-    onFileParsed = function(sequences, isProtein) { //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
-        onFileParsedUnwrapped(validateSequenceArray(flattenSequenceArray(sequences), isProtein));
+function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped, options) {
+    onFileParsed = function(sequences, options) { //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
+        onFileParsedUnwrapped(validateSequenceArray(flattenSequenceArray(sequences), options));
     };
     var resultsArray = [];
     var result;
@@ -154,7 +154,7 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
         endSeq();
     }
     //call the callback
-    onFileParsed(resultsArray, isProtein);
+    onFileParsed(resultsArray, options);
 
     function newSeq() {
         result = {
