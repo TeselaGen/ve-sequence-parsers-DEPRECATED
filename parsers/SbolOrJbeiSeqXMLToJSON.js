@@ -19,71 +19,62 @@ module.exports = function SbolOrJbeiSeqXMLToJSONString(string, onFileParsedUnwra
         messages: [],
         success: true
     };
-    try {
-        parseString(string, function(err, result) {
-            if (err) {
+    parseString(string, function(err, result) {
+        if (err) {
+            onFileParsed({
+                success: false,
+                messages: ('Error parsing XML to JSON')
+            });
+            return;
+        }
+        // console.log('parse xml result', result);
+        var jbeiJsonMatches = waldo.byName('seq:seq', result);
+        // console.log('jbeiJson', jbeiJsonMatches);
+        var sbolJsonMatches = waldo.byName('DnaComponent', result);
+        // console.log('ASGASHADHEHEHAERH');
+        // console.log('sbolJson', sbolJsonMatches);
+        // console.log('ASGASHADHEHEHAERH');
+        if (jbeiJsonMatches[0]) { //check if the file matches jbei format
+            try {
+                response.parsedSequence = parseJbeiJson(jbeiJsonMatches[0].value);
+            } catch (e) {
+                console.warn('e.trace', e.trace);
                 onFileParsed({
                     success: false,
-                    messages: ('Error parsing XML to JSO')
+                    messages: ('Error while parsing Jbei format')
                 });
-                return;
             }
-            // console.log('parse xml result', result);
-            var jbeiJsonMatches = waldo.byName('seq:seq', result);
-            // console.log('jbeiJson', jbeiJsonMatches);
-            var sbolJsonMatches = waldo.byName('DnaComponent', result);
-            // console.log('ASGASHADHEHEHAERH');
-            // console.log('sbolJson', sbolJsonMatches);
-            // console.log('ASGASHADHEHEHAERH');
-            if (jbeiJsonMatches[0]) { //check if the file matches jbei format
+            onFileParsed(response);
+        } else if (sbolJsonMatches[0]) {
+            var resultArray = [];
+            for (var i = 0; i < sbolJsonMatches[0].value.length; i++) {
                 try {
-                    response.parsedSequence = parseJbeiJson(jbeiJsonMatches[0].value);
+                    response = {
+                        parsedSequence: null,
+                        messages: [],
+                        success: true
+                    };
+                    response.parsedSequence = parseSbolJson(sbolJsonMatches[0].value[i]);
                 } catch (e) {
                     console.warn('e.trace', e.trace);
-                    onFileParsed({
+                    resultArray.push({
                         success: false,
-                        messages: ('Error while parsing Jbei format')
+                        messages: ('Error while parsing Sbol format')
                     });
                 }
-                onFileParsed(response);
-            } else if (sbolJsonMatches[0]) {
-                var resultArray = [];
-                for (var i = 0; i < sbolJsonMatches[0].value.length; i++) {
-                    try {
-                        response = {
-                            parsedSequence: null,
-                            messages: [],
-                            success: true
-                        };
-                        response.parsedSequence = parseSbolJson(sbolJsonMatches[0].value[i]);
-                    } catch (e) {
-                        console.warn('e.trace', e.trace);
-                        resultArray.push({
-                            success: false,
-                            messages: ('Error while parsing Sbol format')
-                        });
-                    }
-                    if (response.parsedSequence.features.length > 0) {
-                        response.messages.push('SBOL feature types are stored in feature notes');
-                    }
-                    resultArray.push(response);
+                if (response.parsedSequence.features.length > 0) {
+                    response.messages.push('SBOL feature types are stored in feature notes');
                 }
-                onFileParsed(resultArray);
-            } else {
-                onFileParsed({
-                    success: false,
-                    messages: ('XML is not valid Jbei or Sbol format')
-                });
+                resultArray.push(response);
             }
-        });
-    } catch (e) {
-        console.warn('Error while trying to parse XML to JSON');
-        console.warn('e.trace', e);
-        onFileParsed({
-            success: false,
-            messages: ('Error while trying to parse XML to JSON')
-        });
-    }
+            onFileParsed(resultArray);
+        } else {
+            onFileParsed({
+                success: false,
+                messages: ('XML is not valid Jbei or Sbol format')
+            });
+        }
+    });
 };
 // Converts SBOL formats.
 //  * Specifications for SBOL can be found at http://www.sbolstandard.org/specification/core-data-model
