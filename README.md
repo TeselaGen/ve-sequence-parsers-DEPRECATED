@@ -1,23 +1,23 @@
 ##Bio Parsers
-This repo contains a set of parsers to convert between datatypes through a generalized JSON format. 
+This repo contains a set of parsers to convert between datatypes through a generalized JSON format.
 
-Use the following files to convert to a generalized JSON format: 
+Use the following files to convert to a generalized JSON format:
 ```
-FastaToJSON
-GenbankToJSON
-JbeiseqToJSON
-SbolOrJbeiSeqXMLToJSON
-anyToJSON    //this handles any of the above file types based on file extension
+fastaToJson
+genbankToJson
+jbeiseqToJson
+sbolOrJbeiseqToJson
+anyToJson    //this handles any of the above file types based on file extension
 ```
 
 Use the following file(s) to convert from a generalized JSON format back to a specific format:
 ```
-JSONToGenbank
+jsonToGenbank
 ```
 
-The generalized JSON format looks like: 
+The generalized JSON format looks like:
 ```
-{
+var generalizedJsonFormat = {
     "size" : 25,
     "sequence" : "asaasdgasdgasdgasdgasgdasgdasdgasdgasgdagasdgasdfasdfdfasdfa",
     "circular" : true,
@@ -27,7 +27,7 @@ The generalized JSON format looks like:
         {
             "name" : "anonymous feature",
             "type" : "misc_feature",
-            "id" : "5590c1978979df000a4f02c7",
+            "id" : "5590c1978979df000a4f02c7", //Must be a unique id. If no id is provided, we'll autogenerate one for you
             "start" : 1,
             "end" : 3,
             "strand" : 1,
@@ -45,25 +45,83 @@ The generalized JSON format looks like:
     ],
 }
 ```
-You can see more examples by looking at the tests.
+
 
 ##Useage:
 `npm install -S bio-parsers`
 ```js
-var fastaParser = require('bio-parsers/parsers/FastaToJSON');
-var fastaString = '>ssrA_tag_enhance\
-GTA\
-AGT'
-fastaParser(function(result) {
-	//result is always an array of sequences, even if there is just 1
-	console.log(result[0].features)
-})
+//To go from json to genbank:
+var jsonToGenbank = require('bio-parsers').jsonToGenbank;
+//or alternatively (if using the package on the front end and you want to keep memory usage low)
+var jsonToGenbank = require('bio-parsers/parsers/jsonToGenbank');
+var var genbankString = jsonToGenbank(generalizedJsonFormat)
+
+//All of the xXXXtoJson parsers work like this:
+var genbankToJson = require('bio-parsers').genbankToJson;
+//or alternatively (if using the package on the front end and you want to keep memory usage low)
+var genbankToJson = require('bio-parsers/parsers/genbankToJson');
+//passing an options object as the third argument is optional. Here are the defaults
+var options = {
+  isProtein: false, //used to strip unwanted characters
+}
+genbankToJson(string, function(result) {
+  console.log(result)
+  // [
+  //     {
+  //         "messages": [
+  //             "Import Error: Illegal character(s) detected and removed from sequence. Allowed characters are: atgcyrswkmbvdhn",
+  //             "Invalid feature end:  1384 detected for Homo sapiens and set to 1",
+  //         ],
+  //         "success": true,
+  //         "parsedSequence": {
+  //             "features": [
+  //                 {
+  //                     "notes": {
+  //                         "organism": [
+  //                             "Homo sapiens"
+  //                         ],
+  //                         "db_xref": [
+  //                             "taxon:9606"
+  //                         ],
+  //                         "chromosome": [
+  //                             "17"
+  //                         ],
+  //                         "map": [
+  //                             "17q21"
+  //                         ]
+  //                     },
+  //                     "type": "source",
+  //                     "strand": 1,
+  //                     "name": "Homo sapiens",
+  //                     "start": 0,
+  //                     "end": 1
+  //                 }
+  //             ],
+  //             "name": "NP_003623",
+  //             "sequence": "gagaggggggttatccccccttcgtcagtcgatcgtaacgtatcagcagcgcgcgagattttctggcgcagtcag",
+  //             "circular": true,
+  //             "extraLines": [
+  //                 "DEFINITION  contactin-associated protein 1 precursor [Homo sapiens].",
+  //                 "ACCESSION   NP_003623",
+  //                 "VERSION     NP_003623.1  GI:4505463",
+  //                 "DBSOURCE    REFSEQ: accession NM_003632.2",
+  //                 "KEYWORDS    RefSeq."
+  //             ],
+  //             "type": "DNA",
+  //             "size": 925
+  //         }
+  //     }
+  // ]
+},options)
 ```
+
+You can see more examples by looking at the tests.
 
 
 ##Contributing:
-first make an issue
+First make an issue
 
-then make a PR 
+Then make a PR
 
-make sure it doesn't break anything: `npm test`
+  Make sure it doesn't break anything: `npm test`
+  And update the Changelog.md

@@ -1,8 +1,8 @@
 //tnrtodo make the edit feature window use the new FeatureTypes.js stuff instead of the constants.FeatureTypes...
-var FastaToJSON = require('./FastaToJSON');
-var GenbankToJSON = require('./GenbankToJSON');
-var jsonParser = require('./JbeiseqToJSON');
-var xmlParser = require('./SbolOrJbeiSeqXMLToJSON');
+var fastaToJson = require('./fastaToJson');
+var genbankToJson = require('./genbankToJson');
+var jsonParser = require('./jbeiseqToJson');
+var xmlParser = require('./sbolOrJbeiseqToJson');
 var extractFileExtension = require('./utils/extractFileExtension.js');
 var parseString = require('xml2js').parseString;
 
@@ -13,20 +13,20 @@ var parseString = require('xml2js').parseString;
  * @param  {string} fileName          file name including extension
  * @param  {callback} onFileParsed    //tnr: fill this out
  */
-module.exports = function anyToJSON(fileContentString, onFileParsed, options) {
+module.exports = function anyToJson(fileContentString, onFileParsed, options) {
     options = options || {}
     // var isProtein = options.isProtein || false;
     var fileName = options.fileName || '';
     var parsedOutput = {};
     var ext = extractFileExtension(fileName);
     if (/^(fasta|fas|fa|fna|ffn)$/.test(ext)) { // FASTA
-        FastaToJSON(fileContentString, onFileParsed, options);
+        fastaToJson(fileContentString, onFileParsed, options);
     }
     else if (/^(gb|gp|gbk)$/.test(ext)) { // GENBANK
-        GenbankToJSON(fileContentString, onFileParsed, options);
+        genbankToJson(fileContentString, onFileParsed, options);
     }
     else if (/^(gp)$/.test(ext)) { // PROTEIN GENBANK
-        GenbankToJSON(fileContentString, onFileParsed, options, true);
+        genbankToJson(fileContentString, onFileParsed, options, true);
     }
     else if (/^(json)$/.test(ext)) { // JSON
         jsonParser(fileContentString, onFileParsed, options);
@@ -37,17 +37,17 @@ module.exports = function anyToJSON(fileContentString, onFileParsed, options) {
     else {
         //runs from BOTTOM to TOP
         var parsersToTry = [{
-            fn: FastaToJSON,
+            fn: fastaToJson,
             name: "Fasta Parser"
         }, {
-            fn: GenbankToJSON,
+            fn: genbankToJson,
             name: "Genbank Parser"
         }, {
             fn: xmlParser,
             name: "XML Parser"
         }];
         //pop the LAST parser off the array and try to parse with it, using the modified onFileParsed callback
-        //evaluates to something like: 
+        //evaluates to something like:
         //xmlParser(fileContentString, onFileParsedWrapped)
         var parser = parsersToTry.pop();
         parser.fn(fileContentString, onFileParsedWrapped, options);

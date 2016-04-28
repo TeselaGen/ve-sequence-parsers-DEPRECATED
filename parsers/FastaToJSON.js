@@ -7,7 +7,7 @@ var validateSequenceArray = require('./utils/validateSequenceArray');
  * @param  {[function]} onFileParsed [callback for a parsed sequence]
  * @author Joshua P Nixon
  */
-module.exports = function parseFastaFileToOurTeselagenDataType(fileString, onFileParsedUnwrapped, options) {
+module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options) {
     onFileParsed = function(sequences) { //before we call the onFileParsed callback, we want to validate it
         onFileParsedUnwrapped(validateSequenceArray(sequences, options));
     };

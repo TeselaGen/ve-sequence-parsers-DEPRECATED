@@ -50,8 +50,8 @@ var StringUtil = {
 
 
 
-module.exports.serializedToGenbank = function(serSeq) {
-	
+module.exports = function(serSeq) {
+
 	if(!serSeq) return false;
 
 	try {
@@ -70,19 +70,19 @@ module.exports.serializedToGenbank = function(serSeq) {
 
 
 	var lines = [];
-	lines.push(this.createGenbankLocus(serSeq));
+	lines.push(createGenbankLocus(serSeq));
 
 	if(serSeq.extraLines){
 		lines = lines.concat(serSeq.extraLines);
 	}
-	
+
 
 	if(Array.isArray(serSeq.features) && serSeq.features.length > 0) {
 		lines.push("FEATURES             Location/Qualifiers");
 
 		for(var i=0;i<serSeq.features.length;i++) {
 			var feat = serSeq.features[i];
-			lines.push(this.featureToGenbankString(feat));
+			lines.push(featureToGenbankString(feat));
 		}
 
 	}
@@ -110,14 +110,14 @@ module.exports.serializedToGenbank = function(serSeq) {
 	}
 	catch(e)
 	{
-		console.log("Error processing sequence << Check JSONToGenbank.js");
+		console.log("Error processing sequence << Check jsonToGenbank.js");
 		console.log(serSeq);
 		console.log(e.stack);
 		return false;
 	}
 };
 
-module.exports.createGenbankLocus = function (serSeq) {
+function createGenbankLocus (serSeq) {
 	if (serSeq.sequence.symbols) {
 		serSeq.sequence = serSeq.sequence.symbols.split('');
 	}
@@ -131,15 +131,15 @@ module.exports.createGenbankLocus = function (serSeq) {
 	} else {
 		naType = 'DNA';
 	}
-	var date = this.getCurrentDateString();
+	var date = getCurrentDateString();
 
 	var line = StringUtil.rpad("LOCUS"," ", 12);
 	line += StringUtil.rpad(nameUtils.reformatName(serSeq.name)," ", 16);
 	line += " "; // T.H line 2778 of GenbankFormat.as col 29 space
 	line += StringUtil.lpad(String(serSeq.sequence.length)," ", 11);
 	line += " bp "; // col 41
-	// if (this.strandType !== "") {
-	// 	tmp =  this.strandType + "-";
+	// if (strandType !== "") {
+	// 	tmp =  strandType + "-";
 	// } else {
 		tmp = "";
 	// }
@@ -155,8 +155,8 @@ module.exports.createGenbankLocus = function (serSeq) {
 	}
 
 	line += " "; //col 64
-	// if (this.divisionCode !== undefined) {
-	// 	line += StringUtil.rpad(this.divisionCode," ", 3);
+	// if (divisionCode !== undefined) {
+	// 	line += StringUtil.rpad(divisionCode," ", 3);
 	// } else {
 		StringUtil.rpad(line, " ", 3);
 	// }
@@ -168,7 +168,7 @@ module.exports.createGenbankLocus = function (serSeq) {
 	return line;
 };
 
-module.exports.getCurrentDateString = function() {
+function getCurrentDateString() {
 	var date = new Date();
 	date = date.toString().split(' ');
 	var day = date[2];
@@ -178,11 +178,11 @@ module.exports.getCurrentDateString = function() {
 };
 
 
-module.exports.featureNoteInDataToGenbankString = function(name,value) {
+function featureNoteInDataToGenbankString(name,value) {
 	return StringUtil.lpad("/", " ", 22) + name + "=\"" + value + "\"";
 };
 
-module.exports.featureToGenbankString = function(feat) {
+function featureToGenbankString(feat) {
 	var lines = [];
 
 	var line = "     " + StringUtil.rpad(feat.type, " ", 16);
@@ -194,7 +194,7 @@ module.exports.featureToGenbankString = function(feat) {
 	//}
 
 	locStr.push((parseInt(feat.start)+1) + '..' + parseInt(feat.end));
-	
+
 	locStr = locStr.join(',');
 
 	if(feat.strand === -1) {
@@ -203,15 +203,14 @@ module.exports.featureToGenbankString = function(feat) {
 
 	lines.push(line + locStr);
 
-	lines.push(this.featureNoteInDataToGenbankString('label', feat.name));
+	lines.push(featureNoteInDataToGenbankString('label', feat.name));
 
 	var notes = feat.notes;
-	var self = this;
     if (notes) {
         Object.keys(notes).forEach(function(key) {
             if (notes[key] instanceof Array) {
                 notes[key].forEach(function(value) {
-                    lines.push(self.featureNoteInDataToGenbankString(key, value));
+                    lines.push(featureNoteInDataToGenbankString(key, value));
                 });
             }
             else {

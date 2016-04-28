@@ -1,4 +1,4 @@
-var JbeiseqToJSON = require('../parsers/JbeiseqToJSON');
+var jbeiseqToJson = require('../parsers/jbeiseqToJson');
 var path = require("path");
 var fs = require('fs');
 var chai = require('chai');
@@ -6,10 +6,10 @@ chai.use(require('chai-things'));
 chai.should();
 var addOneFlag = 1; 
 
-describe('JbeiseqToJSON', function (argument) {
+describe('jbeiseqToJson', function (argument) {
     it('correctly parses a test jbei json file', function  (done) {
         var string = fs.readFileSync(path.join(__dirname, "testData/jbeiseq/test.jbeiseq.json"),"utf8");
-        JbeiseqToJSON(string, function(result) {
+        jbeiseqToJson(string, function(result) {
             result[0].parsedSequence.name.should.equal('signal_pep');
             result[0].parsedSequence.circular.should.equal(false);
             result[0].parsedSequence.extraLines.length.should.equal(0);

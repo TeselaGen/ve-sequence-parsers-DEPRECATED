@@ -1,6 +1,6 @@
-//this test takes a sequence represented in several different file types and 
+//this test takes a sequence represented in several different file types and
 //makes sure that they give the same results regardless (for fields that make sense)
-var anyToJSON = require('../parsers/anyToJSON.js');
+var anyToJson = require('../parsers/anyToJson.js');
 var fs = require('fs');
 var path = require("path");
 var async = require('async');
@@ -10,7 +10,7 @@ chai.use(require('chai-things'));
 chai.should();
 
 var addOneFlag = 1; //flag to use to add 1 to annotation starts (hopefully we'll take this flag out soon)
-describe('anyToJSON', function(argument) {
+describe('anyToJson', function(argument) {
     it('parses the pBbE0c-RFP plasmid represented in various filetypes to the same end result', function(done) {
         var options = {
             fastaFilePath: "pBbE0c-RFP.fasta",
@@ -39,14 +39,14 @@ function runTest(done, options) {
     async.series([
             function(done) {
                 var string = fs.readFileSync(path.join(__dirname, './testData/', options.fastaFilePath), "utf8");
-                anyToJSON(string, function(result) {
+                anyToJson(string, function(result) {
                     fastaResult = result;
                     done();
                 }, {fileName: options.fastaFilePath, isProtein: false});
             },
             function(done) {
                 var string = fs.readFileSync(path.join(__dirname, './testData/', options.genbankFilePath), "utf8");
-                anyToJSON(string, function(result) {
+                anyToJson(string, function(result) {
                     genbankResult = result;
                     done();
                 }, {fileName: options.genbankFilePath, isProtein: false});
@@ -54,7 +54,7 @@ function runTest(done, options) {
 
             function(done) {
                 var string = fs.readFileSync(path.join(__dirname, './testData/', options.sbolFilePath), "utf8");
-                anyToJSON(string, function(result) {
+                anyToJson(string, function(result) {
                     sbolXMLResult = result;
                     done();
                 }, {fileName: options.sbolFilePath, isProtein: false});
@@ -63,7 +63,7 @@ function runTest(done, options) {
 
             function(done) {
                 var string = fs.readFileSync(path.join(__dirname, './testData/', options.jbeiFilePath), "utf8");
-                anyToJSON(string, function(result) {
+                anyToJson(string, function(result) {
                     jbeiXMLResult = result;
                     done();
                 }, {fileName: options.jbeiFilePath, isProtein: false});
@@ -102,7 +102,7 @@ function runTest(done, options) {
 
                 }).length);
             });
-            
+
             sbolXMLResult[0].parsedSequence.features.length.should.equal(genbankResult[0].parsedSequence.features.length);
             // sbolXMLResult[0].parsedSequence.circular.should.equal(genbankResult[0].parsedSequence.circular);
             sbolXMLResult[0].parsedSequence.sequence.toLowerCase().should.equal(genbankResult[0].parsedSequence.sequence.toLowerCase());

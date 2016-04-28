@@ -10,7 +10,7 @@ var validateSequenceArray = require('./utils/validateSequenceArray');
 //   messages:
 //   success: 
 // }
-module.exports = function SbolOrJbeiSeqXMLToJSONString(string, onFileParsedUnwrapped, options) {
+module.exports = function sbolOrJbeiseqToJsonString(string, onFileParsedUnwrapped, options) {
     onFileParsed = function(sequences) { //before we call the onFileParsed callback, we need to validate the sequence
         onFileParsedUnwrapped(validateSequenceArray(sequences, options));
     };

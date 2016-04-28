@@ -8,7 +8,7 @@ var flattenSequenceArray = require('./utils/flattenSequenceArray');
  * @param  {string} fileName     filename with optional extension 
  * @param  {function} onFileParsed callback that we pass
  */
-module.exports = function JbeiseqToJSON(string, onFileParsedUnwrapped, options) {
+module.exports = function jbeiseqToJson(string, onFileParsedUnwrapped, options) {
     onFileParsed = function(sequences) { //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
         onFileParsedUnwrapped(validateSequenceArray(flattenSequenceArray(sequences), options));
     };

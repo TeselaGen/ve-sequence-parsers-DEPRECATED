@@ -1,5 +1,5 @@
-var parseGenbank = require('../parsers/GenbankToJSON');
-var JSONToGenbank = require('../parsers/JSONToGenbank');
+var parseGenbank = require('../parsers/genbankToJSON');
+var jsonToGenbank = require('../parsers/jsonToGenbank');
 var addOneFlag = 1; //flag to use to add 1 to annotation starts (hopefully we'll take this flag out soon)
 var path = require("path");
 var fs = require('fs');
@@ -31,7 +31,7 @@ describe('genbank exporter/parser conversion', function() {
                 type: 'terminator',
                 strand: 1
             });
-            var exportedGenbankString = JSONToGenbank.serializedToGenbank(result[0].parsedSequence);
+            var exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
             parseGenbank(exportedGenbankString, function(result) {
                 result.should.be.an('array');
                 result[0].success.should.be.true;
@@ -77,7 +77,7 @@ describe('genbank exporter/parser conversion', function() {
                 strand: 1
             });
             result[0].parsedSequence.sequence.length.should.equal(5299);
-            var exportedGenbankString = JSONToGenbank.serializedToGenbank(result[0].parsedSequence);
+            var exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
             console.log('exportedGenbankString: ' + exportedGenbankString);
             parseGenbank(exportedGenbankString, function(result) {
                 result[0].parsedSequence.name.should.equal('pj5_00001');
@@ -116,7 +116,7 @@ describe('genbank exporter/parser conversion', function() {
                 start: 291,
                 end: 291 + addOneFlag,
             }]);
-            var exportedGenbankString = JSONToGenbank.serializedToGenbank(result[0].parsedSequence);
+            var exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
             parseGenbank(exportedGenbankString, function(result) {
                 result.should.be.an('array');
                 result[0].success.should.be.true;
