@@ -101,16 +101,16 @@ module.exports = function validateSequence(sequence, options) {
             response.messages.push('Unable to detect valid name for feature, setting name to "Untitled Feature"');
             feature.name = 'Untitled Feature';
         }
-        if (!areNonNegativeIntegers([feature.start]) || feature.start > (sequence.size - (options.inclusive1BasedStart ? 1 : 0))) {
+        if (!areNonNegativeIntegers([feature.start]) || feature.start > (sequence.size - (options.inclusive1BasedStart ? 0 : 1))) {
             response.messages.push('Invalid feature start: ' + feature.start + ' detected for ' + feature.name + ' and set to 1'); //setting it to 0 internally, but users will see it as 1
             feature.start = 0;
         }
-        if (!areNonNegativeIntegers([feature.end]) || feature.end > (sequence.size - (options.inclusive1BasedEnd ? 1 : 0))) {
+        if (!areNonNegativeIntegers([feature.end]) || feature.end > (sequence.size - (options.inclusive1BasedEnd ? 0 : 1))) {
             response.messages.push('Invalid feature end:  ' + feature.end + ' detected for ' + feature.name + ' and set to 1'); //setting it to 0 internally, but users will see it as 1
             feature.end = 0;
         }
 
-        if ((feature.start - (options.inclusive1BasedStart ? 1 : 0))  > (feature.end - (options.inclusive1BasedEnd ? 1 : 0)) && sequence.circular === false) {
+        if ((feature.start - (options.inclusive1BasedStart ? 0 : 1))  > (feature.end - (options.inclusive1BasedEnd ? 0 : 1)) && sequence.circular === false) {
             if (circularityExplicitlyDefined) {
                 response.messages.push('Invalid circular feature detected in explicitly linear sequence. ' + feature.name + '. start set to 1'); //setting it to 0 internally, but users will see it as 1
                 feature.start = 0;

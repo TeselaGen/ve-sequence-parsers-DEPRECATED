@@ -42,6 +42,26 @@ describe('genbankToJson tests', function() {
             done();
         }, options);
     });
+    it('handles 1-based feature indices option for both start and end', function(done) {
+        var string = fs.readFileSync(path.join(__dirname, './testData/sequence.gp'), "utf8");
+        var options = {isProtein: true, inclusive1BasedEnd: true, inclusive1BasedStart: true}
+        genbankToJson(string, function(result) {
+            result.should.be.an('array');
+            result[0].success.should.be.true;
+            result[0].parsedSequence.features.should.be.length(4);
+            
+            console.log('result[0]:',JSON.stringify(result[0],null,4))
+            result[0].parsedSequence.features.should.include.something.that.deep.equals({
+                notes: {product: ["Rfp"]},
+                name: 'red fluorescent protein',
+                start: 1,
+                end: 225,
+                type: 'protein',
+                strand: 1
+            });
+            done();
+        }, options);
+    });
     it('handles parsing of an oddly spaced genbank without failing', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/breakingGenbank.gb'), "utf8");
         genbankToJson(string, function(result) {

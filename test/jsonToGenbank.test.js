@@ -66,7 +66,6 @@ describe('genbank exporter/parser conversion', function() {
             });
             result[0].parsedSequence.sequence.length.should.equal(5299);
             var exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
-            console.log('exportedGenbankString: ' + exportedGenbankString);
             parseGenbank(exportedGenbankString, function(result) {
                 result[0].parsedSequence.name.should.equal('pj5_00001');
                 result[0].parsedSequence.circular.should.equal(true);
