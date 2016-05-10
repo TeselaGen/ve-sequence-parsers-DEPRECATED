@@ -1,4 +1,4 @@
-var parseGenbank = require('../parsers/genbankToJSON');
+var parseGenbank = require('../parsers/genbankToJson');
 var jsonToGenbank = require('../parsers/jsonToGenbank');
 var path = require("path");
 var fs = require('fs');
