@@ -1,6 +1,5 @@
 var parseGenbank = require('../parsers/genbankToJSON');
 var jsonToGenbank = require('../parsers/jsonToGenbank');
-var addOneFlag = 1; //flag to use to add 1 to annotation starts (hopefully we'll take this flag out soon)
 var path = require("path");
 var fs = require('fs');
 var chai = require('chai');
@@ -12,46 +11,35 @@ describe('genbank exporter/parser conversion', function() {
     it('can interconvert between our parser and our exporter with a malformed genbank', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/breakingGenbank.gb'), "utf8");
         parseGenbank(string, function(result) {
-            result.should.be.an('array');
-            result[0].success.should.be.true;
-            result[0].parsedSequence.features.should.be.length(13);
-            result[0].parsedSequence.features.should.include.something.that.deep.equals({
+            var feat1 = {
                 notes: {},
                 name: 'araC',
                 start: 6,
-                end: 882 + addOneFlag,
+                end: 882,
                 type: 'CDS',
                 strand: -1
-            });
-            result[0].parsedSequence.features.should.include.something.that.deep.equals({
+            }
+            var feat2 = {
                 notes: {},
                 name: 'T0',
                 start: 4300,
-                end: 4403 + addOneFlag,
+                end: 4403,
                 type: 'terminator',
                 strand: 1
-            });
+            }
+            result.should.be.an('array');
+            result[0].success.should.be.true;
+            result[0].parsedSequence.features.should.be.length(13);
+            result[0].parsedSequence.features.should.include.something.that.deep.equals(feat1);
+            result[0].parsedSequence.features.should.include.something.that.deep.equals(feat2);
             var exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
             parseGenbank(exportedGenbankString, function(result) {
                 result.should.be.an('array');
                 result[0].success.should.be.true;
                 result[0].parsedSequence.features.should.be.length(13);
-                result[0].parsedSequence.features.should.include.something.that.deep.equals({
-                    notes: {},
-                    name: 'araC',
-                    start: 6,
-                    end: 882 + addOneFlag,
-                    type: 'CDS',
-                    strand: -1
-                });
-                result[0].parsedSequence.features.should.include.something.that.deep.equals({
-                    notes: {},
-                    name: 'T0',
-                    start: 4300,
-                    end: 4403 + addOneFlag,
-                    type: 'terminator',
-                    strand: 1
-                });
+                
+                result[0].parsedSequence.features.should.include.something.that.deep.equals(feat1);
+                result[0].parsedSequence.features.should.include.something.that.deep.equals(feat2);
                 done();
             });
         });
@@ -72,7 +60,7 @@ describe('genbank exporter/parser conversion', function() {
                 },
                 name: 'pS8c-gfpuv_sig_pep_vector_backbone',
                 start: 1238,
-                end: 1234 + addOneFlag,
+                end: 1234,
                 type: 'misc_feature',
                 strand: 1
             });
@@ -92,7 +80,7 @@ describe('genbank exporter/parser conversion', function() {
                     },
                     name: 'pS8c-gfpuv_sig_pep_vector_backbone',
                     start: 1238,
-                    end: 1234 + addOneFlag,
+                    end: 1234,
                     type: 'misc_feature',
                     strand: 1
                 });
@@ -110,11 +98,11 @@ describe('genbank exporter/parser conversion', function() {
             result[0].parsedSequence.features.should.containSubset([{
                 name: 'mutation',
                 start: 264,
-                end: 264 + addOneFlag,
+                end: 264,
             },{
                 name: 'TSS',
                 start: 291,
-                end: 291 + addOneFlag,
+                end: 291,
             }]);
             var exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
             parseGenbank(exportedGenbankString, function(result) {
@@ -123,11 +111,11 @@ describe('genbank exporter/parser conversion', function() {
                 result[0].parsedSequence.features.should.containSubset([{
                     name: 'mutation',
                     start: 264,
-                    end: 264 + addOneFlag,
+                    end: 264,
                 },{
                     name: 'TSS',
                     start: 291,
-                    end: 291 + addOneFlag,
+                    end: 291,
                 }]);
                 done();
             });
@@ -143,7 +131,7 @@ describe('genbank exporter/parser conversion', function() {
     //         result[0].parsedSequence.features.should.containSubset([{
     //             name: 'rhaBADp',
     //             start: 410,
-    //             end: 182 + addOneFlag,
+    //             end: 182,
     //         }]);
     //         done();
     //     });
@@ -174,7 +162,7 @@ describe('genbank exporter/parser conversion', function() {
     //             },
     //             name: 'pSC101**',
     //             start: 1073,
-    //             end: 3301 + addOneFlag,
+    //             end: 3301,
     //             type: 'rep_origin',
     //             strand: -1
     //         });
@@ -204,7 +192,7 @@ describe('genbank exporter/parser conversion', function() {
     //             },
     //             name: 'CmR',
     //             start: 2010,
-    //             end: 2669 + addOneFlag,
+    //             end: 2669,
     //             type: 'gene',
     //             strand: -1
     //         });

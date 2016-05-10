@@ -1,18 +1,15 @@
-// to test just this file:
-// node vede/app/teselagen/parsers/sbolOrJbeiseqToJson.test.js
-var sbolOrJbeiseqToJson = require('../parsers/sbolOrJbeiseqToJson');
+var sbolXmlToJson = require('../parsers/sbolXmlToJson');
 var path = require("path");
 var fs = require('fs');
 var chai = require('chai');
 chai.use(require('chai-things'));
 chai.should();
 
-var addOneFlag = 1; //flag to use to add 1 to annotation starts (hopefully we'll take this flag out soon)
 describe('basic xml parsing tests', function(done) {
     it('basic sbol test', function(done) {
         // var string = fs.readFileSync(path.join(__dirname, '../ext_tests/data/sequences/pBbE0c-RFP.xml'), "utf8");
         var string = fs.readFileSync(path.join(__dirname, './testData/pBbE0c-RFP.xml'), "utf8");
-        sbolOrJbeiseqToJson(string, function(result) {
+        sbolXmlToJson(string, function(result) {
             result[0].parsedSequence.name.should.equal('pBbE0c-RFP');
             result[0].parsedSequence.circular.should.equal(false);
             result[0].parsedSequence.extraLines.length.should.equal(0);
@@ -26,7 +23,7 @@ describe('basic xml parsing tests', function(done) {
                 },
                 name: "colE1 origin",
                 start: 1201,
-                end: 1883 + addOneFlag,
+                end: 1883,
                 strand: 1,
                 type: "misc_feature"
             });
@@ -38,12 +35,12 @@ describe('basic xml parsing tests', function(done) {
 // describe('test of sbol from SBOL site', function (done) {
 //     it('tests the parsing of toggle switches', function (done) {
 //         var string = fs.readFileSync(path.join(__dirname, './testData/Sbol Website/pIKE_pTAK_toggle_switches.xml'), "utf8");
-//         sbolOrJbeiseqToJson(string, function(result){
+//         (string, function(result){
 //         });
 //     });
 // });
 // var string = fs.readFileSync(path.join(__dirname, '../../../..', 'testing/sequence_data/sbol/jbei-seq.xml'), "utf8");
-// sbolOrJbeiseqToJson(string, function (result) {
+// (string, function (result) {
 //  console.log('result', result)
 //     assert.equal(result[0].parsedSequence.name, 'signal_pep');
 //     assert.equal(result[0].parsedSequence.circular, false);
@@ -61,7 +58,7 @@ describe('basic xml parsing tests', function(done) {
 // });
 //
 // var string = fs.readFileSync(path.join(__dirname, '../../../..', 'testing/sequence_data/sbol/sbol_example.xml'), "utf8");
-// sbolOrJbeiseqToJson(string, function (result) {
+// (string, function (result) {
 //  console.log('result', JSON.stringify(result,null,4));
 //     assert.equal(result[0].parsedSequence.name, 'pBbS8c-RFP');
 //     assert.equal(result[0].parsedSequence.circular, false);
@@ -79,7 +76,7 @@ describe('basic xml parsing tests', function(done) {
 // });
 //
 // var string = fs.readFileSync(path.join(__dirname, '../../../..', 'testing/sequence_data/sbol/sbol_example.xml'), "utf8");
-// sbolOrJbeiseqToJson(string, function (result) {
+// (string, function (result) {
 //  console.log('result', JSON.stringify(result,null,4));
 //     assert.equal(result[0].parsedSequence.name, 'pBbS8c-RFP');
 //     assert.equal(result[0].parsedSequence.circular, false);

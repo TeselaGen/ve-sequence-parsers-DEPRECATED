@@ -1,10 +1,7 @@
-//tnrtodo make the edit feature window use the new FeatureTypes.js stuff instead of the constants.FeatureTypes...
 var fastaToJson = require('./fastaToJson');
 var genbankToJson = require('./genbankToJson');
-var jsonParser = require('./jbeiseqToJson');
-var xmlParser = require('./sbolOrJbeiseqToJson');
+var xmlParser = require('./sbolXmlToJson');
 var extractFileExtension = require('./utils/extractFileExtension.js');
-var parseString = require('xml2js').parseString;
 
 /**
  * takes in file content string and its file name and determines what parser it needs to be sent to.
@@ -17,7 +14,6 @@ module.exports = function anyToJson(fileContentString, onFileParsed, options) {
     options = options || {}
     // var isProtein = options.isProtein || false;
     var fileName = options.fileName || '';
-    var parsedOutput = {};
     var ext = extractFileExtension(fileName);
     if (/^(fasta|fas|fa|fna|ffn)$/.test(ext)) { // FASTA
         fastaToJson(fileContentString, onFileParsed, options);
@@ -27,9 +23,6 @@ module.exports = function anyToJson(fileContentString, onFileParsed, options) {
     }
     else if (/^(gp)$/.test(ext)) { // PROTEIN GENBANK
         genbankToJson(fileContentString, onFileParsed, options, true);
-    }
-    else if (/^(json)$/.test(ext)) { // JSON
-        jsonParser(fileContentString, onFileParsed, options);
     }
     else if (/^(xml|rdf)$/.test(ext)) { // XML/RDF
         xmlParser(fileContentString, onFileParsed, options);

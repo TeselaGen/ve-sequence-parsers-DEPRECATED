@@ -1,13 +1,16 @@
 var flattenSequenceArray = require('./utils/flattenSequenceArray');
 var validateSequenceArray = require('./utils/validateSequenceArray');
-var some = require('lodash/collection/some');
+// var some = require('lodash/collection/some');
 var splitStringIntoLines = require('./utils/splitStringIntoLines.js');
-var addOneFlag = 1; //change to 0 when we convert to 0-based indices
 
 function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped, options) {
-    onFileParsed = function(sequences, options) { //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
+    var onFileParsed = function(sequences, options) { //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
         onFileParsedUnwrapped(validateSequenceArray(flattenSequenceArray(sequences), options));
     };
+    options = options || {}
+    var inclusive1BasedStart = options.inclusive1BasedStart
+    var inclusive1BasedEnd = options.inclusive1BasedEnd
+    
     var resultsArray = [];
     var result;
     var currentFeatureNote;
@@ -45,7 +48,7 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
             addMessage("Import Error: Sequence file is empty");
         }
 
-        lines.some(function(line, index) {
+        lines.some(function(line) {
             if (line === null) {
                 return true; //break the some loop
             }
@@ -180,10 +183,6 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
         return result.parsedSequence.features[result.parsedSequence.features.length - 1];
     }
 
-    function getLastFeatureNote() {
-        return currentFeatureNote[currentFeatureNote.length - 1];
-    }
-
     function addMessage(msg) {
         return result.messages.push(msg);
     }
@@ -197,16 +196,17 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
     }
 
     function parseOrigin(line, key) {
-        if (key === genbankAnnotationKey.ORIGIN_TAG) {}
-        else {
-            new_line = line.replace(/[\s]*[0-9]*/g, "");
+        if (key !== genbankAnnotationKey.ORIGIN_TAG) {
+            var new_line = line.replace(/[\s]*[0-9]*/g, "");
             result.parsedSequence.sequence += new_line;
         }
     }
 
-    function parseLocus(line, key, val) {
+    function parseLocus(line) {
         newSeq();
-        var locusName, linear, div, date;
+        var locusName
+        var linear
+        var date
         var lineArr = line.split(/[\s]+/g);
 
         if (lineArr.length <= 1) {
@@ -216,9 +216,9 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
         }
         locusName = lineArr[1];
 
-        // Linear vs Circular?; CANNOT HANDLE TANDEM
+        // Linear vs Circular?
         linear = true;
-        for (i = 1; i < lineArr.length; i++) {
+        for (var i = 1; i < lineArr.length; i++) {
             if (lineArr[i].match(/circular/gi)) {
                 linear = false;
             }
@@ -226,16 +226,17 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
 
         // Date and Div
         // Date is in format:1-APR-2012
-        for (i = 1; i < lineArr.length; i++) {
-            if (lineArr[i].match(/-[A-Z]{3}-/g)) {
-                date = lineArr[i];
+        for (var j = 1; j < lineArr.length; j++) {
+            if (lineArr[j].match(/-[A-Z]{3}-/g)) {
+                date = lineArr[j];
             }
-            if (lineArr[i].match(/^[A-Z]{3}/g) && lineArr[i].length === 3 && !lineArr[i]
-                .match(/DNA|RNA/g)) {
-                div = lineArr[i];
-            }
+            //tnr: not sure what this is supposed to be doing..
+            // if (lineArr[j].match(/^[A-Z]{3}/g) && lineArr[j].length === 3 && !lineArr[j].match(/DNA|RNA/g)) {
+            //     div = lineArr[j];
+            // }
         }
         result.parsedSequence.name = locusName;
+        result.parsedSequence.date = date;
         result.parsedSequence.circular = !linear;
     }
 
@@ -250,9 +251,10 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
             throw ('no sequence yet created upon which to extract an extra line!');
         }
     }
-
+    var lastLineWasFeaturesTag;
+    var lastLineWasLocation;
     function parseFeatures(line, key, val) {
-        var featElm, featQual, lastElm, strand;
+        var strand;
         // FOR THE MAIN FEATURES LOCATION/QUALIFIER LINE
         if (key === genbankAnnotationKey.FEATURES_TAG) {
             lastLineWasFeaturesTag = true;
@@ -337,17 +339,6 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
         return qual;
     }
 
-    function isQualifierRunon(line) {
-        var runon = false;
-        //if ( Ext.String.trim(line.substr(0,20)) === ""  && !Ext.String.trim(line).charAt(0).match(/\// ) && !isLocationRunon(line) ) {
-        if (line.substr(0, 10).trim() === "" && !line.trim().charAt(0).match(/\//) &&
-            !isLocationRunon(line)) {
-            runon = true;
-        }
-        return runon;
-    }
-
-
 
     function parseFeatureLocation(locStr) {
         locStr = locStr.trim();
@@ -356,19 +347,17 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
             locArr.push(match);
         });
         for (var i = 0; i < locArr.length; i += 2) {
-            var start = parseInt(locArr[i]) - 1;
-            var end = parseInt(locArr[i + 1]) ;
+            var start = parseInt(locArr[i]) - (inclusive1BasedStart ? 0 : 1);
+            var end = parseInt(locArr[i + 1]) - (inclusive1BasedEnd ? 0 : 1);
             if (isNaN(end)) { 
                 //if no end is supplied, assume that the end should be set to whatever the start is
                 //this makes a feature location passed as:
                 //147
                 //function like:
                 //147..147
-                end = start + addOneFlag;
+                end = start
             }
             var location = {
-                //feature starts are stored in the db as 0-based, start is inclusive and end is exclusive, e.g. [start, end)
-                //(see also: Teselagen.manager.SequenceManager) so we must decrease start index by 1 before loading
                 start: start,
                 end: end
             };
@@ -384,21 +373,16 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
         newLine = newLine.replace(/^\/|"$/g, "");
         lineArr = newLine.split(/=\"|=/);
 
-        var quoted = false;
         var val = lineArr[1];
 
         if (val) {
             val = val.replace(/\\/g, " ");
 
             if (line.match(/=\"/g)) {
-                quoted = true;
                 val = val.replace(/\".*/g, "");
             }
             else if (val.match(/^\d+$/g)) {
                 val = parseInt(val);
-            }
-            else {
-                quoted = false;
             }
         }
         var key = lineArr[0];
@@ -544,7 +528,7 @@ function isFeatureLineRunon(line, featureLocationIndentation) {
 
 function getLengthOfWhiteSpaceBeforeStartOfLetters(string) {
     var match = /^\s*/.exec(string);
-    if (typeof match !== null) {
+    if (match !== null) {
         return (match[0].length);
     }
     else {

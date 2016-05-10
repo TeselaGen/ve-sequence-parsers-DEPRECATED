@@ -1,7 +1,6 @@
 // var tap = require('tap');
 // tap.mochaGlobals();
 var genbankToJson = require('../parsers/genbankToJson');
-var addOneFlag = 1; //flag to use to add 1 to annotation starts (hopefully we'll take this flag out soon)
 var path = require("path");
 var fs = require('fs');
 var chai = require('chai');
@@ -30,11 +29,13 @@ describe('genbankToJson tests', function() {
             result.should.be.an('array');
             result[0].success.should.be.true;
             result[0].parsedSequence.features.should.be.length(4);
+            
+            // console.log('result[0]:',JSON.stringify(result[0],null,4))
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {product: ["Rfp"]},
                 name: 'red fluorescent protein',
                 start: 0,
-                end: 224 + addOneFlag,
+                end: 224,
                 type: 'protein',
                 strand: 1
             });
@@ -51,7 +52,7 @@ describe('genbankToJson tests', function() {
                 notes: {},
                 name: 'araC',
                 start: 6,
-                end: 882 + addOneFlag,
+                end: 882,
                 type: 'CDS',
                 strand: -1
             });
@@ -59,7 +60,7 @@ describe('genbankToJson tests', function() {
                 notes: {},
                 name: 'T0',
                 start: 4300,
-                end: 4403 + addOneFlag,
+                end: 4403,
                 type: 'terminator',
                 strand: 1
             });
@@ -75,11 +76,11 @@ describe('genbankToJson tests', function() {
             result[0].parsedSequence.features.should.containSubset([{
                 name: 'mutation',
                 start: 264,
-                end: 264 + addOneFlag,
+                end: 264,
             },{
                 name: 'TSS',
                 start: 291,
-                end: 291 + addOneFlag,
+                end: 291,
             }]);
             done();
         });
@@ -94,13 +95,13 @@ describe('genbankToJson tests', function() {
             result[0].parsedSequence.features.should.containSubset([{
                 name: 'rhaBADp',
                 start: 410,
-                end: 182 + addOneFlag,
+                end: 182,
             }]);
             done();
         });
     });
 
-    it('parses a genbank that is implicitly linear and has no circular featuers as linear', function(done) {
+    it('parses a genbank that is implicitly linear and has no circular features as linear', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/Ecoli_DERA_Implicitly_Linear.gb'), "utf8");
         genbankToJson(string, function(result) {
             result.should.be.an('array');
@@ -124,7 +125,7 @@ describe('genbankToJson tests', function() {
                 },
                 name: 'pSC101**',
                 start: 1073,
-                end: 3301 + addOneFlag,
+                end: 3301,
                 type: 'rep_origin',
                 strand: -1
             });
@@ -152,7 +153,7 @@ describe('genbankToJson tests', function() {
                 },
                 name: 'CmR',
                 start: 2010,
-                end: 2669 + addOneFlag,
+                end: 2669,
                 type: 'gene',
                 strand: -1
             });
@@ -189,7 +190,7 @@ describe('genbankToJson tests', function() {
                 },
                 name: 'pS8c-gfpuv_sig_pep_vector_backbone',
                 start: 1238,
-                end: 1234 + addOneFlag,
+                end: 1234,
                 type: 'misc_feature',
                 strand: 1
             });
@@ -212,28 +213,28 @@ describe('genbankToJson tests', function() {
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
-//         if (feature.name === 'origin' && feature.start === 3883+ addOneFlag && feature.end === 3884 && feature.type === 'origin' && feature.strand === 1) {
+//         if (feature.name === 'origin' && feature.start === 388 && feature.end === 3884 && feature.type === 'origin' && feature.strand === 1) {
 //             return true;
 //         }
 //     }).length);
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
-//         if (feature.name === 'T7 promoter' && feature.start === 518+ addOneFlag && feature.end === 536 && feature.type === 'promoter' && feature.strand === -1) {
+//         if (feature.name === 'T7 promoter' && feature.start === 51 && feature.end === 536 && feature.type === 'promoter' && feature.strand === -1) {
 //             return true;
 //         }
 //     }).length);
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
-//         if (feature.name === 'RBS' && feature.start === 6722+ addOneFlag && feature.end === 6729 && feature.type === 'protein_bind' && feature.strand === -1) {
+//         if (feature.name === 'RBS' && feature.start === 672 && feature.end === 6729 && feature.type === 'protein_bind' && feature.strand === -1) {
 //             return true;
 //         }
 //     }).length);
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
-//         if (feature.name === 'RBS' && feature.start === 22+ addOneFlag && feature.end === 122 && feature.type === 'protein_bind' && feature.strand === -1) {
+//         if (feature.name === 'RBS' && feature.start === 2 && feature.end === 122 && feature.type === 'protein_bind' && feature.strand === -1) {
 //             return true;
 //         }
 //     }).length);

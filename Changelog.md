@@ -1,3 +1,6 @@
+3.0.0 - Added options to parse feature start/end as 1-based inclusive (instead of 0-based inclusive by default) (for json->genbank, genbank->json only)
+      - Along with those options, the default feature parsing is now inclusive and 0-based for both start and end instead of being exclusive 0-based for the end and inclusive 0-based for the start (which it was previously) 
+      - Scrapping jbeiToJson functionality as jbeiSeq was never being used and has been deprecated
 2.0.0 - Updated the names of the different parsers to follow camelCase conventions
       - Simplified jsonToGenbank (instead of using `jsonToGenbank.serializedToGenbank()`,
         now use `jsonToGenbank()` directly)

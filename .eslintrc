@@ -1,0 +1,33 @@
+{
+    "rules": {
+        "no-undef":2,
+        "no-console":0,
+        "no-unused-vars":1,
+        "no-redeclare":2,
+        "comma-dangle":0,
+        "no-extra-semi":0,
+        "no-mixed-spaces-and-tabs": 0,
+        "indent": [
+            0,
+            "tab"
+        ],
+        "quotes": [
+            0,
+            "double"
+        ],
+        "linebreak-style": [
+            0,
+            "unix"
+        ],
+        "semi": [
+            0,
+            "always"
+        ]
+    },
+    "env": {
+        "node": true,
+        "browser": true,
+        "mocha": true
+    },
+    "extends": "eslint:recommended"
+}

@@ -5,8 +5,7 @@ Use the following files to convert to a generalized JSON format:
 ```
 fastaToJson
 genbankToJson
-jbeiseqToJson
-sbolOrJbeiseqToJson
+sbolXmlToJson
 anyToJson    //this handles any of the above file types based on file extension
 ```
 
@@ -54,15 +53,35 @@ var generalizedJsonFormat = {
 var jsonToGenbank = require('bio-parsers').jsonToGenbank;
 //or alternatively (if using the package on the front end and you want to keep memory usage low)
 var jsonToGenbank = require('bio-parsers/parsers/jsonToGenbank');
-var var genbankString = jsonToGenbank(generalizedJsonFormat)
+//You can pass an optional options object as the second argument. Here are the defaults
+var options = {
+  inclusive1BasedStart: false //by default feature starts are parsed out as 0-based and inclusive 
+  inclusive1BasedEnd: false //by default feature ends are parsed out as 0-based and inclusive 
+  // Example:
+  // 0123456
+  // ATGAGAG
+  // --fff--  (the feature covers GAG)
+  // 0-based inclusive start:
+  // feature.start = 2
+  // 1-based inclusive start:
+  // feature.start = 3
+  // 0-based inclusive end:
+  // feature.end = 4
+  // 1-based inclusive end:
+  // feature.end = 5
+} 
+var genbankString = jsonToGenbank(generalizedJsonFormat, options)
 
 //All of the xXXXtoJson parsers work like this:
 var genbankToJson = require('bio-parsers').genbankToJson;
 //or alternatively (if using the package on the front end and you want to keep memory usage low)
 var genbankToJson = require('bio-parsers/parsers/genbankToJson');
-//passing an options object as the third argument is optional. Here are the defaults
+//You can pass an optional options object as the third argument. Here are the defaults
 var options = {
   isProtein: false, //used to strip unwanted characters
+  //genbankToJson options only
+  inclusive1BasedStart: false //by default feature starts are parsed out as 0-based and inclusive 
+  inclusive1BasedEnd: false //by default feature ends are parsed out as 0-based and inclusive 
 }
 genbankToJson(string, function(result) {
   console.log(result)

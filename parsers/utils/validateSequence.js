@@ -3,7 +3,6 @@ var FeatureTypes = require('./GenbankFeatureTypes.js');
 var NameUtils = require('./NameUtils.js');
 var filterAminoAcidSequenceString = require('ve-sequence-utils/filterAminoAcidSequenceString');
 var filterSequenceString = require('ve-sequence-utils/filterSequenceString');
-var addOneFlag = 0; //one based end indicies, change to 1 for zero based indicies
 //validation checking
 /**
  * validation and sanitizing of our teselagen sequence data type
@@ -102,16 +101,16 @@ module.exports = function validateSequence(sequence, options) {
             response.messages.push('Unable to detect valid name for feature, setting name to "Untitled Feature"');
             feature.name = 'Untitled Feature';
         }
-        if (!areNonNegativeIntegers([feature.start]) || feature.start > sequence.size - 1) {
+        if (!areNonNegativeIntegers([feature.start]) || feature.start > (sequence.size - (options.inclusive1BasedStart ? 1 : 0))) {
             response.messages.push('Invalid feature start: ' + feature.start + ' detected for ' + feature.name + ' and set to 1'); //setting it to 0 internally, but users will see it as 1
             feature.start = 0;
         }
-        if (!areNonNegativeIntegers([feature.end]) || feature.end + addOneFlag > sequence.size) {
+        if (!areNonNegativeIntegers([feature.end]) || feature.end > (sequence.size - (options.inclusive1BasedEnd ? 1 : 0))) {
             response.messages.push('Invalid feature end:  ' + feature.end + ' detected for ' + feature.name + ' and set to 1'); //setting it to 0 internally, but users will see it as 1
             feature.end = 0;
         }
 
-        if (feature.start > feature.end && sequence.circular === false) {
+        if ((feature.start - (options.inclusive1BasedStart ? 1 : 0))  > (feature.end - (options.inclusive1BasedEnd ? 1 : 0)) && sequence.circular === false) {
             if (circularityExplicitlyDefined) {
                 response.messages.push('Invalid circular feature detected in explicitly linear sequence. ' + feature.name + '. start set to 1'); //setting it to 0 internally, but users will see it as 1
                 feature.start = 0;
@@ -161,10 +160,6 @@ module.exports = function validateSequence(sequence, options) {
         } else if (feature.notes.name) {
             //name was used for name (if it existed)
             delete feature.notes.name;
-        }
-        //tnrtodo: temporary code that needs to be removed once we switch to 0 based!
-        if (feature.end === 0) {
-            feature.end++;
         }
         return true;
     });

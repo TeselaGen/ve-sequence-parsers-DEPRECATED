@@ -48,21 +48,23 @@ var StringUtil = {
 };
 
 
+function cutUpArray(val, start, end) {
+	return val.slice(start, end).join('');
+}
 
+function cutUpStr(val, start, end) {
+	return val.slice(start, end);
+}
 
-module.exports = function(serSeq) {
-
+module.exports = function(serSeq, options) {
+	options = options || {} 
+	
+	
 	if(!serSeq) return false;
 
 	try {
 
-	function cutUpArray(val, start, end) {
-		return val.slice(start, end).join('');
-	}
-
-	function cutUpStr(val, start, end) {
-		return val.slice(start, end);
-	}
+	
 
 	var content = null;
 
@@ -82,9 +84,8 @@ module.exports = function(serSeq) {
 
 		for(var i=0;i<serSeq.features.length;i++) {
 			var feat = serSeq.features[i];
-			lines.push(featureToGenbankString(feat));
+			lines.push(featureToGenbankString(feat, options));
 		}
-
 	}
 
 
@@ -182,7 +183,9 @@ function featureNoteInDataToGenbankString(name,value) {
 	return StringUtil.lpad("/", " ", 22) + name + "=\"" + value + "\"";
 };
 
-function featureToGenbankString(feat) {
+function featureToGenbankString(feat, options) {
+	var inclusive1BasedStart = options.inclusive1BasedStart
+	var inclusive1BasedEnd = options.inclusive1BasedEnd
 	var lines = [];
 
 	var line = "     " + StringUtil.rpad(feat.type, " ", 16);
@@ -193,7 +196,7 @@ function featureToGenbankString(feat) {
 	//	locStr.push((loc.start+1) + '..' + loc.end);
 	//}
 
-	locStr.push((parseInt(feat.start)+1) + '..' + parseInt(feat.end));
+	locStr.push(((parseInt(feat.start) + (inclusive1BasedStart ? 0 : 1))) + '..' + (parseInt(feat.end) + (inclusive1BasedEnd ? 0 : 1)));
 
 	locStr = locStr.join(',');
 

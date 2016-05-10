@@ -10,8 +10,9 @@ var validateSequenceArray = require('./utils/validateSequenceArray');
 //   messages:
 //   success: 
 // }
-module.exports = function sbolOrJbeiseqToJsonString(string, onFileParsedUnwrapped, options) {
-    onFileParsed = function(sequences) { //before we call the onFileParsed callback, we need to validate the sequence
+module.exports = function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
+    options = options || {}
+    var onFileParsed = function(sequences) { //before we call the onFileParsed callback, we need to validate the sequence
         onFileParsedUnwrapped(validateSequenceArray(sequences, options));
     };
     var response = {
@@ -27,25 +28,8 @@ module.exports = function sbolOrJbeiseqToJsonString(string, onFileParsedUnwrappe
             });
             return;
         }
-        // console.log('parse xml result', result);
-        var jbeiJsonMatches = waldo.byName('seq:seq', result);
-        // console.log('jbeiJson', jbeiJsonMatches);
         var sbolJsonMatches = waldo.byName('DnaComponent', result);
-        // console.log('ASGASHADHEHEHAERH');
-        // console.log('sbolJson', sbolJsonMatches);
-        // console.log('ASGASHADHEHEHAERH');
-        if (jbeiJsonMatches[0]) { //check if the file matches jbei format
-            try {
-                response.parsedSequence = parseJbeiJson(jbeiJsonMatches[0].value);
-            } catch (e) {
-                console.warn('e.trace', e.trace);
-                onFileParsed({
-                    success: false,
-                    messages: ('Error while parsing Jbei format')
-                });
-            }
-            onFileParsed(response);
-        } else if (sbolJsonMatches[0]) {
+        if (sbolJsonMatches[0]) {
             var resultArray = [];
             for (var i = 0; i < sbolJsonMatches[0].value.length; i++) {
                 try {
@@ -54,7 +38,7 @@ module.exports = function sbolOrJbeiseqToJsonString(string, onFileParsedUnwrappe
                         messages: [],
                         success: true
                     };
-                    response.parsedSequence = parseSbolJson(sbolJsonMatches[0].value[i]);
+                    response.parsedSequence = parseSbolJson(sbolJsonMatches[0].value[i], options);
                 } catch (e) {
                     console.warn('e.trace', e.trace);
                     resultArray.push({
@@ -85,7 +69,7 @@ module.exports = function sbolOrJbeiseqToJsonString(string, onFileParsedUnwrappe
 //  *
 //  * Check for each level and parse downward from there.
 // tnrtodo: this should be tested with a wider variety of sbol file types!
-function parseSbolJson(sbolJson) {
+function parseSbolJson(sbolJson, options) {
     // console.log('sbolJson', JSON.stringify(sbolJson, null, 4));
     var name;
     if (access(sbolJson, 'name[0]')) {
@@ -129,45 +113,12 @@ function parseSbolJson(sbolJson) {
                     type: 'misc_feature', // sbol represents the feature type in what we are parsing as notes as the URL is difficult to follow
                     // type: feature['seq:label'], //tnrtodo: figure out if an annotation type is passed
                     // id: feature['seq:label'],
-                    start: parseInt(access(feature, 'bioStart[0]') - 1),
-                    end: parseInt(access(feature, 'bioEnd[0]')), //tnrtodo: add a -1 here once we convert end from bioEnd to 0-based
+                    start: parseInt(access(feature, 'bioStart[0]') - (options.inclusive1BasedStart ? 0 : 1)),
+                    end: parseInt(access(feature, 'bioEnd[0]') - (options.inclusive1BasedEnd ? 0 : 1)),
                     strand: access(feature, 'strand[0]') //+ or -
                         // notes: feature['seq:label'],
                 };
             }
-        })
-    };
-}
-
-function parseJbeiJson(jbeiJson) {
-    // console.log('jbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJsonjbeiJson');
-    // console.log(JSON.stringify(jbeiJson, null, 4));
-    // console.log('hammy', JSON.stringify(jbeiJson['seq:features'], null, 4));
-    var features = [];
-    var matches = waldo.byName('seq:feature', jbeiJson);
-    if (matches[0]) {
-        // console.log('hiet');
-        features = matches[0].value;
-        // console.log('features', features);
-    }
-    return {
-        circular: access(jbeiJson, "seq:circular[0]"),
-        sequence: access(jbeiJson, "seq:sequence[0]"),
-        name: access(jbeiJson, "seq:name[0]"),
-        features: flatmap(features, function(feature) {
-            // var feature = access(jbeiFeature, "seq:feature[0]");
-            return feature['seq:location'].map(function(location) {
-                // console.log('type:::', access(feature, "seq:type[0]"));
-                return {
-                    name: access(feature, "seq:label[0]"),
-                    type: access(feature, "seq:type[0]"),
-                    // id: featureseq:label,
-                    start: parseInt(access(location, "seq:genbankStart[0]")) - 1,
-                    end: parseInt(access(location, "seq:end[0]")), //tnrtodo: add a -1 here once we convert end from bioEnd to 0-based
-                    strand: access(feature, "seq:complement[0]") === "true" ? -1 : 1
-                        // notes: feature['seq:label'],
-                };
-            });
         })
     };
 }
