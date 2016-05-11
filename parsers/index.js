@@ -1,7 +1,7 @@
 module.exports = {
-  anyToJson: require('anyToJson.js'),
-  fastaToJson: require('fastaToJson.js'),
-  genbankToJson: require('genbankToJson.js'),
-  sbolXmlToJson: require('sbolXmlToJson.js'),
-  jsonToGenbank: require('jsonToGenbank.js'),
+  anyToJson: require('./anyToJson'),
+  fastaToJson: require('./fastaToJson'),
+  genbankToJson: require('./genbankToJson'),
+  sbolXmlToJson: require('./sbolXmlToJson'),
+  jsonToGenbank: require('./jsonToGenbank'),
 }
