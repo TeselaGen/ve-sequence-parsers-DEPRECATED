@@ -5,8 +5,8 @@ var chai = require('chai');
 chai.use(require('chai-things'));
 chai.should();
 
-describe('basic xml parsing tests', function(done) {
-    it('basic sbol test', function(done) {
+describe('sbolXmlToJson', function(done) {
+    it('should parse an sbol xml file to our json representation correctly', function(done) {
         // var string = fs.readFileSync(path.join(__dirname, '../ext_tests/data/sequences/pBbE0c-RFP.xml'), "utf8");
         var string = fs.readFileSync(path.join(__dirname, './testData/pBbE0c-RFP.xml'), "utf8");
         sbolXmlToJson(string, function(result) {
@@ -31,6 +31,13 @@ describe('basic xml parsing tests', function(done) {
             done();
         });
     });
+    it('should return an error (not throw an error) when trying to parse a genbank string', function(done) {
+      var string = fs.readFileSync(path.join(__dirname, './testData/genbank/genbankThatBrokeSbolImport.gb'), "utf8");
+      sbolXmlToJson(string, function(results) {
+          results[0].success.should.be.false
+          done();
+      });
+    })
 });
 // describe('test of sbol from SBOL site', function (done) {
 //     it('tests the parsing of toggle switches', function (done) {

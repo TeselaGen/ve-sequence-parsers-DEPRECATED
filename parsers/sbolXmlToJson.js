@@ -20,7 +20,8 @@ module.exports = function sbolXmlToJson(string, onFileParsedUnwrapped, options) 
         messages: [],
         success: true
     };
-    parseString(string, function(err, result) {
+    try {
+      parseString(string, function(err, result) {
         if (err) {
             onFileParsed({
                 success: false,
@@ -58,7 +59,13 @@ module.exports = function sbolXmlToJson(string, onFileParsedUnwrapped, options) 
                 messages: ('XML is not valid Jbei or Sbol format')
             });
         }
-    });
+      });
+    } catch (e) {
+      onFileParsed({
+          success: false,
+          messages: ('Error parsing XML to JSON')
+      });
+    }
 };
 // Converts SBOL formats.
 //  * Specifications for SBOL can be found at http://www.sbolstandard.org/specification/core-data-model

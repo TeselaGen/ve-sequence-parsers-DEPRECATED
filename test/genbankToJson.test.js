@@ -50,7 +50,7 @@ describe('genbankToJson tests', function() {
             result[0].success.should.be.true;
             result[0].parsedSequence.features.should.be.length(4);
             
-            console.log('result[0]:',JSON.stringify(result[0],null,4))
+            // console.log('result[0]:',JSON.stringify(result[0],null,4))
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {product: ["Rfp"]},
                 name: 'red fluorescent protein',
