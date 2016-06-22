@@ -188,7 +188,7 @@ function featureToGenbankString(feat, options) {
 	var inclusive1BasedEnd = options.inclusive1BasedEnd
 	var lines = [];
 
-	var line = "     " + StringUtil.rpad(feat.type, " ", 16);
+	var line = "     " + StringUtil.rpad(feat.type || 'misc_feature', " ", 16);
 	var locStr = [];
 
 	//for(var i=0;i<feat.locations.length;i++) {
@@ -206,7 +206,7 @@ function featureToGenbankString(feat, options) {
 
 	lines.push(line + locStr);
 
-	lines.push(featureNoteInDataToGenbankString('label', feat.name));
+	lines.push(featureNoteInDataToGenbankString('label', feat.name || "Untitled Feature"));
 
 	var notes = feat.notes;
     if (notes) {
