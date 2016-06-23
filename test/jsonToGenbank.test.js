@@ -120,6 +120,22 @@ describe('genbank exporter/parser conversion', function() {
             });
         });
     });
+    it('handles features in an array or a keyed object', function(done) {
+        var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga', 
+          features: {
+            'feat1': {start: 2, end: 4}
+          }
+        });
+        parseGenbank(exportedGenbankString, function(result) {
+            result.should.be.an('array');
+            result[0].success.should.be.true;
+            result[0].parsedSequence.features.should.containSubset([{
+                start: 2,
+                end: 4,
+            }]);
+            done();
+        });
+    });
 
     // it('parses a genbank that is implicitly non-circular as circular because it contains circular features', function(done) {
     //     var string = fs.readFileSync(path.join(__dirname, './testData/Ecoli_DERA_Implicitly_Circular.gb'), "utf8");

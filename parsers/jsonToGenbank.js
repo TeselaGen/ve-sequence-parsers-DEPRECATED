@@ -1,3 +1,4 @@
+var each = require('lodash/each')
 var nameUtils = require('./utils/NameUtils.js');
 var StringUtil = {
 	/** Trims white space at beginning and end of string
@@ -77,16 +78,14 @@ module.exports = function(serSeq, options) {
 	if(serSeq.extraLines){
 		lines = lines.concat(serSeq.extraLines);
 	}
-
-
-	if(Array.isArray(serSeq.features) && serSeq.features.length > 0) {
-		lines.push("FEATURES             Location/Qualifiers");
-
-		for(var i=0;i<serSeq.features.length;i++) {
-			var feat = serSeq.features[i];
-			lines.push(featureToGenbankString(feat, options));
+	var printedFeatureHeader
+	each(serSeq.features, function (feat, index) {
+		if (!printedFeatureHeader) {
+			printedFeatureHeader = true
+			lines.push("FEATURES             Location/Qualifiers");
 		}
-	}
+		lines.push(featureToGenbankString(feat, options));
+	})
 
 
 	lines.push("ORIGIN      ");
@@ -135,7 +134,7 @@ function createGenbankLocus (serSeq) {
 	var date = getCurrentDateString();
 
 	var line = StringUtil.rpad("LOCUS"," ", 12);
-	line += StringUtil.rpad(nameUtils.reformatName(serSeq.name)," ", 16);
+	line += StringUtil.rpad(nameUtils.reformatName(serSeq.name|| 'Untitled Sequence')," ", 16);
 	line += " "; // T.H line 2778 of GenbankFormat.as col 29 space
 	line += StringUtil.lpad(String(serSeq.sequence.length)," ", 11);
 	line += " bp "; // col 41
