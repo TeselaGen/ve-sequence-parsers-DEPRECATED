@@ -183,8 +183,6 @@ function featureNoteInDataToGenbankString(name,value) {
 };
 
 function featureToGenbankString(feat, options) {
-	var inclusive1BasedStart = options.inclusive1BasedStart
-	var inclusive1BasedEnd = options.inclusive1BasedEnd
 	var lines = [];
 
 	var line = "     " + StringUtil.rpad(feat.type || 'misc_feature', " ", 16);
@@ -195,7 +193,7 @@ function featureToGenbankString(feat, options) {
 	//	locStr.push((loc.start+1) + '..' + loc.end);
 	//}
 
-	locStr.push(((parseInt(feat.start) + (inclusive1BasedStart ? 0 : 1))) + '..' + (parseInt(feat.end) + (inclusive1BasedEnd ? 0 : 1)));
+	locStr.push(((parseInt(feat.start) + (options.inclusive1BasedStart ? 0 : 1))) + '..' + (parseInt(feat.end) + (options.inclusive1BasedEnd ? 0 : 1)));
 
 	locStr = locStr.join(',');
 

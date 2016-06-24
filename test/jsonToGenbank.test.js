@@ -127,11 +127,26 @@ describe('genbank exporter/parser conversion', function() {
           }
         });
         parseGenbank(exportedGenbankString, function(result) {
-            result.should.be.an('array');
-            result[0].success.should.be.true;
             result[0].parsedSequence.features.should.containSubset([{
                 start: 2,
                 end: 4,
+            }]);
+            done();
+        });
+    });
+    it('correctly handles inclusive1BasedStart and inclusive1BasedEnd options', function(done) {
+        var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga', 
+          features: {
+            'feat1': {start: 2, end: 4}
+          }
+        }, {
+          inclusive1BasedStart: true,
+          inclusive1BasedEnd: true,
+        });
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.features.should.containSubset([{
+                start: 1,
+                end: 3,
             }]);
             done();
         });
