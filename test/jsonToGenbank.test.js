@@ -151,6 +151,26 @@ describe('genbank exporter/parser conversion', function() {
             done();
         });
     });
+    it('gives genbank that is linear when circular is falsy', function(done) {
+        var exportedGenbankString = jsonToGenbank({
+          sequence: 'gagagagagga', 
+          circular: false
+        });
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.circular.should.be.false
+            done();
+        });
+    });
+    it('gives genbank that is linear when circular is the string "0"', function(done) {
+        var exportedGenbankString = jsonToGenbank({
+          sequence: 'gagagagagga', 
+          circular: "0"
+        });
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.circular.should.be.false
+            done();
+        });
+    });
 
     // it('parses a genbank that is implicitly non-circular as circular because it contains circular features', function(done) {
     //     var string = fs.readFileSync(path.join(__dirname, './testData/Ecoli_DERA_Implicitly_Circular.gb'), "utf8");

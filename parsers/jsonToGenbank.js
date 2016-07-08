@@ -147,7 +147,7 @@ function createGenbankLocus (serSeq) {
 	line += StringUtil.rpad(naType," ",6);
 	line += "  ";
 
-	if (serSeq.circular === false) {
+	if (!serSeq.circular || serSeq.circular === "0") {
 		line += "linear  ";
 		//line += "        ";
 	} else {
