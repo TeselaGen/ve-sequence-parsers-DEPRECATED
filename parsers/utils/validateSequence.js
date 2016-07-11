@@ -15,6 +15,7 @@ var filterSequenceString = require('ve-sequence-utils/filterSequenceString');
 module.exports = function validateSequence(sequence, options) {
     options = options || {}
     var isProtein = options.isProtein || false;
+    var reformatSeqName = options.reformatSeqName === false ? false : true;
 
     var response = {
         validatedAndCleanedSequence: {},
@@ -32,7 +33,9 @@ module.exports = function validateSequence(sequence, options) {
         sequence.extraLines = [];
     }
     var oldName = sequence.name;
-    sequence.name = NameUtils.reformatName(sequence.name);
+    if (reformatSeqName) {
+      sequence.name = NameUtils.reformatName(sequence.name)
+    }
     if (oldName !== sequence.name) {
         response.messages.push('Name (' + oldName + ') reformatted to ' + sequence.name);
     }

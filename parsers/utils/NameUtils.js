@@ -25,7 +25,7 @@ var NameUtils = {
 	 * @returns {String} New name.
 	 */
 	reformatName: function(pName) {
-		return pName.toString().replace(/[^a-zA-Z0-9_\-]/g, "_");
+		return pName.toString().replace(/[^a-zA-Z0-9_\-()]/g, "_");
 	},
 
 	toTitleCase: function(str) {

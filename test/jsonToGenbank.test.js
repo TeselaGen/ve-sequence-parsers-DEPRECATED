@@ -134,7 +134,7 @@ describe('genbank exporter/parser conversion', function() {
             done();
         });
     });
-    it('correctly handles inclusive1BasedStart and inclusive1BasedEnd options', function(done) {
+    it('handles inclusive1BasedStart and inclusive1BasedEnd options', function(done) {
         var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga', 
           features: {
             'feat1': {start: 2, end: 4}
@@ -161,7 +161,7 @@ describe('genbank exporter/parser conversion', function() {
             done();
         });
     });
-    it('gives genbank that is linear when circular is the string "0"', function(done) {
+    it('gives genbank that is linear when sequence.circular="0"', function(done) {
         var exportedGenbankString = jsonToGenbank({
           sequence: 'gagagagagga', 
           circular: "0"
@@ -169,102 +169,56 @@ describe('genbank exporter/parser conversion', function() {
         parseGenbank(exportedGenbankString, function(result) {
             result[0].parsedSequence.circular.should.be.false
             done();
+        })
+    })
+    it('handles reformatSeqName=false option', function(done) {
+        var name = '$%^@#'
+        var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga', 
+          name: name
+        }, {
+          reformatSeqName: false
+        })
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.name.should.equal(name)
+            done();
+        }, {reformatSeqName: false});
+    });
+    it('handles reformatSeqName=true (this is on by default) option', function(done) {
+        var name = '$%^@#'
+        var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga', 
+          name: name
+        }, {
+          reformatSeqName: true
+        })
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.name.should.equal('_____')
+            done();
+        },{reformatSeqName: false});
+    });
+    it('does not reformat a name with parens in it', function(done) {
+        var name = 'aaa(aaa)'
+        var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga', 
+          name: name
+        }, {
+          reformatSeqName: true
+        })
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.name.should.equal(name)
+            done();
+        },{reformatSeqName: false});
+    });
+    it('provides a default name if none is provided', function(done) {
+        var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga', 
+        }, {
+          reformatSeqName: true
+        })
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.name.should.equal('Untitled_Sequence')
+            parseGenbank(jsonToGenbank({sequence: 'gagagagagga'}), function(result) {
+                result[0].parsedSequence.name.should.equal('Untitled_Sequence')
+                done();
+            });
         });
     });
-
-    // it('parses a genbank that is implicitly non-circular as circular because it contains circular features', function(done) {
-    //     var string = fs.readFileSync(path.join(__dirname, './testData/Ecoli_DERA_Implicitly_Circular.gb'), "utf8");
-    //     parseGenbank(string, function(result) {
-    //         result.should.be.an('array');
-    //         result[0].success.should.be.true;
-    //         result[0].parsedSequence.circular.should.equal(true);
-    //         result[0].parsedSequence.features.should.containSubset([{
-    //             name: 'rhaBADp',
-    //             start: 410,
-    //             end: 182,
-    //         }]);
-    //         done();
-    //     });
-    // });
-
-    // it('parses a genbank that is implicitly linear and has no circular featuers as linear', function(done) {
-    //     var string = fs.readFileSync(path.join(__dirname, './testData/Ecoli_DERA_Implicitly_Linear.gb'), "utf8");
-    //     parseGenbank(string, function(result) {
-    //         result.should.be.an('array');
-    //         result[0].success.should.be.true;
-    //         result[0].parsedSequence.circular.should.equal(false);
-    //         done();
-    //     });
-    // });
-
-    // it('parses plasmid with run-on feature note (pBbS0c-RFP.gb) correctly', function(done) {
-    //     var string = fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP.gb'), "utf8");
-    //     parseGenbank(string, function(result) {
-    //         // console.log('JSON.stringify(result,null,4): ' + JSON.stringify(result,null,4));
-    //         result[0].parsedSequence.features.should.include.something.that.deep.equals({
-    //             notes: {
-    //                 note: [
-    //                     "REP_ORIGIN REP_ORIGIN pSC101* aka pMPP6, gives plasmid number 3 -4 copies per cell, BglII site in pSC101* ori has been dele ted by quick change agatcT changed to agatcA giving pSC101* * pSC101* aka pMPP6, gives plasmid number 3-4copies p er cell, BglII site in pSC101* ori has been deleted by quic k change agatcT changed to agatcA giving pSC101** [pBbS0a-RFP]",
-    //                     "pSC101* aka pMPP6, gives plasmid number 3-4 copies per cell, BglII site in pSC101* ori has been deleted by quic k change agatcT changed to agatcA giving pSC101**"
-    //                 ],
-    //                 gene: ["SC101** Ori"],
-    //                 vntifkey: ["33"]
-    //             },
-    //             name: 'pSC101**',
-    //             start: 1073,
-    //             end: 3301,
-    //             type: 'rep_origin',
-    //             strand: -1
-    //         });
-    //         result.should.be.an('array');
-    //         result.should.be.length(1);
-    //         result[0].parsedSequence.features.should.be.length(5);
-    //         result[0].parsedSequence.circular.should.equal(true);
-    //         // console.log('result: ' + JSON.stringify(result,null,4));
-    //         result[0].parsedSequence.size.should.equal(4224);
-    //         done();
-    //     });
-    // });
-    // it('parses pBbE0c-RFP.gb correctly', function(done) {
-    //     var string = fs.readFileSync(path.join(__dirname, './testData/pBbE0c-RFP.gb'), "utf8");
-    //     parseGenbank(string, function(result) {
-    //         result.should.be.an('array');
-    //         result.should.be.length(1);
-    //         result[0].parsedSequence.features.should.be.length(4);
-    //         result[0].parsedSequence.circular.should.equal(true);
-    //         // console.log('result: ' + JSON.stringify(result,null,4));
-    //         result[0].parsedSequence.size.should.equal(2815);
-    //         result[0].parsedSequence.features.should.include.something.that.deep.equals({
-    //             notes: {
-    //                 note: ["GENE [ZFP-GG destination LacUV5 p15A CmR]", "[ZFP-GG destination LacUV5 p15A CmR]"],
-    //                 vntifkey: ["22"],
-    //                 gene: ["CmR"]
-    //             },
-    //             name: 'CmR',
-    //             start: 2010,
-    //             end: 2669,
-    //             type: 'gene',
-    //             strand: -1
-    //         });
-    //         done();
-    //     });
-    // });
-    // it('handles parsing of a multi-seq genbank correctly', function(done) {
-    //     var string = fs.readFileSync(path.join(__dirname, './testData/multi-seq-genbank.gb'), "utf8");
-    //     parseGenbank(string, function(result) {
-    //         result.should.be.an('array');
-    //         result.should.be.length(4);
-    //         result[0].parsedSequence.features.should.be.length(0);
-    //         // console.log('result: ' + JSON.stringify(result,null,4));
-    //         result[0].parsedSequence.size.should.equal(109);
-
-    //         result.forEach(function(innerResult) {
-    //             innerResult.success.should.be.true;
-    //         });
-    //         done();
-    //     });
-    // });
-
-
-
 });
+    

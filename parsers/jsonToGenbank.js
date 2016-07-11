@@ -59,7 +59,7 @@ function cutUpStr(val, start, end) {
 
 module.exports = function(serSeq, options) {
 	options = options || {} 
-	
+	options.reformatSeqName = options.reformatSeqName === false ? false : true
 	
 	if(!serSeq) return false;
 
@@ -73,7 +73,7 @@ module.exports = function(serSeq, options) {
 
 
 	var lines = [];
-	lines.push(createGenbankLocus(serSeq));
+	lines.push(createGenbankLocus(serSeq, options));
 
 	if(serSeq.extraLines){
 		lines = lines.concat(serSeq.extraLines);
@@ -110,14 +110,14 @@ module.exports = function(serSeq, options) {
 	}
 	catch(e)
 	{
-		console.log("Error processing sequence << Check jsonToGenbank.js");
-		console.log(serSeq);
-		console.log(e.stack);
+		console.warn("Error processing sequence << Check jsonToGenbank.js");
+		console.warn(serSeq);
+		console.warn(e.stack);
 		return false;
 	}
 };
 
-function createGenbankLocus (serSeq) {
+function createGenbankLocus (serSeq, options) {
 	if (serSeq.sequence.symbols) {
 		serSeq.sequence = serSeq.sequence.symbols.split('');
 	}
@@ -134,7 +134,9 @@ function createGenbankLocus (serSeq) {
 	var date = getCurrentDateString();
 
 	var line = StringUtil.rpad("LOCUS"," ", 12);
-	line += StringUtil.rpad(nameUtils.reformatName(serSeq.name|| 'Untitled Sequence')," ", 16);
+	var nameToUse = serSeq.name || 'Untitled_Sequence'
+	nameToUse = options.reformatSeqName ?  nameUtils.reformatName(nameToUse) : nameToUse
+	line += StringUtil.rpad(nameToUse," ", 16);
 	line += " "; // T.H line 2778 of GenbankFormat.as col 29 space
 	line += StringUtil.lpad(String(serSeq.sequence.length)," ", 11);
 	line += " bp "; // col 41
@@ -214,8 +216,8 @@ function featureToGenbankString(feat, options) {
                 });
             }
             else {
-                console.log("Warning: Note as object cant be processed");
-                console.log(notes);
+                console.warn("Warning: Note as object cant be processed");
+                console.warn(notes);
             }
         });
     }
