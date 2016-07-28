@@ -8,6 +8,7 @@ var chaiSubset = require('chai-subset');
 chai.use(chaiSubset);
 chai.use(require('chai-things'));
 chai.should();
+
 describe('genbankToJson tests', function() {
     it('handles parsing of a protein genbank correctly, making sure not to have too long of feature names', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/genbank/proteinTestSeq1.gp'), "utf8");
@@ -215,6 +216,14 @@ describe('genbankToJson tests', function() {
                 strand: 1
             });
             result[0].parsedSequence.sequence.length.should.equal(5299);
+            done();
+        });
+    });
+    it('parses a .gb file where the feature name is a number', function(done) {
+        var string = fs.readFileSync(path.join(__dirname, './testData/genbank/featNameIsNumber.gb'), "utf8");
+        genbankToJson(string, function(result) {
+           result.should.be.an('array');
+            result[0].success.should.be.true;
             done();
         });
     });

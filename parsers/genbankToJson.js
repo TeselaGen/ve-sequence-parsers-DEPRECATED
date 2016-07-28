@@ -481,6 +481,10 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
         }
         //shorten the name to a reasonable length if necessary and warn the user about it
         var oldName = feat.name;
+        if (feat.name !== 0 && !feat.name) {
+            feat.name = 'Untitled Feature'
+        }
+        feat.name = typeof feat.name === 'string' ? feat.name : String(feat.name)
         feat.name = feat.name.substr(0,100);
         if (feat.name !== oldName) {
             addMessage('Warning: Shortening name of sequence (max 100 chars)')
