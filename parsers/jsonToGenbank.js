@@ -64,13 +64,14 @@ module.exports = function(serSeq, options) {
 	if(!serSeq) return false;
 
 	try {
-
+	
 	
 
 	var content = null;
-
+	console.log('serSeq.sequence:',serSeq.sequence)
 	var cutUp = (typeof serSeq.sequence === 'string') ? cutUpStr : cutUpArray;
-
+	if (!serSeq.sequence) serSeq.sequence = ''
+	
 
 	var lines = [];
 	lines.push(createGenbankLocus(serSeq, options));
@@ -209,17 +210,29 @@ function featureToGenbankString(feat, options) {
 
 	var notes = feat.notes;
     if (notes) {
-        Object.keys(notes).forEach(function(key) {
-            if (notes[key] instanceof Array) {
-                notes[key].forEach(function(value) {
-                    lines.push(featureNoteInDataToGenbankString(key, value));
-                });
-            }
-            else {
-                console.warn("Warning: Note as object cant be processed");
-                console.warn(notes);
-            }
-        });
+		try {
+			if (typeof notes === 'string') {
+				try {
+					notes = JSON.parse(notes)
+				} catch (e) {
+					console.warn("Warning: Note incorrectly sent as a string.");
+					notes = {} //set the notes to a blank object
+				}
+			}
+			Object.keys(notes).forEach(function(key) {
+				if (notes[key] instanceof Array) {
+					notes[key].forEach(function(value) {
+						lines.push(featureNoteInDataToGenbankString(key, value));
+					});
+				}
+				else {
+					console.warn("Warning: Note object expected array values");
+					console.warn(notes);
+				}
+			});
+		} catch(e) {
+			console.warn("Warning: Note cannot be processed");
+		}
     }
 
 	return lines.join('\r\n');

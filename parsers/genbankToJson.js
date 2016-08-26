@@ -143,6 +143,7 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
     }
     catch (e) {
         //catch any errors and set the result
+        console.error('Error trying to parse file as .gb:',e)
         result = {
             success: false,
             messages: ['Import Error: Invalid File']

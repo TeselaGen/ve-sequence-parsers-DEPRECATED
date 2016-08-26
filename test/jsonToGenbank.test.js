@@ -8,6 +8,16 @@ chai.use(chaiSubset);
 chai.use(require('chai-things'));
 chai.should();
 describe('genbank exporter/parser conversion', function() {
+    it('should parse notes that come in as a JSON stringified object correctly', function() {
+        // var breakingJSON = require('./testData/json/breakingJSON_stringified')
+        var breakingJSON = require('./testData/json/1.json')
+        var string = jsonToGenbank(breakingJSON)
+        parseGenbank(string,function (result) {
+            console.log('result[0]:',result[0].parsedSequence.features)
+            result[0].parsedSequence.features[0].notes.should.to.not.be.null
+        })
+    })
+    
     it('can interconvert between our parser and our exporter with a malformed genbank', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/breakingGenbank.gb'), "utf8");
         parseGenbank(string, function(result) {
