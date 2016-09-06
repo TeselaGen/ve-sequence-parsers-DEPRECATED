@@ -193,18 +193,18 @@ describe('genbank exporter/parser conversion', function() {
             done();
         }, {reformatSeqName: false});
     });
-    it('handles reformatSeqName=true (this is on by default) option', function(done) {
-        var name = '$%^@#'
-        var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga', 
-          name: name
-        }, {
-          reformatSeqName: true
-        })
-        parseGenbank(exportedGenbankString, function(result) {
-            result[0].parsedSequence.name.should.equal('_____')
-            done();
-        },{reformatSeqName: false});
-    });
+    // it('handles reformatSeqName=true (this is on by default) option', function(done) {
+    //     var name = '$%^@#'
+    //     var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga', 
+    //       name: name
+    //     }, {
+    //       reformatSeqName: true
+    //     })
+    //     parseGenbank(exportedGenbankString, function(result) {
+    //         result[0].parsedSequence.name.should.equal('_____')
+    //         done();
+    //     },{reformatSeqName: false});
+    // });
     it('does not reformat a name with parens in it', function(done) {
         var name = 'aaa(aaa)'
         var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga', 
