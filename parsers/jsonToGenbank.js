@@ -68,7 +68,6 @@ module.exports = function(serSeq, options) {
 	
 
 	var content = null;
-	console.log('serSeq.sequence:',serSeq.sequence)
 	var cutUp = (typeof serSeq.sequence === 'string') ? cutUpStr : cutUpArray;
 	if (!serSeq.sequence) serSeq.sequence = ''
 	
