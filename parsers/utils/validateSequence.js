@@ -15,7 +15,7 @@ var filterSequenceString = require('ve-sequence-utils/filterSequenceString');
 module.exports = function validateSequence(sequence, options) {
     options = options || {}
     var isProtein = options.isProtein || false;
-    var reformatSeqName = options.reformatSeqName === false ? false : true;
+    var reformatSeqName = options.reformatSeqName;
 
     var response = {
         validatedAndCleanedSequence: {},
