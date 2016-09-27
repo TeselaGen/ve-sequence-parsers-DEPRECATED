@@ -80,7 +80,8 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
     }
 
     function parseTitle(line) {
-        result.parsedSequence.name = NameUtils.reformatName(line.slice(1));
+        result.parsedSequence.name = line.slice(1);
+        if(!options.isProtein) { result.parsedSequence.name = NameUtils.reformatName(result.parsedSequence.name); } // Only replace space for _ to sequences, not proteins related to #2742
     }
 
     function parseSequenceLine(line) {
