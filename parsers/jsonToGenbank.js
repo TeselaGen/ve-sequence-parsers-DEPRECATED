@@ -78,6 +78,14 @@ module.exports = function(serSeq, options) {
 	if(serSeq.extraLines){
 		lines = lines.concat(serSeq.extraLines);
 	}
+	if(serSeq.comments){
+		serSeq.comments.forEach(function (comment) {
+            lines.push("COMMENT             " + comment);              
+		})
+	}
+	if(serSeq.teselagen_unique_id){
+        lines.push("COMMENT             teselagen_unique_id: " + serSeq.teselagen_unique_id);              
+	}
 	var printedFeatureHeader
 	each(serSeq.features, function (feat, index) {
 		if (!printedFeatureHeader) {

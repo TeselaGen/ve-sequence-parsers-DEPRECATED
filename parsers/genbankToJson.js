@@ -109,9 +109,22 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
                     endSeq();
                     break;
                 case "COMMENT":
-                    // do nothing
-                    // console.warn("GenbankManager.lineParser(: This line contains a 'COMMENT' and has been ignored: " + line);
-                    extractExtraLine(line);
+                    line = line.replace(/COMMENT/,'')
+                    line = line.trim()
+                    if (result.parsedSequence) {
+                        if (!result.parsedSequence.comments) {
+                            result.parsedSequence.comments = [];
+                        }
+                        if (line.indexOf('teselagen_unique_id:') > -1) {
+                            //capture the special comment
+                            result.parsedSequence.teselagen_unique_id = line.replace(/ /g,'').replace('teselagen_unique_id:','')
+                        } else {
+                            result.parsedSequence.comments.push(line);
+                        }
+                    }
+                    else {
+                        throw ('no sequence yet created upon which to extract an extra line!');
+                    }
                     break;
                 default: // FOLLOWING FOR KEYWORDS NOT PREVIOUSLY DEFINED IN CASES
                     extractExtraLine(line);

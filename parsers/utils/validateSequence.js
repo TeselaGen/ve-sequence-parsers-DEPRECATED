@@ -32,6 +32,9 @@ module.exports = function validateSequence(sequence, options) {
     if (!sequence.extraLines) {
         sequence.extraLines = [];
     }
+    if (!sequence.comments) {
+        sequence.comments = [];
+    }
     var oldName = sequence.name;
     if (reformatSeqName) {
       sequence.name = NameUtils.reformatName(sequence.name)

@@ -13,7 +13,6 @@ describe('genbank exporter/parser conversion', function() {
         var breakingJSON = require('./testData/json/1.json')
         var string = jsonToGenbank(breakingJSON)
         parseGenbank(string,function (result) {
-            console.log('result[0]:',result[0].parsedSequence.features)
             result[0].parsedSequence.features[0].notes.should.to.not.be.null
         })
     })
@@ -228,6 +227,28 @@ describe('genbank exporter/parser conversion', function() {
                 result[0].parsedSequence.name.should.equal('Untitled_Sequence')
                 done();
             });
+        });
+    });
+    it('adds a comment with the words teselagen_unique_id: XXXX if given a .teselagen_unique_id property', function(done) {
+        var exportedGenbankString = jsonToGenbank({
+            sequence: 'gagagagagga', 
+            teselagen_unique_id: 'gaslgawlgiubawg;12312asdf', 
+        })
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.teselagen_unique_id.should.equal('gaslgawlgiubawg;12312asdf')
+            done()
+        });
+    });
+    it('handles comments parsing and formatting', function(done) {
+        var exportedGenbankString = jsonToGenbank({
+            sequence: 'gagagagagga', 
+            comments: ['gaslgawlgiubawg;12312asdf', 'I am alive!'], 
+        })
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.comments.length.should.equal(2)
+            result[0].parsedSequence.comments[0].should.equal('gaslgawlgiubawg;12312asdf')
+            result[0].parsedSequence.comments[1].should.equal('I am alive!')
+            done()
         });
     });
 });

@@ -42,6 +42,7 @@ describe('FASTA tests', function() {
                     extraLines: [],
                     size: 4,
                     circular: false,
+                    comments: [],
                     type: 'DNA'
                 },
                 success: true,
@@ -55,6 +56,7 @@ describe('FASTA tests', function() {
                     circular: false,
                     extraLines: [],
                     features: [],
+                    comments: [],
                     type: 'DNA'
                 },
                 success: true,
@@ -68,6 +70,7 @@ describe('FASTA tests', function() {
                     extraLines: [],
                     circular: false,
                     features: [],
+                    comments: [],
                     type: 'DNA'
                 },
                 success: true,
