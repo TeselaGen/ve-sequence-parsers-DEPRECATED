@@ -1,4 +1,5 @@
-##Bio Parsers
+#Bio Parsers
+##About this Repo
 This repo contains a set of parsers to convert between datatypes through a generalized JSON format.
 
 Use the following files to convert to a generalized JSON format:
@@ -137,10 +138,20 @@ genbankToJson(string, function(result) {
 You can see more examples by looking at the tests.
 
 
-##Contributing:
-First make an issue
 
-Then make a PR
+##Editing This Repo:
+###All collaborators: 
+Edit/create a new file and update/add any relevant tests.
+Make sure they pass by running `npm test`
 
-  Make sure it doesn't break anything: `npm test`
-  And update the Changelog.md
+##Updating this repo: 
+###Teselagen collaborators: 
+Sign into npm using the teselagen npm account
+
+```
+npm version patch|minor|major
+npm publish
+```
+
+###Outside collaborators: 
+fork and pull request please :)
