@@ -251,7 +251,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
         }
         result.parsedSequence.name = locusName;
         if (locusName === 'Exported') {
-            result.parsedSequence.name = options.fileName || locusName;
+            result.parsedSequence.name = (options.fileName && options.fileName.replace(/\.[^/.]+$/, "")) || locusName;
         }
         result.parsedSequence.date = date;
         result.parsedSequence.circular = !linear;

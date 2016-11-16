@@ -234,7 +234,7 @@ describe('genbankToJson tests', function() {
             result[0].success.should.be.true;
             result[0].parsedSequence.name.should.equal('CCR5_multifrag_insert1')
             done();
-        }, {fileName: 'CCR5_multifrag_insert1'});
+        }, {fileName: 'CCR5_multifrag_insert1.gb'});
     });
 
 });
