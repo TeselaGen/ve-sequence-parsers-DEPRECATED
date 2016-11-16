@@ -45,6 +45,7 @@
     "sbol",
     "json",
     "jbei",
+    "biojs",
     "teselagen"
   ],
   "bugs": {

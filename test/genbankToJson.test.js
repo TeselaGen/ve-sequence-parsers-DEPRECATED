@@ -227,6 +227,15 @@ describe('genbankToJson tests', function() {
             done();
         });
     });
+    it('takes in a snapgene exported sequence and sets its name correctly (instead of "Export" it will use the filename)', function(done) {
+        var string = fs.readFileSync(path.join(__dirname, './testData/genbank/CCR5_multifrag_insert1.gb'), "utf8");
+        genbankToJson(string, function(result) {
+            result.should.be.an('array');
+            result[0].success.should.be.true;
+            result[0].parsedSequence.name.should.equal('CCR5_multifrag_insert1')
+            done();
+        }, {fileName: 'CCR5_multifrag_insert1'});
+    });
 
 });
 // var string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");

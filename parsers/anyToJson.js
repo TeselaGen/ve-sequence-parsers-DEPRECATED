@@ -7,7 +7,6 @@ var extractFileExtension = require('./utils/extractFileExtension.js');
  * takes in file content string and its file name and determines what parser it needs to be sent to.
  * The file is parsed to our old JSON schema and after it goes through an intermediate step where we convert that json to our new schema
  * @param  {string} fileContentString content of the file as a string
- * @param  {string} fileName          file name including extension
  * @param  {callback} onFileParsed    //tnr: fill this out
  */
 module.exports = function anyToJson(fileContentString, onFileParsed, options) {

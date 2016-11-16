@@ -3,7 +3,7 @@ var validateSequenceArray = require('./utils/validateSequenceArray');
 // var some = require('lodash/collection/some');
 var splitStringIntoLines = require('./utils/splitStringIntoLines.js');
 
-function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped, options) {
+function genbankToJson(string, onFileParsedUnwrapped, options) {
     var onFileParsed = function(sequences, options) { //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
         onFileParsedUnwrapped(validateSequenceArray(flattenSequenceArray(sequences), options));
     };
@@ -250,6 +250,9 @@ function parseGenbankFileToOurOldTeselagenDataType(string, onFileParsedUnwrapped
             // }
         }
         result.parsedSequence.name = locusName;
+        if (locusName === 'Exported') {
+            result.parsedSequence.name = options.fileName || locusName;
+        }
         result.parsedSequence.date = date;
         result.parsedSequence.circular = !linear;
     }
@@ -554,4 +557,4 @@ function getLengthOfWhiteSpaceBeforeStartOfLetters(string) {
     }
 }
 
-module.exports = parseGenbankFileToOurOldTeselagenDataType;
+module.exports = genbankToJson;
