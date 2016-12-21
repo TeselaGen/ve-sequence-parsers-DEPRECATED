@@ -1,3 +1,4 @@
+var createInitialSequence = require('./utils/createInitialSequence');
 var NameUtils = require('./utils/NameUtils.js');
 var splitStringIntoLines = require('./utils/splitStringIntoLines.js');
 var validateSequenceArray = require('./utils/validateSequenceArray');
@@ -7,8 +8,10 @@ var validateSequenceArray = require('./utils/validateSequenceArray');
  * @param  {[function]} onFileParsed [callback for a parsed sequence]
  * @author Joshua P Nixon
  */
+
+
 module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options) {
-    onFileParsed = function(sequences) { //before we call the onFileParsed callback, we want to validate it
+    var onFileParsed = function(sequences) { //before we call the onFileParsed callback, we want to validate it
         onFileParsedUnwrapped(validateSequenceArray(sequences, options));
     };
     var resultArray = [];
@@ -26,7 +29,8 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
         }
     }
     catch (e) {
-        console.warn('e.trace: ', e.trace);
+        console.error('error:', e)
+        console.error('error.stack: ', e.stack);
         resultArray = [{
             success: false,
             messages: ['Import Error: Invalid File']
@@ -40,7 +44,7 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
             if (result) {
                 return;
             }
-            newSeq();
+            result = createInitialSequence(options);
             parseTitle(line);
         }
         else if (">" === line[0]) { //header line
@@ -48,12 +52,12 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
                 resultArray.push(result);
                 result = null;
             }
-            newSeq();
+            result = createInitialSequence(options);
             parseTitle(line);
         }
         else { //sequence line
             if (!result) {
-                newSeq();
+                result = createInitialSequence(options);
             }
             if ("*" === line[line.length - 1]) { //some resultArray are ended with an asterisk
                 parseSequenceLine(line.substring(0, line.length - 1));
@@ -66,19 +70,6 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
         }
     }
 
-
-    function newSeq() {
-        result = {
-            parsedSequence: {
-                sequence: "",
-                features: [],
-                name: null
-            },
-            success: true,
-            messages: []
-        };
-    }
-
     function parseTitle(line) {
         result.parsedSequence.name = line.slice(1);
     }
@@ -88,7 +79,8 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
         // that the sequence can be interspersed with numbers and/or spaces and - dashes for gaps.
         if (line.match(/[\s0-9-]/)) {
             line = line.replace(/[\s[0-9-]/g, "");
-            result.messages.push("Warning: spaces, numbers and/or dashes were removed from sequence");
+            var msg = "Warning: spaces, numbers and/or dashes were removed from sequence"
+            result.messages.indexOf(msg === -1) && result.messages.push(msg);
         }
         result.parsedSequence.sequence += line;
     }

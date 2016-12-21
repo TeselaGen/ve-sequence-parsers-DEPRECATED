@@ -9,7 +9,13 @@ var chai = require('chai');
 chai.use(require('chai-things'));
 chai.should();
 
-describe('anyToJson', function(argument) {
+describe('anyToJson', function() {
+    it('parses a .gb file without a name and uses the file name', function(done) {
+        anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.gb'), "utf8"), function(result) {
+            result[0].parsedSequence.name.should.equal('pBbS0c-RFP_no_name')
+            done();
+        }, {fileName: 'pBbS0c-RFP_no_name', isProtein: false});    
+    });
     it('parses the pBbE0c-RFP plasmid represented in various filetypes to the same end result', function(done) {
         var options = {
             fastaFilePath: "pBbE0c-RFP.fasta",

@@ -41,7 +41,8 @@ module.exports = function sbolXmlToJson(string, onFileParsedUnwrapped, options) 
                     };
                     response.parsedSequence = parseSbolJson(sbolJsonMatches[0].value[i], options);
                 } catch (e) {
-                    console.warn('e.trace', e.trace);
+                    console.error('error:', e)
+                    console.error('error.stack: ', e.stack);
                     resultArray.push({
                         success: false,
                         messages: ('Error while parsing Sbol format')

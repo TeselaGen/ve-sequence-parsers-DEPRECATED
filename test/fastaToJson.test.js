@@ -24,6 +24,7 @@ describe('FASTA tests', function() {
     });
     it('tests a basic fasta file', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/fasta/example.fas'), "utf8");
+        debugger
         fastaToJson(string, function(result) {
             result[0].parsedSequence.name.should.equal('ssrA_tag_enhance');
             result[0].parsedSequence.sequence.should.equal('GTAAGT');

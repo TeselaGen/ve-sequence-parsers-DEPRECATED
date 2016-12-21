@@ -144,6 +144,11 @@ You can see more examples by looking at the tests.
 Edit/create a new file and update/add any relevant tests.
 Make sure they pass by running `npm test`
 
+##Debug:
+```
+mocha ./test --inspect --debug-brk
+```
+
 ##Updating this repo: 
 ###Teselagen collaborators: 
 Sign into npm using the teselagen npm account

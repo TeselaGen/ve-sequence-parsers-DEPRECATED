@@ -2,6 +2,7 @@ var flattenSequenceArray = require('./utils/flattenSequenceArray');
 var validateSequenceArray = require('./utils/validateSequenceArray');
 // var some = require('lodash/collection/some');
 var splitStringIntoLines = require('./utils/splitStringIntoLines.js');
+var createInitialSequence = require('./utils/createInitialSequence');
 
 function genbankToJson(string, onFileParsedUnwrapped, options) {
     var onFileParsed = function(sequences, options) { //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
@@ -12,7 +13,16 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     var inclusive1BasedEnd = options.inclusive1BasedEnd
     
     var resultsArray = [];
-    var result;
+    var result = {
+            messages: [],
+            success: true,
+            parsedSequence: {
+                features: [],
+                name: '',
+                // inData: {},
+                sequence: ''
+            }
+        };
     var currentFeatureNote;
 
     var genbankAnnotationKey = {
@@ -173,18 +183,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     //call the callback
     onFileParsed(resultsArray, options);
 
-    function newSeq() {
-        result = {
-            messages: [],
-            success: true,
-            parsedSequence: {
-                features: [],
-                name: '',
-                // inData: {},
-                sequence: ''
-            }
-        };
-    }
+    
 
     function endSeq() {
         //do some post processing clean-up
@@ -198,7 +197,9 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     }
 
     function addMessage(msg) {
-        return result.messages.push(msg);
+        if (result.messages.indexOf(msg === -1)) {
+            return result.messages.push(msg);
+        }
     }
 
     function postProcessCurSeq() {
@@ -217,7 +218,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     }
 
     function parseLocus(line) {
-        newSeq();
+        result = createInitialSequence(options)
         var locusName
         var linear
         var date
