@@ -1,3 +1,4 @@
+var constants = require('./utils/constants');
 var flattenSequenceArray = require('./utils/flattenSequenceArray');
 var validateSequenceArray = require('./utils/validateSequenceArray');
 // var some = require('lodash/collection/some');
@@ -250,9 +251,10 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
             //     div = lineArr[j];
             // }
         }
-        result.parsedSequence.name = locusName;
-        if (locusName === 'Exported') {
-            result.parsedSequence.name = (options.fileName && options.fileName.replace(/\.[^/.]+$/, "")) || locusName;
+
+        //don't use "exported as a file name unless it is out last option"
+        if (locusName !== 'Exported' || result.parsedSequence.name === constants.untitledSequenceName) { 
+            result.parsedSequence.name = locusName;
         }
         result.parsedSequence.date = date;
         result.parsedSequence.circular = !linear;

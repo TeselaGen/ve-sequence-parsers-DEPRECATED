@@ -10,11 +10,24 @@ chai.use(require('chai-things'));
 chai.should();
 
 describe('anyToJson', function() {
-    it('parses a .gb file without a name and uses the file name', function(done) {
-        anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.gb'), "utf8"), function(result) {
+    it('parses a .fasta file without a name and use the file name', function(done) {
+        console.log('one')
+        anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.fasta'), "utf8"), function(result) {
+            console.log('two')
+            console.log('result[0].parsedSequence.name:', result[0].parsedSequence.name)
             result[0].parsedSequence.name.should.equal('pBbS0c-RFP_no_name')
             done();
-        }, {fileName: 'pBbS0c-RFP_no_name', isProtein: false});    
+        }, {fileName: 'pBbS0c-RFP_no_name.fasta', isProtein: false});    
+    });
+    it('should call the success callback for an ambiguously named file only once', function(done) {
+        var times = 0
+        anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.gb'), "utf8"), function(result) {
+            times++
+        }, {fileName: 'pBbS0c-RFP', isProtein: false});    
+        setTimeout(function () {
+            times.should.equal(1)
+            done();
+        })
     });
     it('parses the pBbE0c-RFP plasmid represented in various filetypes to the same end result', function(done) {
         var options = {
