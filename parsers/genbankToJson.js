@@ -14,16 +14,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     var inclusive1BasedEnd = options.inclusive1BasedEnd
     
     var resultsArray = [];
-    var result = {
-            messages: [],
-            success: true,
-            parsedSequence: {
-                features: [],
-                name: '',
-                // inData: {},
-                sequence: ''
-            }
-        };
+    var result
     var currentFeatureNote;
 
     var genbankAnnotationKey = {
@@ -52,12 +43,13 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
     try {
         var lines = splitStringIntoLines(string);
-        var LASTTYPE = false;
+        var LINETYPE = false;
         var featureLocationIndentation;
 
         if (lines === null) {
             addMessage("Import Error: Sequence file is empty");
         }
+        var hasFoundLocus = false;
 
         lines.some(function(line) {
             if (line === null) {
@@ -69,24 +61,24 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
             var isSubKey = isSubKeyword(line);
             var isKey = isKeyword(line);
 
-            //only set a new lasttype in the case that we've encountered a key that warrants it. 
+            //only set a new LINETYPE in the case that we've encountered a key that warrants it. 
             if (key === "LOCUS") {
-                LASTTYPE = key;
+                LINETYPE = key;
             }
             else if (key === "REFERENCE") {
-                LASTTYPE = key;
+                LINETYPE = key;
             }
             else if (key === "FEATURES") {
-                LASTTYPE = key;
+                LINETYPE = key;
             }
             else if (key === "ORIGIN") {
-                LASTTYPE = key;
+                LINETYPE = key;
             }
             else if (key === "//") {
-                LASTTYPE = key;
+                LINETYPE = key;
             }
             else if (isKey === true) {
-                LASTTYPE = key;
+                LINETYPE = key;
             }
 
             // IGNORE LINES: DO NOT EVEN PROCESS
@@ -98,9 +90,14 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
                 return false; // go to next line
             }
 
+            if (!hasFoundLocus && LINETYPE !== genbankAnnotationKey.LOCUS_TAG) {
+                // 'Genbank files must start with a LOCUS tag so this must not be a genbank'
+                return true; //break the some loop
+            }
 
-            switch (LASTTYPE) {
+            switch (LINETYPE) {
                 case genbankAnnotationKey.LOCUS_TAG:
+                    hasFoundLocus = true;
                     parseLocus(line, key, val);
                     break;
                 case genbankAnnotationKey.FEATURES_TAG:

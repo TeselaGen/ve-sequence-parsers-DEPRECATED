@@ -10,11 +10,28 @@ chai.use(require('chai-things'));
 chai.should();
 
 describe('anyToJson', function() {
+    it('parses a simple .txt file as fasta', function(done) {
+        anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.txt'), "utf8"), function(result) {
+            result[0].parsedSequence.sequence.length.should.equal(4224)
+            result[0].parsedSequence.name.should.equal('pBbS0c-RFP_no_name')
+            done();
+        }, {fileName: 'pBbS0c-RFP_no_name.txt', isProtein: false});    
+    });
     it('parses a .fasta file without a name and use the file name', function(done) {
         anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.fasta'), "utf8"), function(result) {
             result[0].parsedSequence.name.should.equal('pBbS0c-RFP_no_name')
             done();
         }, {fileName: 'pBbS0c-RFP_no_name.fasta', isProtein: false});    
+    });
+    it('should call the success callback for a .txt file only once', function(done) {
+        var times = 0
+        anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.txt'), "utf8"), function() {
+            times++
+        }, {fileName: 'pBbS0c-RFP_no_name.txt'});    
+        setTimeout(function () {
+            times.should.equal(1)
+            done();
+        })
     });
     it('should call the success callback for an ambiguously named file only once', function(done) {
         var times = 0
