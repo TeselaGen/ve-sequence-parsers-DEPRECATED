@@ -151,7 +151,8 @@ mocha ./test --inspect --debug-brk
 
 ##Updating this repo: 
 ###Teselagen collaborators: 
-Sign into npm using the teselagen npm account
+Commit and push all changes
+Sign into npm using the teselagen npm account (npm whoami)
 
 ```
 npm version patch|minor|major
