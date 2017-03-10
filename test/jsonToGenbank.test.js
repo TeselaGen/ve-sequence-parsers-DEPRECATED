@@ -239,6 +239,16 @@ describe('genbank exporter/parser conversion', function() {
             done()
         });
     });
+    it('adds a comment for the library field if the sequence has one', function(done) {
+        var exportedGenbankString = jsonToGenbank({
+            sequence: 'gagagagagga', 
+            library: 'libraryField', 
+        })
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.library.should.equal('libraryField')
+            done()
+        });
+    });
     it('handles comments parsing and formatting', function(done) {
         var exportedGenbankString = jsonToGenbank({
             sequence: 'gagagagagga', 

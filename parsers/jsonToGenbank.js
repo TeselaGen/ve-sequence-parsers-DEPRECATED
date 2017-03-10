@@ -86,6 +86,9 @@ module.exports = function(serSeq, options) {
 	if(serSeq.teselagen_unique_id){
         lines.push("COMMENT             teselagen_unique_id: " + serSeq.teselagen_unique_id);              
 	}
+	if(serSeq.library){
+        lines.push("COMMENT             library: " + serSeq.library);              
+	}
 	var printedFeatureHeader
 	each(serSeq.features, function (feat, index) {
 		if (!printedFeatureHeader) {
