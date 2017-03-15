@@ -7,7 +7,7 @@ var NameUtils = {
 	 * @returns {String} New name.
 	 */
 	reformatName: function(pName) {
-		return pName.toString().replace(" ", "_");
+		return pName.toString().replace(/ /g, '_');
 	},
 };
 module.exports = NameUtils;
