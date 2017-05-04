@@ -125,9 +125,11 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
                         }
                         if (line.indexOf('teselagen_unique_id:') > -1) {
                             //capture the special comment
-                            result.parsedSequence.teselagen_unique_id = line.replace(/ /g,'').replace('teselagen_unique_id:','')
+                            result.parsedSequence.teselagen_unique_id = line.replace(/ /g, '').replace('teselagen_unique_id:','')
                         } else if (line.indexOf('library:') > -1) {
-                            result.parsedSequence.library = line.replace(/ /g,'').replace('library:','')
+                            result.parsedSequence.library = line.replace(/ /g, '').replace('library:','')
+                        } else if (line.indexOf('description:') > -1) {
+                            result.parsedSequence.description = line.trim().replace('description: ','')
                         } else {
                             result.parsedSequence.comments.push(line);
                         }

@@ -249,6 +249,16 @@ describe('genbank exporter/parser conversion', function() {
             done()
         });
     });
+    it('adds a comment for the description if the sequence has one', function(done) {
+        var exportedGenbankString = jsonToGenbank({
+            sequence: 'gagagagagga', 
+            description: 'my sequence description', 
+        })
+        parseGenbank(exportedGenbankString, function(result) {
+            result[0].parsedSequence.description.should.equal('my sequence description')
+            done()
+        });
+    });
     it('handles comments parsing and formatting', function(done) {
         var exportedGenbankString = jsonToGenbank({
             sequence: 'gagagagagga', 

@@ -83,11 +83,14 @@ module.exports = function(serSeq, options) {
             lines.push("COMMENT             " + comment);              
 		})
 	}
-	if(serSeq.teselagen_unique_id){
+	if(serSeq.teselagen_unique_id) {
         lines.push("COMMENT             teselagen_unique_id: " + serSeq.teselagen_unique_id);              
 	}
-	if(serSeq.library){
+	if(serSeq.library) {
         lines.push("COMMENT             library: " + serSeq.library);              
+	}
+	if(serSeq.description) {
+        lines.push("COMMENT             description: " + serSeq.description);              
 	}
 	var printedFeatureHeader
 	each(serSeq.features, function (feat, index) {
