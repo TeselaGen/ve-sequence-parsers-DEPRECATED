@@ -71,7 +71,13 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
     }
 
     function parseTitle(line) {
-        result.parsedSequence.name = line.slice(1);
+        var pipeIndex = line.indexOf('|');
+        if (pipeIndex > -1) {
+            result.parsedSequence.name = line.slice(1, pipeIndex);
+            result.parsedSequence.description = line.slice(pipeIndex + 1);
+        } else {
+            result.parsedSequence.name = line.slice(1);
+        }
     }
 
     function parseSequenceLine(line) {
