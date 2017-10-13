@@ -35,6 +35,7 @@ module.exports = [
   "modified_base",
   "mRNA",
   "N_region",
+  "old_sequence",
   "operator",
   "operon",
   "oriT",
@@ -72,6 +73,6 @@ module.exports = [
   "transit_peptide",
   "transposon",
   "tRNA",
-  "V_region ",
+  "V_region",
   "variation"
 ];
