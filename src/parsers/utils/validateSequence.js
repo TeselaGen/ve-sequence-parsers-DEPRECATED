@@ -1,8 +1,7 @@
 var areNonNegativeIntegers = require('validate.io-nonnegative-integer-array');
 var FeatureTypes = require('./GenbankFeatureTypes.js');
 var NameUtils = require('./NameUtils.js');
-var filterAminoAcidSequenceString = require('ve-sequence-utils/filterAminoAcidSequenceString');
-var filterSequenceString = require('ve-sequence-utils/filterSequenceString');
+var {filterAminoAcidSequenceString, filterSequenceString} = require('ve-sequence-utils');
 //validation checking
 /**
  * validation and sanitizing of our teselagen sequence data type

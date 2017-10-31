@@ -1,12 +1,15 @@
 {
   "name": "bio-parsers",
   "version": "4.2.1",
-  "description": "A library of parsers for interconverting between genbank, fasta, and (eventually) sbol through Teselagen's intermediary json format",
+  "description":
+    "A library of parsers for interconverting between genbank, fasta, and (eventually) sbol through Teselagen's intermediary json format",
   "main": "parsers/index.js",
   "scripts": {
+    "build": "nwb build-react-component --copy-files --no-demo",
+    "prepublish": "in-publish && yarn build || not-in-publish",
     "precommit": "npm test",
     "prepush": "npm test",
-    "test": "mocha ./test"
+    "test": "mocha ./src/test"
   },
   "author": "teselagen",
   "license": "MIT",
@@ -15,16 +18,32 @@
     "chai": "^3.4.1",
     "chai-subset": "^1.1.0",
     "chai-things": "^0.2.0",
+    "eslint-config-teselagen": "^4.0.8",
     "husky": "^0.11.4",
+    "in-publish": "^2.0.0",
+    "install-peerdeps": "^1.2.0",
     "mocha": "^2.3.4",
-    "tap": "^2.3.0"
+    "ve-sequence-utils": "^3.2.0",
+    "nwb": "^0.19.0",
+    "tap": "^2.3.0",
+    "babel-eslint": "7.2.3",
+    "eslint": "^4.8.0",
+    "eslint-config-react-app": "^2.0.1",
+    "eslint-plugin-flowtype": "2.33.0",
+    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-jsx-a11y": "5.0.1",
+    "eslint-plugin-react": "7.0.1"
+  },
+  "peerDependencies": {
+    "ve-sequence-utils": "^3.2.0"
   },
   "dependencies": {
     "flatmap": "0.0.3",
+    "lint-staged": "^4.0.4",
     "lodash": "^4.13.1",
+    "prettier": "^1.6.1",
     "safe-access": "^0.1.0",
     "validate.io-nonnegative-integer-array": "^1.0.1",
-    "ve-sequence-utils": "*",
     "waldojs": "^0.1.9",
     "xml2js": "^0.4.15"
   },

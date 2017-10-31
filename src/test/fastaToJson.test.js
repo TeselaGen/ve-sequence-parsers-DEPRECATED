@@ -15,7 +15,8 @@ describe('FASTA tests', function() {
     it('import protein fasta file without replacing spaces to underscore in name', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/fasta/proteinFasta.fas'), "utf8");
         fastaToJson(string, function(result) {
-            result[0].parsedSequence.name.should.equal('gi|359950697|gb|AEV91138.1| Rfp (plasmid) [synthetic construct]');
+            result[0].parsedSequence.name.should.equal('gi');
+            result[0].parsedSequence.description.should.equal('359950697|gb|AEV91138.1| Rfp (plasmid) [synthetic construct]');
             result[0].parsedSequence.sequence.should.equal('MRSSKNVIKEFMRFKVRMEGTVNGHEFEIEGEGEGRPYEGHNTVKLKVTKGGPLPFAWDILSPQFQYGSKVYVKHPADIPDYKKLSFPEGFKWERVMNFEDGGVVTVTQDSSLQDGCFIYKVKFIGVNFPSDGPVMQKKTMGWEASTERLYPRDGVLKGEIHKALKLKDGGHYLVEFKSIYMAKKPVQLPGYYYVDSKLDITSHNEDYTIVEQYERTEGRHHLFL');
             done();
         },{
