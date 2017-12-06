@@ -14,24 +14,24 @@
   "license": "MIT",
   "devDependencies": {
     "async": "^1.5.0",
+    "babel-eslint": "7.2.3",
     "chai": "^3.4.1",
     "chai-subset": "^1.1.0",
     "chai-things": "^0.2.0",
+    "eslint": "^4.8.0",
+    "eslint-config-react-app": "^2.0.1",
     "eslint-config-teselagen": "^4.0.8",
+    "eslint-plugin-flowtype": "2.33.0",
+    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-jsx-a11y": "5.0.1",
+    "eslint-plugin-react": "7.0.1",
     "husky": "^0.11.4",
     "in-publish": "^2.0.0",
     "install-peerdeps": "^1.2.0",
     "mocha": "^2.3.4",
-    "ve-sequence-utils": "^3.2.0",
     "nwb": "^0.19.0",
     "tap": "^2.3.0",
-    "babel-eslint": "7.2.3",
-    "eslint": "^4.8.0",
-    "eslint-config-react-app": "^2.0.1",
-    "eslint-plugin-flowtype": "2.33.0",
-    "eslint-plugin-import": "2.2.0",
-    "eslint-plugin-jsx-a11y": "5.0.1",
-    "eslint-plugin-react": "7.0.1"
+    "ve-sequence-utils": "^3.2.5"
   },
   "peerDependencies": {
     "ve-sequence-utils": "^3.2.0"
