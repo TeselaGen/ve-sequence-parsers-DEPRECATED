@@ -3,5 +3,6 @@ module.exports = {
   fastaToJson: require('./fastaToJson'),
   genbankToJson: require('./genbankToJson'),
   sbolXmlToJson: require('./sbolXmlToJson'),
-  jsonToGenbank: require('./jsonToGenbank')
+  jsonToGenbank: require('./jsonToGenbank'),
+  jsonToFasta: require('./jsonToFasta')
 };

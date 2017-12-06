@@ -1,8 +1,24 @@
-#Bio Parsers
-##About this Repo
+# Bio Parsers
+<!-- TOC -->
+
+- [Bio Parsers](#bio-parsers)
+  - [About this Repo](#about-this-repo)
+  - [Exported Functions](#exported-functions)
+  - [Format Specification](#format-specification)
+  - [Useage](#useage)
+  - [Editing This Repo](#editing-this-repo)
+    - [All collaborators:](#all-collaborators)
+  - [Debug](#debug)
+  - [Updating this repo](#updating-this-repo)
+    - [Teselagen collaborators](#teselagen-collaborators)
+    - [Outside collaborators](#outside-collaborators)
+
+<!-- /TOC -->
+## About this Repo
 This repo contains a set of parsers to convert between datatypes through a generalized JSON format.
 
-Use the following files to convert to a generalized JSON format:
+## Exported Functions
+Use the following exports to convert to a generalized JSON format:
 ```
 fastaToJson
 genbankToJson
@@ -10,11 +26,14 @@ sbolXmlToJson
 anyToJson    //this handles any of the above file types based on file extension
 ```
 
-Use the following file(s) to convert from a generalized JSON format back to a specific format:
+Use the following exports to convert from a generalized JSON format back to a specific format:
 ```
 jsonToGenbank
+jsonToFasta
 ```
 
+
+## Format Specification
 The generalized JSON format looks like:
 ```
 var generalizedJsonFormat = {
@@ -47,7 +66,7 @@ var generalizedJsonFormat = {
 ```
 
 
-##Useage:
+## Useage
 `npm install -S bio-parsers`
 ```js
 //To go from json to genbank:
@@ -139,18 +158,18 @@ You can see more examples by looking at the tests.
 
 
 
-##Editing This Repo:
-###All collaborators: 
+## Editing This Repo
+### All collaborators:
 Edit/create a new file and update/add any relevant tests.
 Make sure they pass by running `npm test`
 
-##Debug:
+## Debug
 ```
 mocha ./test --inspect --debug-brk
 ```
 
-##Updating this repo: 
-###Teselagen collaborators: 
+## Updating this repo
+### Teselagen collaborators
 Commit and push all changes
 Sign into npm using the teselagen npm account (npm whoami)
 
@@ -159,5 +178,5 @@ npm version patch|minor|major
 npm publish
 ```
 
-###Outside collaborators: 
+### Outside collaborators
 fork and pull request please :)
