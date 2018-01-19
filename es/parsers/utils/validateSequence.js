@@ -6,7 +6,8 @@ var NameUtils = require('./NameUtils.js');
 
 var _require = require('ve-sequence-utils'),
     filterAminoAcidSequenceString = _require.filterAminoAcidSequenceString,
-    filterSequenceString = _require.filterSequenceString;
+    filterSequenceString = _require.filterSequenceString,
+    guessIfSequenceIsDnaAndNotProtein = _require.guessIfSequenceIsDnaAndNotProtein;
 //validation checking
 /**
  * validation and sanitizing of our teselagen sequence data type
@@ -21,6 +22,8 @@ var _require = require('ve-sequence-utils'),
 module.exports = function validateSequence(sequence, options) {
     options = options || {};
     var isProtein = options.isProtein || false;
+    var guessIfProtein = options.guessIfProtein || false;
+    var guessIfProteinOptions = options.guessIfProteinOptions || {};
     var reformatSeqName = options.reformatSeqName;
 
     var response = {
@@ -28,7 +31,7 @@ module.exports = function validateSequence(sequence, options) {
         messages: []
     };
     if (!sequence || (typeof sequence === 'undefined' ? 'undefined' : _typeof(sequence)) !== 'object') {
-        throw 'Invalid sequence';
+        throw new Error('Invalid sequence');
     }
     if (!sequence.name) {
         //we'll handle transferring the file name outside of this function
@@ -56,7 +59,10 @@ module.exports = function validateSequence(sequence, options) {
         response.messages.push('No sequence detected');
         sequence.sequence = '';
     }
-    var validChars;
+    var validChars = void 0;
+    if (guessIfProtein) {
+        isProtein = !guessIfSequenceIsDnaAndNotProtein(sequence.sequence, guessIfProteinOptions);
+    }
     if (isProtein) {
         //tnr: add code to strip invalid protein data..
         validChars = filterAminoAcidSequenceString(sequence.sequence);
@@ -64,6 +70,7 @@ module.exports = function validateSequence(sequence, options) {
             sequence.sequence = validChars;
             response.messages.push("Import Error: Illegal character(s) detected and removed from amino acid sequence. Allowed characters are: galmfwkqespvicyhrnd");
         }
+        sequence.type = 'PROTEIN';
     } else {
         //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
         var newSeq = sequence.sequence.replace(/u/g, 't');
@@ -85,8 +92,8 @@ module.exports = function validateSequence(sequence, options) {
     if (!sequence.size) {
         sequence.size = sequence.sequence.length;
     }
-    var circularityExplicitlyDefined;
-    if (sequence.circular === false || sequence.circular == 'false' || sequence.circular === -1) {
+    var circularityExplicitlyDefined = void 0;
+    if (sequence.circular === false || sequence.circular === 'false' || sequence.circular === -1) {
         sequence.circular = false;
     } else if (!sequence.circular) {
         sequence.circular = false;
@@ -105,8 +112,8 @@ module.exports = function validateSequence(sequence, options) {
             response.messages.push('Invalid feature detected and removed');
             return false;
         }
-        feature.start = parseInt(feature.start);
-        feature.end = parseInt(feature.end);
+        feature.start = parseInt(feature.start, 10);
+        feature.end = parseInt(feature.end, 10);
 
         if (!feature.name || typeof feature.name !== 'string') {
             response.messages.push('Unable to detect valid name for feature, setting name to "Untitled Feature"');
@@ -131,18 +138,19 @@ module.exports = function validateSequence(sequence, options) {
             }
         }
 
-        feature.strand = parseInt(feature.strand);
+        feature.strand = parseInt(feature.strand, 10);
         if (feature.strand === -1 || feature.strand === false || feature.strand === 'false' || feature.strand === '-') {
             feature.strand = -1;
         } else {
             feature.strand = 1;
         }
-        var invalidFeatureType;
+        var invalidFeatureType = void 0;
         if (!feature.type || typeof feature.type !== 'string' || !FeatureTypes.some(function (featureType) {
             if (featureType.toLowerCase() === feature.type.toLowerCase()) {
                 feature.type = featureType; //this makes sure the feature.type is being set to the exact value of the accepted featureType
                 return true;
             }
+            return false;
         })) {
             response.messages.push('Invalid feature type detected:  "' + feature.type + '" within ' + feature.name + '. set type to misc_feature');
             if (typeof feature.type === 'string') {
