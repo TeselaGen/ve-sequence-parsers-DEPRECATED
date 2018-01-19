@@ -1,18 +1,18 @@
-// var tap = require('tap');
+// const tap = require('tap');
 // tap.mochaGlobals();
-var genbankToJson = require('../parsers/genbankToJson');
-var path = require("path");
-var fs = require('fs');
-var chai = require('chai');
-var chaiSubset = require('chai-subset');
+const genbankToJson = require('../parsers/genbankToJson');
+const path = require("path");
+const fs = require('fs');
+const chai = require('chai');
+const chaiSubset = require('chai-subset');
 chai.use(chaiSubset);
 chai.use(require('chai-things'));
 chai.should();
 
 describe('genbankToJson tests', function() {
     it('handles parsing of a protein genbank correctly, making sure not to have too long of feature names', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/genbank/proteinTestSeq1.gp'), "utf8");
-        var options = {isProtein: true}
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/proteinTestSeq1.gp'), "utf8");
+        const options = {isProtein: true}
         genbankToJson(string, function(result) {
            result.should.be.an('array');
             result[0].success.should.be.true;
@@ -24,8 +24,8 @@ describe('genbankToJson tests', function() {
         }, options);
     });
     it('handles parsing of a protein genbank correctly', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/sequence.gp'), "utf8");
-        var options = {isProtein: true}
+        const string = fs.readFileSync(path.join(__dirname, './testData/sequence.gp'), "utf8");
+        const options = {isProtein: true}
         genbankToJson(string, function(result) {
             result.should.be.an('array');
             result[0].success.should.be.true;
@@ -44,8 +44,8 @@ describe('genbankToJson tests', function() {
         }, options);
     });
     it('handles 1-based feature indices option for both start and end', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/sequence.gp'), "utf8");
-        var options = {isProtein: true, inclusive1BasedEnd: true, inclusive1BasedStart: true}
+        const string = fs.readFileSync(path.join(__dirname, './testData/sequence.gp'), "utf8");
+        const options = {isProtein: true, inclusive1BasedEnd: true, inclusive1BasedStart: true}
         genbankToJson(string, function(result) {
             result.should.be.an('array');
             result[0].success.should.be.true;
@@ -64,7 +64,7 @@ describe('genbankToJson tests', function() {
         }, options);
     });
     it('handles parsing of an oddly spaced genbank without failing', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/breakingGenbank.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/breakingGenbank.gb'), "utf8");
         genbankToJson(string, function(result) {
             result.should.be.an('array');
             result[0].success.should.be.true;
@@ -90,7 +90,7 @@ describe('genbankToJson tests', function() {
     });
 
     it('parses a genbank with just feature start locations correctly', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/rhaBp-Pfu-pUN_alt.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/rhaBp-Pfu-pUN_alt.gb'), "utf8");
         genbankToJson(string, function(result) {
             result.should.be.an('array');
             result[0].success.should.be.true;
@@ -108,7 +108,7 @@ describe('genbankToJson tests', function() {
     });
 
     it('parses a genbank that is implicitly non-circular as circular because it contains circular features', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/Ecoli_DERA_Implicitly_Circular.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/Ecoli_DERA_Implicitly_Circular.gb'), "utf8");
         genbankToJson(string, function(result) {
             result.should.be.an('array');
             result[0].success.should.be.true;
@@ -123,7 +123,7 @@ describe('genbankToJson tests', function() {
     });
 
     it('parses a genbank that is implicitly linear and has no circular features as linear', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/Ecoli_DERA_Implicitly_Linear.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/Ecoli_DERA_Implicitly_Linear.gb'), "utf8");
         genbankToJson(string, function(result) {
             result.should.be.an('array');
             result[0].success.should.be.true;
@@ -133,7 +133,7 @@ describe('genbankToJson tests', function() {
     });
 
     it('parses plasmid with run-on feature note (pBbS0c-RFP.gb) correctly', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP.gb'), "utf8");
         genbankToJson(string, function(result) {
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {
@@ -159,7 +159,7 @@ describe('genbankToJson tests', function() {
         });
     });
     it('parses pBbE0c-RFP.gb correctly', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/pBbE0c-RFP.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/pBbE0c-RFP.gb'), "utf8");
         genbankToJson(string, function(result) {
             result.should.be.an('array');
             result.should.be.length(1);
@@ -182,7 +182,7 @@ describe('genbankToJson tests', function() {
         });
     });
     it('handles parsing of a multi-seq genbank correctly', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/multi-seq-genbank.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/multi-seq-genbank.gb'), "utf8");
         genbankToJson(string, function(result) {
             result.should.be.an('array');
             result.should.be.length(4);
@@ -197,7 +197,7 @@ describe('genbankToJson tests', function() {
     });
 
     it('parses pj5_00001 aka testGenbankFile.gb correctly', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/genbank/testGenbankFile.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/testGenbankFile.gb'), "utf8");
         genbankToJson(string, function(result) {
             result[0].parsedSequence.name.should.equal('pj5_00001');
             result[0].parsedSequence.circular.should.equal(true);
@@ -220,7 +220,7 @@ describe('genbankToJson tests', function() {
         });
     });
     it('parses a .gb file where the feature name is a number', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/genbank/featNameIsNumber.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/featNameIsNumber.gb'), "utf8");
         genbankToJson(string, function(result) {
            result.should.be.an('array');
             result[0].success.should.be.true;
@@ -228,7 +228,7 @@ describe('genbankToJson tests', function() {
         });
     });
     it('takes in a snapgene exported sequence and sets its name correctly (instead of "Export" it will use the filename)', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/genbank/CCR5_multifrag_insert1.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/CCR5_multifrag_insert1.gb'), "utf8");
         genbankToJson(string, function(result) {
             result.should.be.an('array');
             result[0].success.should.be.true;
@@ -236,8 +236,18 @@ describe('genbankToJson tests', function() {
             done();
         }, {fileName: 'CCR5_multifrag_insert1.gb'});
     });
+    it('parses a .gb file with joined features (aka a single feature with multiple locations) and splits them into multiple individaul features', function(done) {
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/RTO4_16460_joined_feature.gb'), "utf8");
+        genbankToJson(string, function(result) {
+            console.log('result:',JSON.stringify(result,null,4))
+           result.should.be.an('array');
+            result[0].success.should.be.true;
+            result[0].parsedSequence.features.length.should.equal(12)
+            done();
+        });
+    });
     it('parses a .gb file with tags on parts', function(done) {
-        var string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbFileWithTagsOnParts.gb'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbFileWithTagsOnParts.gb'), "utf8");
         genbankToJson(string, function(result) {
            result.should.be.an('array');
             result[0].success.should.be.true;
@@ -272,10 +282,10 @@ describe('genbankToJson tests', function() {
     });
 
 });
-// var string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
-// var string = fs.readFileSync(__dirname + '/testGenbankFile.gb', "utf8");
+// const string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
+// const string = fs.readFileSync(__dirname + '/testGenbankFile.gb', "utf8");
 
-// var string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
+// const string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
 // genbankToJson(string, function(result) {
 //     assert.equal(result[0].parsedSequence.name, 'CYP106A2__AdR__A');
 //     // assert.equal(result[0].parsedSequence.name, 'CYP106A2__AdR__A'); //names are currently parsed to remove "special characters"

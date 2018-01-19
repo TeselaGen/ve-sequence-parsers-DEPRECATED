@@ -32,11 +32,11 @@
     "nwb": "^0.19.0",
     "tap": "^2.3.0",
     "ve-range-utils": "^2.3.3",
-    "ve-sequence-utils": "^3.2.5"
+    "ve-sequence-utils": "^3.2.13"
   },
   "peerDependencies": {
     "ve-range-utils": "^2.3.3",
-    "ve-sequence-utils": "^3.2.0"
+    "ve-sequence-utils": "^3.2.13"
   },
   "dependencies": {
     "flatmap": "0.0.3",
