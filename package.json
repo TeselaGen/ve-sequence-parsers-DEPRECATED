@@ -45,6 +45,7 @@
     "prettier": "^1.6.1",
     "safe-access": "^0.1.0",
     "validate.io-nonnegative-integer-array": "^1.0.1",
+    "ve-range-utils": "^2.3.3",
     "waldojs": "^0.1.9",
     "xml2js": "^0.4.15"
   },
