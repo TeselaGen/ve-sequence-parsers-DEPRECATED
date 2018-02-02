@@ -36,7 +36,7 @@
   },
   "peerDependencies": {
     "ve-range-utils": "^2.3.3",
-    "ve-sequence-utils": "^3.2.13"
+    "ve-sequence-utils": "^3.2.19"
   },
   "dependencies": {
     "flatmap": "0.0.3",
