@@ -1,6 +1,7 @@
 const areNonNegativeIntegers = require('validate.io-nonnegative-integer-array');
-const FeatureTypes = require('./GenbankFeatureTypes.js');
+const {FeatureTypes} = require('ve-sequence-utils');
 const NameUtils = require('./NameUtils.js');
+
 const {filterAminoAcidSequenceString, filterSequenceString, guessIfSequenceIsDnaAndNotProtein} = require('ve-sequence-utils');
 //validation checking
 /**
