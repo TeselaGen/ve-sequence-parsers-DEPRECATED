@@ -10,6 +10,7 @@
     - [jsonToGenbank (same interface as jsonToFasta)](#jsontogenbank-same-interface-as-jsontofasta)
     - [anyToJson](#anytojson)
     - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxtojson)
+    - [ab1ToJson](#ab1tojson)
     - [genbankToJson](#genbanktojson)
   - [Editing This Repo](#editing-this-repo)
     - [All collaborators:](#all-collaborators)
@@ -139,7 +140,6 @@ function onFinishedCallback (results) {
   //chromatogram data will be here (ab1 only): 
   results[0].parsedSequence.chromatogramData 
 }
-
 ```
 
 ### Options (for anyToJson or xxxxToJson)
@@ -153,6 +153,28 @@ const options = {
   inclusive1BasedEnd: false //by default feature ends are parsed out as 0-based and inclusive 
 }
 ```
+
+### ab1ToJson
+
+```js
+const ab1ToJson = require('bio-parsers').ab1ToJson;
+ab1ToJson(
+  file, //this can be either a browser file  <input type="file" id="input" multiple onchange="ab1ToJson(this.files[0])">
+  // or a node file ab1ToJson(fs.readFileSync(path.join(__dirname, './testData/ab1/example1.ab1')));
+  onFinishedCallback, 
+  options //options.fileName (eg "pBad.ab1" or "pCherry.fasta") is important to pass here in order for the parser to !
+)
+
+function onFinishedCallback (results) {
+  //we always return an array of results because some files my contain multiple sequences 
+  results[0].success //either true or false 
+  results[0].messages //either an array of strings giving any warnings or errors generated during the parsing process
+  results[0].parsedSequence //this will be the generalized json format as specified above :)
+  //chromatogram data will be here (ab1 only): 
+  results[0].parsedSequence.chromatogramData 
+}
+```
+
 
 ### genbankToJson
 
