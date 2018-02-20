@@ -1,14 +1,14 @@
-var sbolXmlToJson = require('../parsers/sbolXmlToJson');
-var path = require("path");
-var fs = require('fs');
-var chai = require('chai');
+const sbolXmlToJson = require('../parsers/sbolXmlToJson');
+const path = require("path");
+const fs = require('fs');
+const chai = require('chai');
 chai.use(require('chai-things'));
 chai.should();
 
-describe('sbolXmlToJson', function(done) {
+describe('sbolXmlToJson', function() {
     it('should parse an sbol xml file to our json representation correctly', function(done) {
         // var string = fs.readFileSync(path.join(__dirname, '../ext_tests/data/sequences/pBbE0c-RFP.xml'), "utf8");
-        var string = fs.readFileSync(path.join(__dirname, './testData/pBbE0c-RFP.xml'), "utf8");
+        const string = fs.readFileSync(path.join(__dirname, './testData/pBbE0c-RFP.xml'), "utf8");
         sbolXmlToJson(string, function(result) {
             result[0].parsedSequence.name.should.equal('pBbE0c-RFP');
             result[0].parsedSequence.circular.should.equal(false);
@@ -32,9 +32,9 @@ describe('sbolXmlToJson', function(done) {
         });
     });
     it('should return an error (not throw an error) when trying to parse a genbank string', function(done) {
-      var string = fs.readFileSync(path.join(__dirname, './testData/genbank/genbankThatBrokeSbolImport.gb'), "utf8");
+      const string = fs.readFileSync(path.join(__dirname, './testData/genbank/genbankThatBrokeSbolImport.gb'), "utf8");
       sbolXmlToJson(string, function(results) {
-          results[0].success.should.be.false
+          results[0].success.should.equal(false)
           done();
       });
     })

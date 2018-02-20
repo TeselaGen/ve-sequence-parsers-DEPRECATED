@@ -1,4 +1,4 @@
-var validateSequence = require('./validateSequence.js');
+const validateSequence = require('./validateSequence.js');
 module.exports = function validateSequenceArray(parsingResultArray, options) {
     if (parsingResultArray) {
         if (!Array.isArray(parsingResultArray)) {
@@ -8,7 +8,7 @@ module.exports = function validateSequenceArray(parsingResultArray, options) {
         //should convert the old data type to the new data type (flattened sequence)
         parsingResultArray.forEach(function(parsingResult) {
             if (parsingResult.success) {
-                var res = validateSequence(parsingResult.parsedSequence, options);
+                const res = validateSequence(parsingResult.parsedSequence, options);
                 //add any validation error messages to the parsed sequence results messages
                 parsingResult.messages = parsingResult.messages.concat(res.messages);
                 parsingResult.parsedSequence = res.validatedAndCleanedSequence;

@@ -1,4 +1,4 @@
-var constants = require('./constants');
+const constants = require('./constants');
 module.exports = function createInitialSequence(options) {
     options = options || {}
     return {

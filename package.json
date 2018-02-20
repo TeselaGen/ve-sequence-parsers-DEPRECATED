@@ -8,7 +8,7 @@
     "prepublish": "in-publish && yarn build || not-in-publish",
     "precommit": "npm test",
     "prepush": "npm test",
-    "test": "mocha ./src/test"
+    "test": "jest --env=node ./src/test"
   },
   "author": "teselagen",
   "license": "MIT",
@@ -28,7 +28,7 @@
     "husky": "^0.11.4",
     "in-publish": "^2.0.0",
     "install-peerdeps": "^1.2.0",
-    "mocha": "^2.3.4",
+    "jest": "^22.4.0",
     "nwb": "^0.19.0",
     "tap": "^2.3.0",
     "ve-range-utils": "^2.3.3",

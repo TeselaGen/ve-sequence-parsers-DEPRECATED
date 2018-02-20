@@ -1,12 +1,15 @@
 //this test takes a sequence represented in several different file types and
 //makes sure that they give the same results regardless (for fields that make sense)
-var anyToJson = require('../parsers/anyToJson.js');
-var fs = require('fs');
-var path = require("path");
-var async = require('async');
-var assert = require('assert');
-var chai = require('chai');
+const anyToJson = require('../parsers/anyToJson.js');
+const fs = require('fs');
+const path = require("path");
+const async = require('async');
+const assert = require('assert');
+const chai = require('chai');
 chai.use(require('chai-things'));
+const example1OutputChromatogram = require('./testData/ab1/example1_output_chromatogram.json');
+const ab1ToJson = require('../parsers/ab1ToJson');
+
 chai.should();
 
 describe('anyToJson', function() {
@@ -17,6 +20,15 @@ describe('anyToJson', function() {
             done();
         }, {fileName: 'pBbS0c-RFP_no_name.txt', isProtein: false});    
     });
+    it('parse in an ab1 file without failing :)', function(done) {
+        const fileObj = fs.readFileSync(path.join(__dirname, './testData/ab1/example1.ab1'));
+        ab1ToJson(fileObj, function(result) {
+            result[0].parsedSequence.name.should.equal("example1");
+            result[0].parsedSequence.chromatogramData.should.deep.equal(example1OutputChromatogram);
+            result[0].parsedSequence.sequence.should.equal("NANTCTATAGGCGAATTCGAGCTCGGTACCCGGGGATCCTCTAGAGTCGACCTGCAGGCATGCAAGCTTGAGTATTCTATAGTGTCACCTAAATAGCTTGGCGTAATCATGGTCATAGCTGTTTCCTGTGTGAAATTGTTATCCGCTCACAATTCCACACAACATACGAGCCGGAAGCATAAAGTGTAAAGCCTGGGGTGCCTAATGAGTGAGCTAACTCACATTAATTGCGTTGCGCTCACTGCCCGCTTTCCAGTCGGGAAACCTGTCGTGCCAGCTGCATTAATGAATCGGCCAACGCGCGGGGAGAGGCGGTTTGCGTATTGGGCGCTCTTCCGCTTCCTCGCTCACTGACTCGCTGCGCTCGGTCGTTCGGCTGCGGCGAGCGGTATCAGCTCACTCAAAGGCGGTAATACGGTTATCCACAGAATCAGGGGATAACGCAGGAAAGAACATGTGAGCAAAAGGCCAGCAAAAGGCCAGGAACCGTAAAAAGGCCGCGTTGCTGGCGTTTTTCCATAGGCTCCGCCCCCCTGACGAGCATCACAAAAATCGACGCTCAAGTCAGAGGTGGCGAAACCCGACAGGACTATAAAGATACCAGGCGTTTCCCCCTGGAAGCTCCCTCGTGCGCTCTCCTGTTCCGACCCTGCCGCTTACCGGATACCTGTCCGCCTTTCTCCCTTCGGGAAGCGTGGCGCTTTCTCATAGCTCACGCTGTAGGTATCTCAGTTCGGTGTAGGTCGTTCGCTCCAAGCTGGGCTGTGTGCACGAACCCCCCGTTCAGCCCGACCGCTGCGCCTTATCCGGTAACTATCGTCTTGAGTCCAACCCGGTAAGACACGACTTATCGCCACTGGCAGCAGCCACTGGTAACAGGATTAGCAGAGCGAGGTATGTAGGCGGTGCTACAGAGTTCTTGAAGTGGTGGCCTAACTACGGCTACACTAGAAGAACAGTATTTGGTATCTGCGCTCTGCTGAAGCCAGTTACCTTCGGAAAAAGAGTTGGTAGCTCTNGATCCGGCAACAACCACCGCTGGTAGCGGNGGTTTTTTGTTNGCAAGCAGCANATTACNCNCAAAAAAAAANGATCTCAANAAAATCCTTNGATNTTTTNNACGGGGNCTGACNCTNAGGGNAAAAAAACTCCCNTTAAGGGATTTNGNCNTGAANTTTNAAAAAGANNTTNCCCNAAAACNNTTNAATTAAAAAAANNTTTAAACNNCCNAAAAATTTNNAAAAAATTGNGGGGAANNNCCAGGNTTTNNTNGGGGGGCCCTNCCCCNNNGGGGTTTTTTTNCCCAAANGNGGCCCCCCCCCNGGNAAAAAAAANAANNGGGGNN");
+            done();
+        }, {fileName: "example1.ab1"});
+    });
     it('parses a .fasta file without a name and use the file name', function(done) {
         anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.fasta'), "utf8"), function(result) {
             result[0].parsedSequence.name.should.equal('pBbS0c-RFP_no_name')
@@ -24,7 +36,7 @@ describe('anyToJson', function() {
         }, {fileName: 'pBbS0c-RFP_no_name.fasta', isProtein: false});    
     });
     it('should call the success callback for a .txt file only once', function(done) {
-        var times = 0
+        let times = 0
         anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.txt'), "utf8"), function() {
             times++
         }, {fileName: 'pBbS0c-RFP_no_name.txt'});    
@@ -34,7 +46,7 @@ describe('anyToJson', function() {
         })
     });
     it('should call the success callback for an ambiguously named file only once', function(done) {
-        var times = 0
+        let times = 0
         anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.gb'), "utf8"), function() {
             times++
         }, {fileName: 'pBbS0c-RFP', isProtein: false});    
@@ -44,7 +56,7 @@ describe('anyToJson', function() {
         })
     });
     it('parses the pBbE0c-RFP plasmid represented in various filetypes to the same end result', function(done) {
-        var options = {
+        const options = {
             fastaFilePath: "pBbE0c-RFP.fasta",
             genbankFilePath: 'pBbE0c-RFP.gb',
             sbolFilePath: 'pBbE0c-RFP.xml',
@@ -52,7 +64,7 @@ describe('anyToJson', function() {
         runTest(done, options);
     });
     it('parses the pBbS0c-RFP plasmid represented in various filetypes to the same end result', function(done) {
-        var options = {
+        const options = {
             fastaFilePath: "pBbS0c-RFP.fasta",
             genbankFilePath: 'pBbS0c-RFP.gb',
             sbolFilePath: 'pBbS0c-RFP.xml',
@@ -62,19 +74,19 @@ describe('anyToJson', function() {
 });
 
 function runTest(done, options) {
-    var fastaResult;
-    var genbankResult;
-    var sbolXMLResult;
+    let fastaResult;
+    let genbankResult;
+    let sbolXMLResult;
     async.series([
             function(done) {
-                var string = fs.readFileSync(path.join(__dirname, './testData/', options.fastaFilePath), "utf8");
+                const string = fs.readFileSync(path.join(__dirname, './testData/', options.fastaFilePath), "utf8");
                 anyToJson(string, function(result) {
                     fastaResult = result;
                     done();
                 }, {fileName: options.fastaFilePath, isProtein: false});
             },
             function(done) {
-                var string = fs.readFileSync(path.join(__dirname, './testData/', options.genbankFilePath), "utf8");
+                const string = fs.readFileSync(path.join(__dirname, './testData/', options.genbankFilePath), "utf8");
                 anyToJson(string, function(result) {
                     genbankResult = result;
                     done();
@@ -82,7 +94,7 @@ function runTest(done, options) {
             },
 
             function(done) {
-                var string = fs.readFileSync(path.join(__dirname, './testData/', options.sbolFilePath), "utf8");
+                const string = fs.readFileSync(path.join(__dirname, './testData/', options.sbolFilePath), "utf8");
                 anyToJson(string, function(result) {
                     sbolXMLResult = result;
                     done();
@@ -110,6 +122,7 @@ function runTest(done, options) {
                             return true;
                         }
                     }
+                    return false
                 }).length);
             });
             done();

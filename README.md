@@ -6,6 +6,11 @@
   - [Exported Functions](#exported-functions)
   - [Format Specification](#format-specification)
   - [Useage](#useage)
+    - [install](#install)
+    - [jsonToGenbank (same interface as jsonToFasta)](#jsontogenbank-same-interface-as-jsontofasta)
+    - [anyToJson](#anytojson)
+    - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxtojson)
+    - [genbankToJson](#genbanktojson)
   - [Editing This Repo](#editing-this-repo)
     - [All collaborators:](#all-collaborators)
   - [Debug](#debug)
@@ -20,9 +25,10 @@ This repo contains a set of parsers to convert between datatypes through a gener
 ## Exported Functions
 Use the following exports to convert to a generalized JSON format:
 ```
-fastaToJson
-genbankToJson
-sbolXmlToJson
+fastaToJson //handles fasta files
+genbankToJson //handles genbank files
+ab1ToJson //handles ab1 sequencing read files 
+sbolXmlToJson //handles sbol files
 anyToJson    //this handles any of the above file types based on file extension
 ```
 
@@ -35,13 +41,22 @@ jsonToFasta
 
 ## Format Specification
 The generalized JSON format looks like:
-```
-var generalizedJsonFormat = {
+```js
+const generalizedJsonFormat = {
     "size" : 25,
     "sequence" : "asaasdgasdgasdgasdgasgdasgdasdgasdgasgdagasdgasdfasdfdfasdfa",
     "circular" : true,
     "name" : "pBbS8c-RFP",
     "description" : "",
+    "chromatogramData": { //only if parsing in an ab1 file
+      "aTrace": [], //same as cTrace but for a
+      "tTrace": [], //same as cTrace but for t
+      "gTrace": [], //same as cTrace but for g
+      "cTrace": [0,0,0,1,3,5,11,24,56,68,54,30,21,3,1,4,1,0,0, ...etc], //heights of the curve spaced 1 per x position (aka if the cTrace.length === 1000, then the max basePos can be is 1000)
+      "basePos": [33, 46, 55,], //x position of the bases (can be unevenly spaced)
+      "baseCalls": ["A","T", ...etc],
+      "qualNums": [],
+    },
     "features" : [
         {
             "name" : "anonymous feature",
@@ -67,14 +82,21 @@ var generalizedJsonFormat = {
 
 
 ## Useage
-`npm install -S bio-parsers`
+### install
+`npm install -S bio-parsers` 
+
+or 
+
+`yarn add bio-parsers`
+
+### jsonToGenbank (same interface as jsonToFasta)
 ```js
 //To go from json to genbank:
-var jsonToGenbank = require('bio-parsers').jsonToGenbank;
+const jsonToGenbank = require('bio-parsers').jsonToGenbank;
 //or alternatively (if using the package on the front end and you want to keep memory usage low)
-var jsonToGenbank = require('bio-parsers/parsers/jsonToGenbank');
+const jsonToGenbank = require('bio-parsers/parsers/jsonToGenbank');
 //You can pass an optional options object as the second argument. Here are the defaults
-var options = {
+const options = {
   isProtein: false, //by default the sequence will be parsed and validated as type DNA (unless U's instead of T's are found). If isProtein=true the sequence will be validated as a PROTEIN type 
   guessIfProtein: false, //if true the parser will attempt to guess if the sequence is of type DNA or type PROTEIN (this will override the isProtein flag)
   guessIfProteinOptions: {
@@ -96,19 +118,48 @@ var options = {
   // 1-based inclusive end:
   // feature.end = 5
 } 
-var genbankString = jsonToGenbank(generalizedJsonFormat, options)
+const genbankString = jsonToGenbank(generalizedJsonFormat, options)
 
-//All of the xXXXtoJson parsers work like this:
-var genbankToJson = require('bio-parsers').genbankToJson;
-//or alternatively (if using the package on the front end and you want to keep memory usage low)
-var genbankToJson = require('bio-parsers/parsers/genbankToJson');
+```
+### anyToJson
+
+```js
+const anyToJson = require('bio-parsers').anyToJson;
+anyToJson(
+  stringOrFile, //if ab1 files are being passed in you should pass files only, otherwise strings or files are fine as inputs
+  onFinishedCallback, 
+  options //options.fileName (eg "pBad.ab1" or "pCherry.fasta") is important to pass here in order for the parser to !
+)
+
+function onFinishedCallback (results) {
+  //we always return an array of results because some files my contain multiple sequences 
+  results[0].success //either true or false 
+  results[0].messages //either an array of strings giving any warnings or errors generated during the parsing process
+  results[0].parsedSequence //this will be the generalized json format as specified above :)
+}
+
+```
+
+### Options (for anyToJson or xxxxToJson)
+```js
 //You can pass an optional options object as the third argument. Here are the defaults
-var options = {
+const options = {
+  fileName: "example.gb", //the filename is used if none is found in the genbank           
   isProtein: false, //used to strip unwanted characters
   //genbankToJson options only
   inclusive1BasedStart: false //by default feature starts are parsed out as 0-based and inclusive 
   inclusive1BasedEnd: false //by default feature ends are parsed out as 0-based and inclusive 
 }
+```
+
+### genbankToJson
+
+```js
+//All of the xXXXtoJson parsers work like this:
+const genbankToJson = require('bio-parsers').genbankToJson;
+//or alternatively (if using the package on the front end and you want to keep memory usage low)
+const genbankToJson = require('bio-parsers/parsers/genbankToJson');
+
 genbankToJson(string, function(result) {
   console.log(result)
   // [

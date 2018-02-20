@@ -1,7 +1,6 @@
-var createInitialSequence = require('./utils/createInitialSequence');
-var NameUtils = require('./utils/NameUtils.js');
-var splitStringIntoLines = require('./utils/splitStringIntoLines.js');
-var validateSequenceArray = require('./utils/validateSequenceArray');
+const createInitialSequence = require('./utils/createInitialSequence');
+const splitStringIntoLines = require('./utils/splitStringIntoLines.js');
+const validateSequenceArray = require('./utils/validateSequenceArray');
 /**
  * parses a fasta file that may or may not contain multiple resultArray
  * @param  {[string]} fileString   [string respresentation of file contents]
@@ -11,16 +10,17 @@ var validateSequenceArray = require('./utils/validateSequenceArray');
 
 
 module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options) {
-    var onFileParsed = function(sequences) { //before we call the onFileParsed callback, we want to validate it
+    const onFileParsed = function(sequences) { //before we call the onFileParsed callback, we want to validate it
         onFileParsedUnwrapped(validateSequenceArray(sequences, options));
     };
-    var resultArray = [];
+    let resultArray = [];
+    let result = null;
     try {
-        var lines = splitStringIntoLines(fileString);
-        var result = null;
+        const lines = splitStringIntoLines(fileString);
+        
 
 
-        for (var i = 0; i < lines.length; i++) {
+        for (let i = 0; i < lines.length; i++) {
             parseLine(lines[i]);
         }
         if (result) {
@@ -71,7 +71,7 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
     }
 
     function parseTitle(line) {
-        var pipeIndex = line.indexOf('|');
+        const pipeIndex = line.indexOf('|');
         if (pipeIndex > -1) {
             result.parsedSequence.name = line.slice(1, pipeIndex);
             result.parsedSequence.description = line.slice(pipeIndex + 1);
@@ -85,7 +85,7 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
         // that the sequence can be interspersed with numbers and/or spaces and - dashes for gaps.
         if (line.match(/[\s0-9-]/)) {
             line = line.replace(/[\s[0-9-]/g, "");
-            var msg = "Warning: spaces, numbers and/or dashes were removed from sequence"
+            const msg = "Warning: spaces, numbers and/or dashes were removed from sequence"
             result.messages.indexOf(msg === -1) && result.messages.push(msg);
         }
         result.parsedSequence.sequence += line;

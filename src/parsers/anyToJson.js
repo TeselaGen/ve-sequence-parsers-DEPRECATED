@@ -1,7 +1,7 @@
-var fastaToJson = require('./fastaToJson');
-var genbankToJson = require('./genbankToJson');
-var xmlParser = require('./sbolXmlToJson');
-var extractFileExtension = require('./utils/extractFileExtension.js');
+const fastaToJson = require('./fastaToJson');
+const genbankToJson = require('./genbankToJson');
+const xmlParser = require('./sbolXmlToJson');
+const extractFileExtension = require('./utils/extractFileExtension.js');
 
 /**
  * takes in file content string and its file name and determines what parser it needs to be sent to.
@@ -9,11 +9,26 @@ var extractFileExtension = require('./utils/extractFileExtension.js');
  * @param  {string} fileContentString content of the file as a string
  * @param  {callback} onFileParsed    //tnr: fill this out
  */
-module.exports = function anyToJson(fileContentString, onFileParsed, options) {
+const ab1ToJson = require('./ab1ToJson');
+
+module.exports = async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
+    let fileContentString
     options = options || {}
-    // var isProtein = options.isProtein || false;
-    var fileName = options.fileName || '';
-    var ext = extractFileExtension(fileName);
+    // const isProtein = options.isProtein || false;
+    const fileName = options.fileName || '';
+    const ext = extractFileExtension(fileName);
+    if (typeof fileContentStringOrFileObj === "string") {
+        fileContentString = fileContentStringOrFileObj
+    } else {
+        if (/^(ab1)$/.test(ext)) { // AB1 sequencing read
+            //we will always want to pass the file obj and not the string to ab1
+            ab1ToJson(fileContentStringOrFileObj, onFileParsed, options);
+        } else {
+            // we want to get the string from the file obj
+            fileContentString = await getFileString(fileContentStringOrFileObj)
+        }
+    }
+
     if (/^(fasta|fas|fa|fna|ffn)$/.test(ext)) { // FASTA
         fastaToJson(fileContentString, onFileParsed, options);
     }
@@ -28,7 +43,7 @@ module.exports = function anyToJson(fileContentString, onFileParsed, options) {
     }
     else {
         //runs from BOTTOM to TOP
-        var parsersToTry = [{
+        const parsersToTry = [{
             fn: fastaToJson,
             name: "Fasta Parser"
         }, {
@@ -41,33 +56,35 @@ module.exports = function anyToJson(fileContentString, onFileParsed, options) {
         //pop the LAST parser off the array and try to parse with it, using the modified onFileParsed callback
         //evaluates to something like:
         //xmlParser(fileContentString, onFileParsedWrapped)
-        var parser = parsersToTry.pop();
+        let parser = parsersToTry.pop();
         parser.fn(fileContentString, onFileParsedWrapped, options);
-    }
-
-    function onFileParsedWrapped(resultArray) {
-        if (successfulParsing(resultArray)) {
-            //continue on to through the normal flow
-            resultArray.forEach(function(result) {
-                result.messages.push('Parsed using ' + parser.name + '.');
-            });
-            onFileParsed(resultArray);
-        }
-        else {
-            //unsuccessful parsing, so try the next parser in the array
-            if (parsersToTry.length) {
-                parser = parsersToTry.pop();
-                parser.fn(fileContentString, onFileParsedWrapped, options); //pop the next parser off the array and try to parse with it, using the modified onFileParsed callback
+        /* eslint-disable no-inner-declarations*/ 
+        function onFileParsedWrapped(resultArray) {
+            if (successfulParsing(resultArray)) {
+                //continue on to through the normal flow
+                resultArray.forEach(function(result) {
+                    result.messages.push('Parsed using ' + parser.name + '.');
+                });
+                onFileParsed(resultArray);
             }
             else {
-                //none of the parsers worked
-                onFileParsed([{
-                    messages: ['Unable to parse .seq file as FASTA, genbank, JBEI, or SBOL formats'],
-                    success: false
-                }]);
+                //unsuccessful parsing, so try the next parser in the array
+                if (parsersToTry.length) {
+                    parser = parsersToTry.pop();
+                    parser.fn(fileContentString, onFileParsedWrapped, options); //pop the next parser off the array and try to parse with it, using the modified onFileParsed callback
+                }
+                else {
+                    //none of the parsers worked
+                    onFileParsed([{
+                        messages: ['Unable to parse .seq file as FASTA, genbank, JBEI, or SBOL formats'],
+                        success: false
+                    }]);
+                }
             }
         }
+        /* eslint-enable no-inner-declarations*/ 
     }
+
 
     //helper function to determine whether or not the parsing was successful or not
     function successfulParsing(resultArray) {
@@ -77,3 +94,22 @@ module.exports = function anyToJson(fileContentString, onFileParsed, options) {
     }
 
 };
+
+
+function getFileString(file) {
+    if (typeof window === "undefined") {
+        //we're in a node context
+        return file
+    }
+    let reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
+    return new Promise((resolve, reject) => {
+        reader.onload = evt => {
+            resolve(file);
+        };
+        reader.onerror = err => {
+            console.error("err:", err);
+            reject(err);
+        };
+    })
+}
