@@ -1,5 +1,4 @@
 var createInitialSequence = require('./utils/createInitialSequence');
-var NameUtils = require('./utils/NameUtils.js');
 var splitStringIntoLines = require('./utils/splitStringIntoLines.js');
 var validateSequenceArray = require('./utils/validateSequenceArray');
 /**
@@ -15,9 +14,9 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
         onFileParsedUnwrapped(validateSequenceArray(sequences, options));
     };
     var resultArray = [];
+    var result = null;
     try {
         var lines = splitStringIntoLines(fileString);
-        var result = null;
 
         for (var i = 0; i < lines.length; i++) {
             parseLine(lines[i]);

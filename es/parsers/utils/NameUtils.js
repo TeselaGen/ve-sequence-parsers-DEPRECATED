@@ -1,6 +1,6 @@
 // Basically a copy of 'Teselagen.utils.NameUtils' for use within workers.
 
-var NameUtils = {
+module.exports = {
 	/**
   * Reformat name to replaces whitespace with underscores.
   * @param {String} pName
@@ -10,4 +10,3 @@ var NameUtils = {
 		return pName.toString().replace(/ /g, '_');
 	}
 };
-module.exports = NameUtils;

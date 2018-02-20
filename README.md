@@ -136,6 +136,8 @@ function onFinishedCallback (results) {
   results[0].success //either true or false 
   results[0].messages //either an array of strings giving any warnings or errors generated during the parsing process
   results[0].parsedSequence //this will be the generalized json format as specified above :)
+  //chromatogram data will be here (ab1 only): 
+  results[0].parsedSequence.chromatogramData 
 }
 
 ```

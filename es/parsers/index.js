@@ -4,5 +4,6 @@ module.exports = {
   genbankToJson: require('./genbankToJson'),
   sbolXmlToJson: require('./sbolXmlToJson'),
   jsonToGenbank: require('./jsonToGenbank'),
+  ab1ToJson: require('./ab1ToJson'),
   jsonToFasta: require('./jsonToFasta')
 };
