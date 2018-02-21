@@ -108,7 +108,7 @@ function getFileString(file) {
     reader.readAsText(file, "UTF-8");
     return new Promise((resolve, reject) => {
         reader.onload = evt => {
-            resolve(file);
+            resolve(evt.target.result);
         };
         reader.onerror = err => {
             console.error("err:", err);
