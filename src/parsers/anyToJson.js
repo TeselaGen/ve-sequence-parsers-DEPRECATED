@@ -23,7 +23,7 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     } else {
         if (/^(ab1)$/.test(ext)) { // AB1 sequencing read
             //we will always want to pass the file obj and not the string to ab1
-            ab1ToJson(fileContentStringOrFileObj, onFileParsed, options);
+            return ab1ToJson(fileContentStringOrFileObj, onFileParsed, options);
         } else {
             // we want to get the string from the file obj
             fileContentString = await getFileString(fileContentStringOrFileObj)
