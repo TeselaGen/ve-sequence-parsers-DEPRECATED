@@ -1,4 +1,4 @@
-import _regeneratorRuntime from "babel-runtime/regenerator";
+import _regeneratorRuntime from 'babel-runtime/regenerator';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -27,7 +27,7 @@ var ab1ToJson = function () {
             onFileParsed([returnVal]);
 
           case 9:
-          case "end":
+          case 'end':
             return _context.stop();
         }
       }
@@ -42,8 +42,9 @@ var ab1ToJson = function () {
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 var createInitialSequence = require('./utils/createInitialSequence');
+var addPromiseOption = require('./utils/addPromiseOption');
 
-module.exports = ab1ToJson;
+module.exports = addPromiseOption(ab1ToJson);
 
 function getArrayBufferFromFile(file) {
   if (typeof window === "undefined") {
@@ -88,13 +89,13 @@ function abConverter(inputArrayBuffer) {
     for (var offset = 6; offset < 10; offset++) {
       name += String.fromCharCode(inputArrayBuffer.getInt8(offset));
     }
-    output += "- tag name: " + name + br;
-    output += "- tag number: " + inputArrayBuffer.getInt32(10) + br;
-    output += "- element type: " + inputArrayBuffer.getInt16(14) + br;
-    output += "- element size: " + inputArrayBuffer.getInt16(16) + br;
-    output += "- num elements: " + inputArrayBuffer.getInt32(18) + br;
-    output += "- data size: " + inputArrayBuffer.getInt32(22) + br;
-    output += "- data offset: " + inputArrayBuffer.getInt32(26) + br;
+    output += '- tag name: ' + name + br;
+    output += '- tag number: ' + inputArrayBuffer.getInt32(10) + br;
+    output += '- element type: ' + inputArrayBuffer.getInt16(14) + br;
+    output += '- element size: ' + inputArrayBuffer.getInt16(16) + br;
+    output += '- num elements: ' + inputArrayBuffer.getInt32(18) + br;
+    output += '- data size: ' + inputArrayBuffer.getInt32(22) + br;
+    output += '- data offset: ' + inputArrayBuffer.getInt32(26) + br;
     return output;
   };
 
@@ -226,7 +227,7 @@ function abConverter(inputArrayBuffer) {
       for (var offset = curElem; offset < curElem + 4; offset++) {
         name += String.fromCharCode(inputArrayBuffer.getInt8(offset));
       }
-      output += " - " + name;
+      output += ' - ' + name;
     }
     return output;
   };

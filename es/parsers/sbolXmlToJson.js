@@ -3,6 +3,7 @@ var flatmap = require('flatmap');
 var access = require('safe-access');
 var waldo = require('waldojs');
 var validateSequenceArray = require('./utils/validateSequenceArray');
+var addPromiseOption = require('./utils/addPromiseOption');
 
 //Here's what should be in the callback:
 // {
@@ -10,7 +11,7 @@ var validateSequenceArray = require('./utils/validateSequenceArray');
 //   messages:
 //   success: 
 // }
-module.exports = function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
+function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
     options = options || {};
     var onFileParsed = function onFileParsed(sequences) {
         //before we call the onFileParsed callback, we need to validate the sequence
@@ -131,3 +132,5 @@ function parseSbolJson(sbolJson, options) {
         })
     };
 }
+
+module.exports = addPromiseOption(sbolXmlToJson);

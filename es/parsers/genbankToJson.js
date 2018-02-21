@@ -4,6 +4,7 @@ var validateSequenceArray = require('./utils/validateSequenceArray');
 // var some = require('lodash/collection/some');
 var splitStringIntoLines = require('./utils/splitStringIntoLines.js');
 var createInitialSequence = require('./utils/createInitialSequence');
+var addPromiseOption = require('./utils/addPromiseOption');
 
 function genbankToJson(string, onFileParsedUnwrapped, options) {
     var onFileParsed = function onFileParsed(sequences, options) {
@@ -528,4 +529,4 @@ function getLengthOfWhiteSpaceBeforeStartOfLetters(string) {
     }
 }
 
-module.exports = genbankToJson;
+module.exports = addPromiseOption(genbankToJson);
