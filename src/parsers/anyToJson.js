@@ -10,8 +10,9 @@ const extractFileExtension = require('./utils/extractFileExtension.js');
  * @param  {callback} onFileParsed    //tnr: fill this out
  */
 const ab1ToJson = require('./ab1ToJson');
+const addPromiseOption = require('./utils/addPromiseOption');
 
-module.exports = async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
+async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     let fileContentString
     options = options || {}
     // const isProtein = options.isProtein || false;
@@ -94,6 +95,8 @@ module.exports = async function anyToJson(fileContentStringOrFileObj, onFilePars
     }
 
 };
+
+module.exports = addPromiseOption(anyToJson);
 
 
 function getFileString(file) {

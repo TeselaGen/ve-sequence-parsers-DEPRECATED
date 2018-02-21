@@ -8,7 +8,8 @@
     "prepublish": "in-publish && yarn build || not-in-publish",
     "precommit": "npm test",
     "prepush": "npm test",
-    "test": "jest --env=node ./src/test"
+    "test": "jest --env=node ./src/test",
+    "test-debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand --env=node ./src/test"
   },
   "author": "teselagen",
   "license": "MIT",

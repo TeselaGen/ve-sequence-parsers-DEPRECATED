@@ -7,9 +7,10 @@ const validateSequenceArray = require('./utils/validateSequenceArray');
  * @param  {[function]} onFileParsed [callback for a parsed sequence]
  * @author Joshua P Nixon
  */
+const addPromiseOption = require('./utils/addPromiseOption');
 
 
-module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options) {
+function fastaToJson(fileString, onFileParsedUnwrapped, options) {
     const onFileParsed = function(sequences) { //before we call the onFileParsed callback, we want to validate it
         onFileParsedUnwrapped(validateSequenceArray(sequences, options));
     };
@@ -91,3 +92,6 @@ module.exports = function fastaToJson(fileString, onFileParsedUnwrapped, options
         result.parsedSequence.sequence += line;
     }
 };
+
+
+module.exports = addPromiseOption(fastaToJson);

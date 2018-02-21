@@ -1,4 +1,5 @@
 const createInitialSequence = require('./utils/createInitialSequence')
+const addPromiseOption = require('./utils/addPromiseOption')
 
 async function ab1ToJson(fileObj, onFileParsed, options = {}) {
   const arrayBuffer = await getArrayBufferFromFile(fileObj);
@@ -14,7 +15,7 @@ async function ab1ToJson(fileObj, onFileParsed, options = {}) {
   onFileParsed([returnVal]);
 }
 
-module.exports = ab1ToJson;
+module.exports = addPromiseOption(ab1ToJson);
 
 function getArrayBufferFromFile(file) {
   if (typeof window === "undefined") {

@@ -7,3 +7,4 @@ module.exports = {
   ab1ToJson: require('./ab1ToJson'),
   jsonToFasta: require('./jsonToFasta'),
 }
+

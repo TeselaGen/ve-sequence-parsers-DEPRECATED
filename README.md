@@ -7,8 +7,8 @@
   - [Format Specification](#format-specification)
   - [Useage](#useage)
     - [install](#install)
-    - [jsonToGenbank (same interface as jsonToFasta)](#jsontogenbank-same-interface-as-jsontofasta)
-    - [anyToJson](#anytojson)
+    - [jsonToGenbank (same interface as jsonToFasta) (no async required!)](#jsontogenbank-same-interface-as-jsontofasta-no-async-required)
+    - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anytojson-same-interface-as-genbanktojson-fastatojson-xxxxtojson-async-required)
     - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxtojson)
     - [ab1ToJson](#ab1tojson)
     - [genbankToJson](#genbanktojson)
@@ -90,7 +90,7 @@ or
 
 `yarn add bio-parsers`
 
-### jsonToGenbank (same interface as jsonToFasta)
+### jsonToGenbank (same interface as jsonToFasta) (no async required!)
 ```js
 //To go from json to genbank:
 const jsonToGenbank = require('bio-parsers').jsonToGenbank;
@@ -122,7 +122,7 @@ const options = {
 const genbankString = jsonToGenbank(generalizedJsonFormat, options)
 
 ```
-### anyToJson
+### anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)
 
 ```js
 const anyToJson = require('bio-parsers').anyToJson;
@@ -130,7 +130,7 @@ anyToJson(
   stringOrFile, //if ab1 files are being passed in you should pass files only, otherwise strings or files are fine as inputs
   onFinishedCallback, 
   options //options.fileName (eg "pBad.ab1" or "pCherry.fasta") is important to pass here in order for the parser to !
-)
+) 
 
 function onFinishedCallback (results) {
   //we always return an array of results because some files my contain multiple sequences 
@@ -140,6 +140,10 @@ function onFinishedCallback (results) {
   //chromatogram data will be here (ab1 only): 
   results[0].parsedSequence.chromatogramData 
 }
+
+//or use it as a promise! 
+const results = await anyToJson(stringOrFile, options)
+
 ```
 
 ### Options (for anyToJson or xxxxToJson)
@@ -173,6 +177,10 @@ function onFinishedCallback (results) {
   //chromatogram data will be here (ab1 only): 
   results[0].parsedSequence.chromatogramData 
 }
+
+
+//or use it as a promise! 
+const results = await ab1ToJson(stringOrFile, options)
 ```
 
 
@@ -233,6 +241,11 @@ genbankToJson(string, function(result) {
   //     }
   // ]
 },options)
+
+
+
+//or use it as a promise! 
+const results = await genbankToJson(stringOrFile, options)
 ```
 
 You can see more examples by looking at the tests.
@@ -242,11 +255,11 @@ You can see more examples by looking at the tests.
 ## Editing This Repo
 ### All collaborators:
 Edit/create a new file and update/add any relevant tests.
-Make sure they pass by running `npm test`
+Make sure they pass by running `yarn test`
 
 ## Debug
 ```
-mocha ./test --inspect --debug-brk
+yarn test-debug
 ```
 
 ## Updating this repo
