@@ -153,7 +153,7 @@ function getFileString(file) {
     reader.readAsText(file, "UTF-8");
     return new Promise(function (resolve, reject) {
         reader.onload = function (evt) {
-            resolve(file);
+            resolve(evt.target.result);
         };
         reader.onerror = function (err) {
             console.error("err:", err);

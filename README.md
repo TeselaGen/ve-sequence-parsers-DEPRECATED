@@ -180,7 +180,7 @@ function onFinishedCallback (results) {
 
 
 //or use it as a promise! 
-const results = await ab1ToJson(stringOrFile, options)
+const results = await ab1ToJson(file, options)
 ```
 
 
@@ -245,7 +245,7 @@ genbankToJson(string, function(result) {
 
 
 //or use it as a promise! 
-const results = await genbankToJson(stringOrFile, options)
+const results = await genbankToJson(string, options)
 ```
 
 You can see more examples by looking at the tests.
