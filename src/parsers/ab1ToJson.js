@@ -25,7 +25,7 @@ function getArrayBufferFromFile(file) {
   const reader = new window.FileReader();
   return new Promise((resolve, reject) => {
     reader.onload = e => {
-      resolve(e.target.value);
+      resolve(e.target.result);
     };
     reader.onerror = err => {
       console.error("err:", err);
