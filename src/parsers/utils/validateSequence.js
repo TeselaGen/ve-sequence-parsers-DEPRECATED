@@ -12,12 +12,16 @@ const {filterAminoAcidSequenceString, filterSequenceString, guessIfSequenceIsDna
     messages: [],
   };
  */
-module.exports = function validateSequence(sequence, options) {
-    options = options || {}
-    let isProtein = options.isProtein || false;
-    const guessIfProtein = options.guessIfProtein || false;
-    const guessIfProteinOptions = options.guessIfProteinOptions || {};
-    const reformatSeqName = options.reformatSeqName;
+module.exports = function validateSequence(sequence, {
+    isProtein,
+    guessIfProtein,
+    guessIfProteinOptions,
+    reformatSeqName,
+    inclusive1BasedStart,
+    inclusive1BasedEnd,
+    additionalValidChars,
+}={}) {
+    
 
     const response = {
         validatedAndCleanedSequence: {},
@@ -75,7 +79,7 @@ module.exports = function validateSequence(sequence, options) {
             sequence.type = 'DNA';
         }
 
-        validChars = filterSequenceString(sequence.sequence);
+        validChars = filterSequenceString(sequence.sequence, additionalValidChars);
         if (validChars !== sequence.sequence) {
             sequence.sequence = validChars;
             response.messages.push("Import Error: Illegal character(s) detected and removed from sequence. Allowed characters are: atgcyrswkmbvdhn");
@@ -113,16 +117,16 @@ module.exports = function validateSequence(sequence, options) {
             response.messages.push('Unable to detect valid name for feature, setting name to "Untitled Feature"');
             feature.name = 'Untitled Feature';
         }
-        if (!areNonNegativeIntegers([feature.start]) || feature.start > (sequence.size - (options.inclusive1BasedStart ? 0 : 1))) {
+        if (!areNonNegativeIntegers([feature.start]) || feature.start > (sequence.size - (inclusive1BasedStart ? 0 : 1))) {
             response.messages.push('Invalid feature start: ' + feature.start + ' detected for ' + feature.name + ' and set to 1'); //setting it to 0 internally, but users will see it as 1
             feature.start = 0;
         }
-        if (!areNonNegativeIntegers([feature.end]) || feature.end > (sequence.size - (options.inclusive1BasedEnd ? 0 : 1))) {
+        if (!areNonNegativeIntegers([feature.end]) || feature.end > (sequence.size - (inclusive1BasedEnd ? 0 : 1))) {
             response.messages.push('Invalid feature end:  ' + feature.end + ' detected for ' + feature.name + ' and set to 1'); //setting it to 0 internally, but users will see it as 1
             feature.end = 0;
         }
 
-        if ((feature.start - (options.inclusive1BasedStart ? 0 : 1))  > (feature.end - (options.inclusive1BasedEnd ? 0 : 1)) && sequence.circular === false) {
+        if ((feature.start - (inclusive1BasedStart ? 0 : 1))  > (feature.end - (inclusive1BasedEnd ? 0 : 1)) && sequence.circular === false) {
             if (circularityExplicitlyDefined) {
                 response.messages.push('Invalid circular feature detected in explicitly linear sequence. ' + feature.name + '. start set to 1'); //setting it to 0 internally, but users will see it as 1
                 feature.start = 0;
