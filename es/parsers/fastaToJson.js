@@ -82,11 +82,11 @@ function fastaToJson(fileString, onFileParsedUnwrapped, options) {
     function parseSequenceLine(line) {
         // http://www.ncbi.nlm.nih.gov/BLAST/blastcgihelp.shtml says
         // that the sequence can be interspersed with numbers and/or spaces and - dashes for gaps.
-        if (line.match(/[\s0-9-]/)) {
-            line = line.replace(/[\s[0-9-]/g, "");
-            var msg = "Warning: spaces, numbers and/or dashes were removed from sequence";
-            result.messages.indexOf(msg === -1) && result.messages.push(msg);
-        }
+        // if (options && !options.doNotRemoveDashes && line.match(/[\s0-9-]/)) {
+        //     line = line.replace(/[\s[0-9-]/g, "");
+        //     const msg = "Warning: spaces, numbers and/or dashes were removed from sequence"
+        //     result.messages.indexOf(msg === -1) && result.messages.push(msg);
+        // }
         result.parsedSequence.sequence += line;
     }
 };
