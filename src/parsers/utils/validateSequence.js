@@ -20,6 +20,7 @@ module.exports = function validateSequence(sequence, {
     inclusive1BasedStart,
     inclusive1BasedEnd,
     additionalValidChars,
+    acceptParts
 }={}) {
     
 
@@ -177,6 +178,14 @@ module.exports = function validateSequence(sequence, {
         } else if (feature.notes.name) {
             //name was used for name (if it existed)
             delete feature.notes.name;
+        }
+        if (acceptParts && feature.notes.pragma && feature.notes.pragma[0] === "Teselagen_Part") {
+            if (!sequence.parts) {
+                sequence.parts = [] //initialize an empty array if necessary
+            }
+            feature.type = "part"
+            sequence.parts.push(feature)
+            return false //don't include the features 
         }
         return true;
     });
