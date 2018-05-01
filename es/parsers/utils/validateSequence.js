@@ -30,7 +30,8 @@ module.exports = function validateSequence(sequence) {
         reformatSeqName = _ref.reformatSeqName,
         inclusive1BasedStart = _ref.inclusive1BasedStart,
         inclusive1BasedEnd = _ref.inclusive1BasedEnd,
-        additionalValidChars = _ref.additionalValidChars;
+        additionalValidChars = _ref.additionalValidChars,
+        acceptParts = _ref.acceptParts;
 
     var response = {
         validatedAndCleanedSequence: {},
@@ -183,6 +184,14 @@ module.exports = function validateSequence(sequence) {
         } else if (feature.notes.name) {
             //name was used for name (if it existed)
             delete feature.notes.name;
+        }
+        if (acceptParts && feature.notes.pragma && feature.notes.pragma[0] === "Teselagen_Part") {
+            if (!sequence.parts) {
+                sequence.parts = []; //initialize an empty array if necessary
+            }
+            feature.type = "part";
+            sequence.parts.push(feature);
+            return false; //don't include the features 
         }
         return true;
     });

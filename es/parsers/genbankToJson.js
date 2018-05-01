@@ -1,3 +1,4 @@
+/* eslint-disable no-var*/
 var constants = require('./utils/constants');
 var flattenSequenceArray = require('./utils/flattenSequenceArray');
 var validateSequenceArray = require('./utils/validateSequenceArray');

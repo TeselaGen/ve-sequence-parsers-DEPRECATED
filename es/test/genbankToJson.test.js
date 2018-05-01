@@ -280,6 +280,42 @@ describe('genbankToJson tests', function() {
             done();
         });
     });
+    it('parses a .gb file with tags on parts, adding parts if acceptParts = true', function(done) {
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbFileWithTagsOnParts.gb'), "utf8");
+        genbankToJson(string, function(result) {
+           result.should.be.an('array');
+            result[0].success.should.be.true;
+            result[0].parsedSequence.features.should.not.include.something.that.deep.equals({
+                notes: {
+                    pragma: ['Teselagen_Part'],
+                    preferred3PrimeOverhangs: [''],
+                    preferred5PrimeOverhangs: [''],
+                    tag: ['blue', 'red']
+                },
+                name: 'pS8c-gfpuv',
+                start: 1238,
+                end: 1234,
+                type: 'misc_feature',
+                strand: 1
+            });
+            result[0].parsedSequence.parts.should.include.something.that.deep.equals({
+                notes: {
+                    pragma: ['Teselagen_Part'],
+                    preferred3PrimeOverhangs: [''],
+                    preferred5PrimeOverhangs: [''],
+                    tag: ['red', 'green']
+                },
+                name: 'pS8c-gfpuv_sig_pep_vector_backbone',
+                start: 1238,
+                end: 1234,
+                type: 'part',
+                strand: 1
+            });
+            done();
+        }, {
+            acceptParts: true
+        });
+    });
 
 });
 // const string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
