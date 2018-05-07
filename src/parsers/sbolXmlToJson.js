@@ -79,7 +79,6 @@ function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
 //  * Check for each level and parse downward from there.
 // tnrtodo: this should be tested with a wider variety of sbol file types!
 function parseSbolJson(sbolJson, options) {
-    // console.log('sbolJson', JSON.stringify(sbolJson, null, 4));
     var name;
     if (access(sbolJson, 'name[0]')) {
         name = access(sbolJson, 'name[0]');
@@ -112,7 +111,6 @@ function parseSbolJson(sbolJson, options) {
                 } else {
                     var displayMatches = waldo.byName('displayId', feature);
                     if (displayMatches[0] && displayMatches[0].value && displayMatches[0].value[0]) {
-                        // console.log('displayMatches[0].value', displayMatches[0].value);
                         featureName = displayMatches[0].value[0];
                     }
                 }

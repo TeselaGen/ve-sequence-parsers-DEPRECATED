@@ -10,6 +10,21 @@ chai.use(require('chai-things'));
 chai.should();
 
 describe('genbankToJson tests', function() {
+    it('truncates a feature that runs off the end to the end instead of to 0', function(done) {
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbWithWrappingFeature.gb'), "utf8");
+        genbankToJson(string, function(result) {
+           result.should.be.an('array');
+            result[0].success.should.be.true;
+            result[0].parsedSequence.size.should.equal(103)
+            result[0].parsedSequence.features.should.containSubset([{
+                name: "GFPuv",
+                start: 0,
+                end: 102
+            }])
+            // result[0].parsedSequence.size.should.equal(108)
+            done();
+        });
+    });
     it('handles parsing of a protein genbank correctly, making sure not to have too long of feature names', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/proteinTestSeq1.gp'), "utf8");
         const options = {isProtein: true}
@@ -19,7 +34,6 @@ describe('genbankToJson tests', function() {
             result[0].parsedSequence.features.forEach(function(feat){
                 feat.name.length.should.be.below(101);
             });
-            // console.log('result',JSON.stringify(result,null,4))
             done();
         }, options);
     });
@@ -31,7 +45,6 @@ describe('genbankToJson tests', function() {
             result[0].success.should.be.true;
             result[0].parsedSequence.features.should.be.length(4);
             
-            // console.log('result[0]:',JSON.stringify(result[0],null,4))
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {product: ["Rfp"]},
                 name: 'red fluorescent protein',
@@ -51,7 +64,6 @@ describe('genbankToJson tests', function() {
             result[0].success.should.be.true;
             result[0].parsedSequence.features.should.be.length(4);
             
-            // console.log('result[0]:',JSON.stringify(result[0],null,4))
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {product: ["Rfp"]},
                 name: 'red fluorescent protein',
@@ -239,7 +251,6 @@ describe('genbankToJson tests', function() {
     it('parses a .gb file with joined features (aka a single feature with multiple locations) and splits them into multiple individaul features', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/RTO4_16460_joined_feature.gb'), "utf8");
         genbankToJson(string, function(result) {
-            // console.log('result:',JSON.stringify(result,null,4))
            result.should.be.an('array');
             result[0].success.should.be.true;
             result[0].parsedSequence.features.length.should.equal(12)

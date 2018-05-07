@@ -124,7 +124,8 @@ module.exports = function validateSequence(sequence, {
         }
         if (!areNonNegativeIntegers([feature.end]) || feature.end > (sequence.size - (inclusive1BasedEnd ? 0 : 1))) {
             response.messages.push('Invalid feature end:  ' + feature.end + ' detected for ' + feature.name + ' and set to 1'); //setting it to 0 internally, but users will see it as 1
-            feature.end = 0;
+            feature.end = Math.max(sequence.size - 1, (inclusive1BasedEnd ? 0 : 1));
+            // feature.end = 0;
         }
 
         if ((feature.start - (inclusive1BasedStart ? 0 : 1))  > (feature.end - (inclusive1BasedEnd ? 0 : 1)) && sequence.circular === false) {
