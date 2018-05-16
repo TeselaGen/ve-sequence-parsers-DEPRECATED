@@ -10,6 +10,14 @@ chai.use(require('chai-things'));
 chai.should();
 
 describe('genbankToJson tests', function() {
+    it('does not give an erroneous feature name too long warning', function(done) {
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/pRF127_GanBankStandard.gb'), "utf8");
+        genbankToJson(string, function(result) {
+            console.log('result:',result)
+            result[0].messages.length.should.equal(0)
+            done();
+        });
+    });
     it('truncates a feature that runs off the end to the end instead of to 0', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbWithWrappingFeature.gb'), "utf8");
         genbankToJson(string, function(result) {

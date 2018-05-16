@@ -138,7 +138,6 @@ gacta --- asdf-c-a
       string,
       function(result) {
         result[0].parsedSequence.type.should.equal("PROTEIN");
-        console.log("result[0].parsedSequence:", result[0].parsedSequence);
         done();
       },
       { guessIfProtein: true }

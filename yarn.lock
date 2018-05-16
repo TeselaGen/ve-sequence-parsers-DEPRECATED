@@ -5149,6 +5149,10 @@ lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.2, l
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
+lodash@^4.17.10:
+  version "4.17.10"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
+
 log-driver@1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/log-driver/-/log-driver-1.2.5.tgz#7ae4ec257302fd790d557cb10c97100d857b0056"
@@ -8160,16 +8164,16 @@ vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
 
-ve-range-utils@^2.3.3:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/ve-range-utils/-/ve-range-utils-2.3.3.tgz#364d0fdfaa047b6e3b967ff287886fa09edbc027"
+ve-range-utils@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/ve-range-utils/-/ve-range-utils-2.5.0.tgz#4ad3ea1ed5d4f69b7db39a537e914b9a34eed2f7"
   dependencies:
     lodash "^4.17.4"
     validate.io-nonnegative-integer-array "^1.0.1"
 
-ve-sequence-utils@3.2.34:
-  version "3.2.34"
-  resolved "https://registry.yarnpkg.com/ve-sequence-utils/-/ve-sequence-utils-3.2.34.tgz#b060c7bd442b6c7877bcc39363d26999b8b27811"
+ve-sequence-utils@3.2.46:
+  version "3.2.46"
+  resolved "https://registry.yarnpkg.com/ve-sequence-utils/-/ve-sequence-utils-3.2.46.tgz#d10f03059490059a4c8ff029c716efb17493f978"
   dependencies:
     bson-objectid "^1.1.1"
     escape-string-regexp "^1.0.5"

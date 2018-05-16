@@ -34,8 +34,8 @@
     "nwb": "^0.19.0",
     "prettier": "^1.6.1",
     "tap": "^2.3.0",
-    "ve-range-utils": "^2.3.3",
-    "ve-sequence-utils": "3.2.34"
+    "ve-range-utils": "^2.5.0",
+    "ve-sequence-utils": "3.2.46"
   },
   "peerDependencies": {
     "ve-range-utils": "^2.3.3",
@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "flatmap": "0.0.3",
-    "lodash": "^4.13.1",
+    "lodash": "^4.17.10",
     "safe-access": "^0.1.0",
     "validate.io-nonnegative-integer-array": "^1.0.1",
     "waldojs": "^0.1.9",

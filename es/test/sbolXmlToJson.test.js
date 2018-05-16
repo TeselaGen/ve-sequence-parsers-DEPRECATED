@@ -48,13 +48,11 @@ describe('sbolXmlToJson', function() {
 // });
 // var string = fs.readFileSync(path.join(__dirname, '../../../..', 'testing/sequence_data/sbol/jbei-seq.xml'), "utf8");
 // (string, function (result) {
-//  console.log('result', result)
 //     assert.equal(result[0].parsedSequence.name, 'signal_pep');
 //     assert.equal(result[0].parsedSequence.circular, false);
 //     assert.equal(result[0].parsedSequence.extraLines, null);
 //     assert.equal(result[0].parsedSequence.features.length, 1);
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
-//         console.log('feature', feature);
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
 //         if (feature.name === 'signal_peptide' && feature.start === 0 && feature.end === 63 && feature.type === 'CDS' && feature.strand === 1) {
@@ -66,13 +64,11 @@ describe('sbolXmlToJson', function() {
 //
 // var string = fs.readFileSync(path.join(__dirname, '../../../..', 'testing/sequence_data/sbol/sbol_example.xml'), "utf8");
 // (string, function (result) {
-//  console.log('result', JSON.stringify(result,null,4));
 //     assert.equal(result[0].parsedSequence.name, 'pBbS8c-RFP');
 //     assert.equal(result[0].parsedSequence.circular, false);
 //     assert.equal(result[0].parsedSequence.extraLines, null);
 //     assert.equal(result[0].parsedSequence.features.length, 13);
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
-//         console.log('feature', feature);
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
 //         if (feature.name === 'pBAD\\promoter' && feature.start === 1160 && feature.end === 1187 && feature.type === 'misc_feature' && feature.strand === 1) { //there is a little bit of weirdness here with the xml2js conversion adding an extra \ character
@@ -84,13 +80,11 @@ describe('sbolXmlToJson', function() {
 //
 // var string = fs.readFileSync(path.join(__dirname, '../../../..', 'testing/sequence_data/sbol/sbol_example.xml'), "utf8");
 // (string, function (result) {
-//  console.log('result', JSON.stringify(result,null,4));
 //     assert.equal(result[0].parsedSequence.name, 'pBbS8c-RFP');
 //     assert.equal(result[0].parsedSequence.circular, false);
 //     assert.equal(result[0].parsedSequence.extraLines, null);
 //     assert.equal(result[0].parsedSequence.features.length, 13);
 //     assert(result[0].parsedSequence.features.filter(function(feature) {
-//         console.log('feature', feature);
 //         //tnrtodo: add testing of note's parsing
 //         //and add more features, not just 1
 //         if (feature.name === 'pBAD\\promoter' && feature.start === 1160 && feature.end === 1187 && feature.type === 'misc_feature' && feature.strand === 1) { //there is a little bit of weirdness here with the xml2js conversion adding an extra \ character
