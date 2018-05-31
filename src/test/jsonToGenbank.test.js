@@ -1,3 +1,4 @@
+/* eslint-disable no-var*/ 
 var parseGenbank = require('../parsers/genbankToJson');
 var jsonToGenbank = require('../parsers/jsonToGenbank');
 var path = require("path");
@@ -58,8 +59,9 @@ describe('genbank exporter/parser conversion', function() {
         var string = fs.readFileSync(path.join(__dirname, './testData/genbank/testGenbankFile.gb'), "utf8");
         parseGenbank(string, function(result) {
             result[0].parsedSequence.name.should.equal('pj5_00001');
+            result[0].parsedSequence.definition.should.equal('promoter seq from pBAD33.');
             result[0].parsedSequence.circular.should.equal(true);
-            result[0].parsedSequence.extraLines.length.should.equal(3);
+            result[0].parsedSequence.extraLines.length.should.equal(2);
             result[0].parsedSequence.features.length.should.equal(21);
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {
@@ -75,10 +77,12 @@ describe('genbank exporter/parser conversion', function() {
             });
             result[0].parsedSequence.sequence.length.should.equal(5299);
             var exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
+            console.log('exportedGenbankString:',exportedGenbankString)
             parseGenbank(exportedGenbankString, function(result) {
                 result[0].parsedSequence.name.should.equal('pj5_00001');
+                result[0].parsedSequence.definition.should.equal('promoter seq from pBAD33.');
                 result[0].parsedSequence.circular.should.equal(true);
-                result[0].parsedSequence.extraLines.length.should.equal(3);
+                result[0].parsedSequence.extraLines.length.should.equal(2);
                 result[0].parsedSequence.features.length.should.equal(21);
                 result[0].parsedSequence.features.should.include.something.that.deep.equals({
                     notes: {
