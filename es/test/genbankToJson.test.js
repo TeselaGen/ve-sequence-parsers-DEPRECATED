@@ -10,6 +10,14 @@ chai.use(require('chai-things'));
 chai.should();
 
 describe('genbankToJson tests', function() {
+    it('parses the sequence definition field', function(done) {
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/pRF127_GanBankStandard.gb'), "utf8");
+        genbankToJson(string, function(result) {
+            console.log('result:',result)
+            result[0].parsedSequence.definition.should.equal("synthetic circular DNA")
+            done();
+        });
+    });
     it('does not give an erroneous feature name too long warning', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/pRF127_GanBankStandard.gb'), "utf8");
         genbankToJson(string, function(result) {
@@ -221,7 +229,7 @@ describe('genbankToJson tests', function() {
         genbankToJson(string, function(result) {
             result[0].parsedSequence.name.should.equal('pj5_00001');
             result[0].parsedSequence.circular.should.equal(true);
-            result[0].parsedSequence.extraLines.length.should.equal(3);
+            result[0].parsedSequence.extraLines.length.should.equal(2);
             result[0].parsedSequence.features.length.should.equal(21);
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {
