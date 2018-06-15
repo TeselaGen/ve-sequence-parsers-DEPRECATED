@@ -1,3 +1,4 @@
+/* eslint-disable no-var*/ 
 var parseString = require('xml2js').parseString;
 var flatmap = require('flatmap');
 var access = require('safe-access');
