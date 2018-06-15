@@ -42,6 +42,7 @@
     "ve-sequence-utils": "^3.2.19"
   },
   "dependencies": {
+    "bufferpack": "^0.0.6",
     "flatmap": "0.0.3",
     "lodash": "^4.17.10",
     "safe-access": "^0.1.0",
