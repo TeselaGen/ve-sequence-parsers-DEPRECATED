@@ -1,22 +1,27 @@
-//TODO
+// TODO
 // export a working function, currently this is hardcoded to read just 1 file
-//todo: make this work in both node and the browser (be able to pass a binary file object in either)
-//add tests for things we're interested in features/circularity/sequence
+// make this work in both node and the browser (be able to pass a binary file object in either)
+// add tests for things we're interested in, features/circularity/sequence
 
 const bufferpack = require("bufferpack");
 const fs = require("fs");
 const xml2Js = require("xml2js");
 
-fs.open("../test/testData/dna/test_sequence_1.dna", "r", async function(
+const addPromiseOption = require('./utils/addPromiseOption');
+// async function snapgeneToJson(fileObj) {
+
+// fs.open("../test/testData/dna/GFPuv_025_fwdfeature_circular.dna", "r", async function(
+fs.open("/Users/tiffanydai/Sites/ve-sequence-parsers/src/test/testData/dna/GFPuv_025_fwdfeature_linear.dna", "r", async function(
   status,
   fd
 ) {
   if (status) {
     return;
   }
+
   function read(size, fmt) {
     // if (size < 0) debugger;
-    const buffer = Buffer.alloc(size, undefined, "binary`");
+    const buffer = Buffer.alloc(size, undefined, "binary");
 
     return new Promise((resolve, reject) => {
       fs.read(fd, buffer, 0, size, null, function(err, num) {
@@ -28,14 +33,15 @@ fs.open("../test/testData/dna/test_sequence_1.dna", "r", async function(
       });
     });
   }
+
   async function unpack(size, mode) {
     const readd = await read(size);
     const unpacked = await bufferpack.unpack(">" + mode, readd);
     return await unpacked[0];
   }
+
   try {
     await read(1); //read the first byte
-
     // READ THE DOCUMENT PROPERTIES
     const length = await unpack(4, "I");
     const title = await read(8, "ascii");
@@ -94,14 +100,16 @@ fs.open("../test/testData/dna/test_sequence_1.dna", "r", async function(
         //     length=block_size - 1
         //   }
         data.sequence = await read(size, "ascii");
-      } else if (ord(next_byte) === 6) {
-        //       # READ THE NOTES
-        const block_content = read(block_size, "utf8");
-        const xml = parseXml(block_content);
-        console.log("xml:", xml);
-        //   note_data = parse_dict(xmltodict.parse(block_content))
-        //   data['notes'] = note_data['Notes']
-      } else if (ord(next_byte) === 10) {
+      } 
+      // else if (ord(next_byte) === 6) {
+      //   //       # READ THE NOTES
+      //   const block_content = read(block_size, "utf8");
+      //   const xml = parseXml(block_content);
+      //   console.log("xml:", xml);
+      //   //   note_data = parse_dict(xmltodict.parse(block_content))
+      //   //   data['notes'] = note_data['Notes']
+      // } 
+      else if (ord(next_byte) === 10) {
         //   # READ THE FEATURES
         const strand_dict = { "0": ".", "1": "+", "2": "-", "3": "=" };
         //   const format_dict = {'@text': parse, '@int': int}
@@ -132,14 +140,13 @@ fs.open("../test/testData/dna/test_sequence_1.dna", "r", async function(
                 };
               });
             const { directionality } = attrs;
-
             data.features.push({
               ...attrs,
               strand: strand_dict[directionality],
               start: maxStart,
               end: maxEnd,
               color,
-              segments
+              // segments
             });
           }
         );
@@ -149,13 +156,25 @@ fs.open("../test/testData/dna/test_sequence_1.dna", "r", async function(
       }
 
       console.log("data:", data);
+      // const parsedSequence = {
+      //   name: "",
+      //   sequence: data.sequence,
+      //   features: data.features
+      // }
+      // console.log('parsedSequence:',parsedSequence)
+      // return parsedSequence;
     }
   } catch (error) {
     console.log("error:", error);
   }
   console.log(":");
   // while True:
+
 });
+// }
+
+// module.exports = addPromiseOption(snapgeneToJson);
+
 
 function getStartAndEndFromRangeString(rangestring) {
   const [start, end] = rangestring.split("-");
