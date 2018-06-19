@@ -8,10 +8,11 @@ const fs = require("fs");
 const xml2Js = require("xml2js");
 
 const addPromiseOption = require('./utils/addPromiseOption');
-// async function snapgeneToJson(fileObj) {
+
+// async function snapgeneToJson(string) {
 
 // fs.open("../test/testData/dna/GFPuv_025_fwdfeature_circular.dna", "r", async function(
-fs.open("/Users/tiffanydai/Sites/ve-sequence-parsers/src/test/testData/dna/GFPuv_025_fwdfeature_linear.dna", "r", async function(
+fs.open("/Users/tiffanydai/Sites/ve-sequence-parsers/src/test/testData/dna/GFPuv_025_fwdfeature_circular.dna", "r", async function(
   status,
   fd
 ) {
@@ -87,6 +88,7 @@ fs.open("/Users/tiffanydai/Sites/ve-sequence-parsers/src/test/testData/dna/GFPuv
       if (ord(next_byte) === 0) {
         //   # READ THE SEQUENCE AND ITS PROPERTIES
         const props = await unpack(1, "b");
+        console.log('props:',props)
         data.circular = !!props;
         const size = block_size - 1;
         if (size < 0) return (keepgoing = false);
@@ -100,7 +102,7 @@ fs.open("/Users/tiffanydai/Sites/ve-sequence-parsers/src/test/testData/dna/GFPuv
         //     length=block_size - 1
         //   }
         data.sequence = await read(size, "ascii");
-      } 
+      }
       // else if (ord(next_byte) === 6) {
       //   //       # READ THE NOTES
       //   const block_content = read(block_size, "utf8");
@@ -150,7 +152,8 @@ fs.open("/Users/tiffanydai/Sites/ve-sequence-parsers/src/test/testData/dna/GFPuv
             });
           }
         );
-      } else {
+      } 
+      else {
         // # WE IGNORE THE WHOLE BLOCK
         await read(block_size); //we don't do anything with this
       }
