@@ -91,7 +91,10 @@ async function snapgeneToJson(
     if (ord(next_byte) === 0) {
       //   # READ THE SEQUENCE AND ITS PROPERTIES
       const props = await unpack(1, "b");
-      data.circular = !!props;
+      console.log('props:',props)
+      const binaryRep = dec2bin(props)
+
+      data.circular = isFirstBitA1(binaryRep)
       const size = block_size - 1;
       if (size < 0) return 
       data.size = size;
@@ -217,3 +220,11 @@ function parseXml(string) {
 
 
 module.exports = addPromiseOption(snapgeneToJson)
+
+function dec2bin(dec){
+  return (dec >>> 0).toString(2);
+}
+
+function isFirstBitA1(num){
+  return Number(num.toString().split('').pop()) === 1
+}
