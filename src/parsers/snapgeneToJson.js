@@ -1,3 +1,6 @@
+//note: Huge credit and thanks go to IsaacLuo from whose python repository this code was adapted
+// https://github.com/IsaacLuo/SnapGeneFileReader
+
 const bufferpack = require("bufferpack");
 const xml2Js = require("xml2js");
 const { StringDecoder } = require("string_decoder");

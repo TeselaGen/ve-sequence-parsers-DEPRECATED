@@ -27,7 +27,7 @@ var anyToJson = function () {
                         }
 
                         fileContentString = fileContentStringOrFileObj;
-                        _context.next = 16;
+                        _context.next = 20;
                         break;
 
                     case 9:
@@ -39,13 +39,21 @@ var anyToJson = function () {
                         return _context.abrupt('return', ab1ToJson(fileContentStringOrFileObj, onFileParsed, options));
 
                     case 13:
-                        _context.next = 15;
+                        if (!/^(.dna)$/.test(ext)) {
+                            _context.next = 17;
+                            break;
+                        }
+
+                        return _context.abrupt('return', snapgeneToJson(fileContentStringOrFileObj, onFileParsed, options));
+
+                    case 17:
+                        _context.next = 19;
                         return getFileString(fileContentStringOrFileObj);
 
-                    case 15:
+                    case 19:
                         fileContentString = _context.sent;
 
-                    case 16:
+                    case 20:
 
                         if (/^(fasta|fas|fa|fna|ffn)$/.test(ext)) {
                             // FASTA
@@ -107,7 +115,7 @@ var anyToJson = function () {
 
                         //helper function to determine whether or not the parsing was successful or not
 
-                    case 17:
+                    case 21:
                     case 'end':
                         return _context.stop();
                 }
@@ -126,6 +134,8 @@ var fastaToJson = require('./fastaToJson');
 var genbankToJson = require('./genbankToJson');
 var xmlParser = require('./sbolXmlToJson');
 var extractFileExtension = require('./utils/extractFileExtension.js');
+var snapgeneToJson = require('./snapgeneToJson');
+var ab1ToJson = require('./ab1ToJson');
 
 /**
  * takes in file content string and its file name and determines what parser it needs to be sent to.
@@ -133,7 +143,6 @@ var extractFileExtension = require('./utils/extractFileExtension.js');
  * @param  {string} fileContentString content of the file as a string
  * @param  {callback} onFileParsed    //tnr: fill this out
  */
-var ab1ToJson = require('./ab1ToJson');
 var addPromiseOption = require('./utils/addPromiseOption');
 
 ;
@@ -145,7 +154,7 @@ function getFileString(file) {
         //we're in a node context
         return file;
     }
-    var reader = new FileReader();
+    var reader = new window.FileReader();
     reader.readAsText(file, "UTF-8");
     return new Promise(function (resolve, reject) {
         reader.onload = function (evt) {

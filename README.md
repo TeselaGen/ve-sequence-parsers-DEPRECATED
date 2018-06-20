@@ -18,6 +18,7 @@
   - [Updating this repo](#updating-this-repo)
     - [Teselagen collaborators](#teselagen-collaborators)
     - [Outside collaborators](#outside-collaborators)
+  - [Thanks/Collaborators](#thankscollaborators)
 
 <!-- /TOC -->
 ## About this Repo
@@ -275,3 +276,9 @@ npm publish
 
 ### Outside collaborators
 fork and pull request please :)
+
+
+## Thanks/Collaborators
+ - IsaacLuo - https://github.com/IsaacLuo/SnapGeneFileReader (from which the snapgene parser was adapted)
+ - Joshua Nixon (original collaborator)
+ - Thomas Rich (original collaborator)

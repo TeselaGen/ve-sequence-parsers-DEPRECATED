@@ -1,7 +1,7 @@
-module.exports = function convertToNewDataType(oldTeselagenJson) {
+module.exports = function convertOldSequenceDataToNewDataType(oldTeselagenJson) {
   //after the file has been parsed, but before it's been saved, check for features with multiple locations and split them
-  oldTeselagenJson.features.forEach(function (feature) {
-    if (feature.locations[0]) {
+  oldTeselagenJson && oldTeselagenJson.features.forEach(function (feature) {
+    if (feature.locations && feature.locations[0]) {
       if (feature.locations.length > 1) {
         for (var i = 1; i < feature.locations.length; i++) {
           //start at index 1, not 0!
