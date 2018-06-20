@@ -1,4 +1,4 @@
-var convertOldSequenceDataToNewDataType = require('./convertOldSequenceDataToNewDataType.js');
+const convertOldSequenceDataToNewDataType = require('./convertOldSequenceDataToNewDataType.js');
 module.exports = function flattenSequenceArray(parsingResultArray) {
     if (parsingResultArray) {
         if (!Array.isArray(parsingResultArray)) {

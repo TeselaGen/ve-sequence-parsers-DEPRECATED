@@ -1,5 +1,6 @@
 const createInitialSequence = require('./utils/createInitialSequence')
 const addPromiseOption = require('./utils/addPromiseOption')
+const getArrayBufferFromFile = require('./utils/getArrayBufferFromFile')
 
 async function ab1ToJson(fileObj, onFileParsed, options = {}) {
   const arrayBuffer = await getArrayBufferFromFile(fileObj);
@@ -17,23 +18,7 @@ async function ab1ToJson(fileObj, onFileParsed, options = {}) {
 
 module.exports = addPromiseOption(ab1ToJson);
 
-function getArrayBufferFromFile(file) {
-  if (typeof window === "undefined") {
-    return toArrayBuffer(file);
-  }
 
-  const reader = new window.FileReader();
-  return new Promise((resolve, reject) => {
-    reader.onload = e => {
-      resolve(e.target.result);
-    };
-    reader.onerror = err => {
-      console.error("err:", err);
-      reject(err);
-    };
-    reader.readAsArrayBuffer(file);
-  });
-}
 
 function abConverter(inputArrayBuffer) {
   const dirLocation = inputArrayBuffer.getInt32(26);
@@ -52,7 +37,7 @@ function abConverter(inputArrayBuffer) {
 
   this.getDirectoryStruct = () => {
     const br = "<br>";
-    const indent = "  ";
+    // const indent = "  ";
     let output = br;
     let name = "";
     for (let offset = 6; offset < 10; offset++) {
@@ -197,14 +182,6 @@ function abConverter(inputArrayBuffer) {
   };
 }
 
-function toArrayBuffer(buffer) {
-  const ab = new ArrayBuffer(buffer.length);
-  const view = new Uint8Array(ab);
-  for (let i = 0; i < buffer.length; ++i) {
-    view[i] = buffer[i];
-  }
-  return ab;
-}
 
 const tagDict = {
   baseCalls1: { tagName: "PBAS", tagNum: 1, typeToReturn: "getChar" },
