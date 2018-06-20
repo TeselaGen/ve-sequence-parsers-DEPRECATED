@@ -11,6 +11,7 @@
     - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anytojson-same-interface-as-genbanktojson-fastatojson-xxxxtojson-async-required)
     - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxtojson)
     - [ab1ToJson](#ab1tojson)
+    - [snapgeneToJson (.dna files)](#snapgenetojson-dna-files)
     - [genbankToJson](#genbanktojson)
   - [Editing This Repo](#editing-this-repo)
     - [All collaborators:](#all-collaborators)
@@ -27,10 +28,11 @@ This repo contains a set of parsers to convert between datatypes through a gener
 ## Exported Functions
 Use the following exports to convert to a generalized JSON format:
 ```
-fastaToJson //handles fasta files
-genbankToJson //handles genbank files
-ab1ToJson //handles ab1 sequencing read files 
-sbolXmlToJson //handles sbol files
+fastaToJson //handles fasta files (.fa, .fasta)
+genbankToJson //handles genbank files (.gb .gbk)
+ab1ToJson //handles .ab1 sequencing read files 
+sbolXmlToJson //handles .sbol files
+snapgeneToJson //handles snapgene (.dna) files
 anyToJson    //this handles any of the above file types based on file extension
 ```
 
@@ -165,8 +167,9 @@ const options = {
 ```js
 const ab1ToJson = require('bio-parsers').ab1ToJson;
 ab1ToJson(
-  file, //this can be either a browser file  <input type="file" id="input" multiple onchange="ab1ToJson(this.files[0])">
+  //this can be either a browser file  <input type="file" id="input" multiple onchange="ab1ToJson(this.files[0])">
   // or a node file ab1ToJson(fs.readFileSync(path.join(__dirname, './testData/ab1/example1.ab1')));
+  file, 
   onFinishedCallback, 
   options //options.fileName (eg "pBad.ab1" or "pCherry.fasta") is important to pass here in order for the parser to !
 )
@@ -185,6 +188,19 @@ function onFinishedCallback (results) {
 const results = await ab1ToJson(file, options)
 ```
 
+### snapgeneToJson (.dna files) 
+```js
+//All of the xXXXtoJson parsers work like this:
+const snapgeneToJson = require('bio-parsers').snapgeneToJson;
+//or alternatively (if using the package on the front end and you want to keep memory usage low)
+const snapgeneToJson = require('bio-parsers/parsers/snapgeneToJson');
+
+//file can be either a browser file  <input type="file" id="input" multiple onchange="snapgeneToJson(this.files[0])">
+// or a node file snapgeneToJson(fs.readFileSync(path.join(__dirname, './testData/ab1/example1.ab1')));
+snapgeneToJson(file, function(result) { 
+  console.log(result)
+},options)
+```
 
 ### genbankToJson
 
