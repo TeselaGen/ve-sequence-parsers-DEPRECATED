@@ -6,6 +6,7 @@ module.exports = {
   jsonToGenbank: require('./jsonToGenbank'),
   ab1ToJson: require('./ab1ToJson'),
   jsonToFasta: require('./jsonToFasta'),
-  snapgeneToJson: require('./snapgeneToJson')
+  snapgeneToJson: require('./snapgeneToJson'),
+  jsonToBed: require('./jsonToBed')
 }
 
