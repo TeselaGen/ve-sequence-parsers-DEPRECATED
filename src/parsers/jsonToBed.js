@@ -9,7 +9,7 @@ function jsonToBed(jsonSequence, options) {
   options = options || {};
 
   let sequenceNameToMatchFasta = "";
-  sequenceNameToMatchFasta += `>${name || "Untitled Sequence"}|`;
+  sequenceNameToMatchFasta += `${name || "Untitled Sequence"}|`;
   sequenceNameToMatchFasta += "|" + size;
   sequenceNameToMatchFasta += description ? "|" + description : "";
   sequenceNameToMatchFasta += "|" + (circular ?  "circular" : "linear");
