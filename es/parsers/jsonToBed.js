@@ -8,9 +8,9 @@ var fs = require('fs');
 
 function jsonToBed(jsonSequence, options) {
   var cleanedData = tidyUpSequenceData(jsonSequence);
-  var _cleanedData$0$parsed = cleanedData[0].parsedSequence,
-      name = _cleanedData$0$parsed.name,
-      features = _cleanedData$0$parsed.features;
+  var name = cleanedData.name,
+      features = cleanedData.features;
+  // const { name, features } = cleanedData[0].parsedSequence;
 
   options = options || {};
   var outString = "";
