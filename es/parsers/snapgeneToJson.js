@@ -73,7 +73,7 @@ var snapgeneToJson = function () {
 
             onFileParsed = function onFileParsed(sequences, options) {
               //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
-              onFileParsedUnwrapped(validateSequenceArray(flattenSequenceArray(sequences), options));
+              onFileParsedUnwrapped(validateSequenceArray(flattenSequenceArray(sequences, options), options));
             };
 
             returnVal = createInitialSequence(options);
@@ -141,7 +141,7 @@ var snapgeneToJson = function () {
 
           case 34:
             if (!(offset <= arrayBuffer.byteLength)) {
-              _context3.next = 65;
+              _context3.next = 64;
               break;
             }
 
@@ -157,7 +157,7 @@ var snapgeneToJson = function () {
             block_size = _context3.sent;
 
             if (!(ord(next_byte) === 0)) {
-              _context3.next = 57;
+              _context3.next = 56;
               break;
             }
 
@@ -166,8 +166,6 @@ var snapgeneToJson = function () {
 
           case 44:
             props = _context3.sent;
-
-            console.log('props:', props);
             binaryRep = dec2bin(props);
 
 
@@ -175,13 +173,13 @@ var snapgeneToJson = function () {
             size = block_size - 1;
 
             if (!(size < 0)) {
-              _context3.next = 51;
+              _context3.next = 50;
               break;
             }
 
             return _context3.abrupt("return");
 
-          case 51:
+          case 50:
             data.size = size;
             //   data["dna"] = {
             //     topology="circular" if props & 0x01 else "linear",
@@ -191,17 +189,17 @@ var snapgeneToJson = function () {
             //     ecoKIMethylated=props & 0x10 > 0,
             //     length=block_size - 1
             //   }
-            _context3.next = 54;
+            _context3.next = 53;
             return read(size, "ascii");
 
-          case 54:
+          case 53:
             data.sequence = _context3.sent;
-            _context3.next = 63;
+            _context3.next = 62;
             break;
 
-          case 57:
+          case 56:
             if (!(ord(next_byte) === 10)) {
-              _context3.next = 61;
+              _context3.next = 60;
               break;
             }
 
@@ -284,25 +282,25 @@ var snapgeneToJson = function () {
                   }
                 }
               }, _callee2, _this);
-            })(), "t8", 59);
+            })(), "t8", 58);
 
-          case 59:
-            _context3.next = 63;
+          case 58:
+            _context3.next = 62;
             break;
 
-          case 61:
-            _context3.next = 63;
+          case 60:
+            _context3.next = 62;
             return read(block_size);
 
-          case 63:
+          case 62:
             _context3.next = 34;
             break;
 
-          case 65:
+          case 64:
             returnVal.parsedSequence = data;
             onFileParsed([returnVal]);
 
-          case 67:
+          case 66:
           case "end":
             return _context3.stop();
         }

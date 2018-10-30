@@ -10,6 +10,25 @@ chai.use(require('chai-things'));
 chai.should();
 
 describe('genbankToJson tests', function() {
+    it('handles joined features/parts correctly', function(done) {
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbWithJoinedFeaturesAndParts.gb'), "utf8");
+        genbankToJson(string, function(result) {
+            result[0].parsedSequence.features.should.containSubset([{
+                name: 'reg_elem',
+                start: 867,
+                end: 1017,
+                locations: [{
+                    start: 867,
+                    end: 961,
+                },{
+                    start: 975,
+                    end: 1017,
+                }],
+                strand: 1
+            }]);
+            done();
+        }, {preserveLocations: true});
+    });
     it('parses the sequence definition field', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/pRF127_GanBankStandard.gb'), "utf8");
         genbankToJson(string, function(result) {
