@@ -21,7 +21,7 @@ async function snapgeneToJson(
   const onFileParsed = function(sequences, options) {
     //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
     onFileParsedUnwrapped(
-      validateSequenceArray(flattenSequenceArray(sequences), options)
+      validateSequenceArray(flattenSequenceArray(sequences, options), options)
     );
   };
   const returnVal = createInitialSequence(options)
@@ -94,7 +94,6 @@ async function snapgeneToJson(
     if (ord(next_byte) === 0) {
       //   # READ THE SEQUENCE AND ITS PROPERTIES
       const props = await unpack(1, "b");
-      console.log('props:',props)
       const binaryRep = dec2bin(props)
 
       data.circular = isFirstBitA1(binaryRep)

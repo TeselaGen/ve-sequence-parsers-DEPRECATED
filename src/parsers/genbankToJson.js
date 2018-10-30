@@ -12,7 +12,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   var onFileParsed = function(sequences, options) {
     //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
     onFileParsedUnwrapped(
-      validateSequenceArray(flattenSequenceArray(sequences), options)
+      validateSequenceArray(flattenSequenceArray(sequences, options), options)
     );
   };
   options = options || {};
@@ -182,6 +182,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
             addMessage("Warning: This line has been ignored: " + line);
           }
       }
+    return false
     });
   } catch (e) {
     //catch any errors and set the result
