@@ -22,7 +22,7 @@ FEATURES             Location/Qualifiers
      CDS             1236..2017
                      /label="GFPuv"
                      /vntifkey="4"
-     misc_feature    1661..1660
+     misc_feature    join(101..201,301..401)
                      /label="XhoI_silent_mutation"
      misc_feature    1760..1759
                      /label="BamHI_silent_mutation"

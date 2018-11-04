@@ -42,26 +42,6 @@ FEATURES             Location/Qualifiers
                      /pragma="Teselagen_Part"
                      /preferred5PrimeOverhangs=""
                      /preferred3PrimeOverhangs=""
-     misc_feature    1239..1235
-                     /label="pS8c-gfpuv_sig_pep_vector_backbone"
-                     /pragma="Teselagen_Part"
-                     /preferred5PrimeOverhangs=""
-                     /preferred3PrimeOverhangs=""
-     misc_feature    1239..1235
-                     /label="pS8c-gfpuv_sig_pep_vector_backbone"
-                     /pragma="Teselagen_Part"
-                     /preferred5PrimeOverhangs=""
-                     /preferred3PrimeOverhangs=""
-     misc_feature    1239..1235
-                     /label="pS8c-gfpuv_sig_pep_vector_backbone"
-                     /pragma="Teselagen_Part"
-                     /preferred5PrimeOverhangs=""
-                     /preferred3PrimeOverhangs=""
-     misc_feature    1239..1235
-                     /label="pS8c-gfpuv_sig_pep_vector_backbone"
-                     /pragma="Teselagen_Part"
-                     /preferred5PrimeOverhangs=""
-                     /preferred3PrimeOverhangs=""
 ORIGIN      
         1 gacgtcttat gacaacttga cggctacatc attcactttt tcttcacaac cggcacggaa
        61 ctcgctcggg ctggccccgg tgcatttttt aaatacccgc gagaaataga gttgatcgtc

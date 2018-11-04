@@ -271,8 +271,8 @@ var snapgeneToJson = function () {
                           strand: strand_dict[directionality],
                           start: maxStart,
                           end: maxEnd,
-                          color: color
-                          // segments
+                          color: color,
+                          segments: segments
                         }));
                       });
 

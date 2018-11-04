@@ -27,7 +27,7 @@ describe('genbankToJson tests', function() {
                 strand: 1
             }]);
             done();
-        }, {preserveLocations: true});
+        }, {/* preserveLocations: true */});
     });
     it('parses the sequence definition field', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/pRF127_GanBankStandard.gb'), "utf8");
@@ -249,7 +249,7 @@ describe('genbankToJson tests', function() {
             result[0].parsedSequence.name.should.equal('pj5_00001');
             result[0].parsedSequence.circular.should.equal(true);
             result[0].parsedSequence.extraLines.length.should.equal(2);
-            result[0].parsedSequence.features.length.should.equal(21);
+            result[0].parsedSequence.features.length.should.equal(17);
             result[0].parsedSequence.features.should.include.something.that.deep.equals({
                 notes: {
                     pragma: ['Teselagen_Part'],
@@ -283,14 +283,14 @@ describe('genbankToJson tests', function() {
             done();
         }, {fileName: 'CCR5_multifrag_insert1.gb'});
     });
-    it('parses a .gb file with joined features (aka a single feature with multiple locations) and splits them into multiple individaul features', function(done) {
+    it('if splitLocations=true, it parses a .gb file with joined features (aka a single feature with multiple locations) and splits them into multiple individaul features', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/RTO4_16460_joined_feature.gb'), "utf8");
         genbankToJson(string, function(result) {
            result.should.be.an('array');
             result[0].success.should.be.true;
             result[0].parsedSequence.features.length.should.equal(12)
             done();
-        });
+        }, {splitLocations: true});
     });
     it('parses a .gb file with tags on parts', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbFileWithTagsOnParts.gb'), "utf8");
