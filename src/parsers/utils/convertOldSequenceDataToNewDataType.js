@@ -4,31 +4,8 @@ module.exports = function convertOldSequenceDataToNewDataType(
   oldTeselagenJson,
   opts
 ) {
-  if (opts && opts.preserveLocations) {
-    oldTeselagenJson &&
-      oldTeselagenJson.features.forEach(function(feature) {
-        if (feature.locations && feature.locations[0]) {
-          //set the new starts and ends
-          feature.start = feature.locations[0].start;
-          feature.end = feature.locations[feature.locations.length - 1].end;
-          if (feature.locations.length > 1) {
-            // make sure the locations all fit within the range
-            const locationError = feature.locations.some(location => {
-              return !isRangeWithinRange(
-                location,
-                feature,
-                oldTeselagenJson.sequence.length
-              );
-            });
-            if (locationError) {
-              delete feature.locations;
-            }
-          }
-        }
-      });
-  } else {
+  if (opts && opts.splitLocations) {
     //after the file has been parsed, but before it's been saved, check for features with multiple locations and split them
-
     oldTeselagenJson &&
       oldTeselagenJson.features.forEach(function(feature) {
         if (feature.locations && feature.locations[0]) {
@@ -53,6 +30,32 @@ module.exports = function convertOldSequenceDataToNewDataType(
           feature.end = feature.locations[0].end;
         }
         delete feature.locations;
+      });
+  
+  } else {
+    //mange locations
+    oldTeselagenJson &&
+      oldTeselagenJson.features.forEach(function(feature) {
+        if (feature.locations && feature.locations[0]) {
+          //set the new starts and ends
+          feature.start = feature.locations[0].start;
+          feature.end = feature.locations[feature.locations.length - 1].end;
+          if (feature.locations.length > 1) {
+            // make sure the locations all fit within the range
+            const locationError = feature.locations.some(location => {
+              return !isRangeWithinRange(
+                location,
+                feature,
+                oldTeselagenJson.sequence.length
+              );
+            });
+            if (locationError) {
+              delete feature.locations;
+            }
+          } else {
+            delete feature.locations
+          }
+        }
       });
   }
   if (Array.isArray(oldTeselagenJson.sequence)) {

@@ -150,8 +150,8 @@ async function snapgeneToJson(
           strand: strand_dict[directionality],
           start: maxStart,
           end: maxEnd,
-          color
-          // segments
+          color,
+          segments
         });
       });
     } else {
