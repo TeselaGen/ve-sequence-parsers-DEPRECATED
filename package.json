@@ -1,6 +1,6 @@
 {
   "name": "bio-parsers",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "A library of parsers for interconverting between genbank, fasta, and (eventually) sbol through Teselagen's intermediary json format",
   "main": "lib/parsers/index.js",
   "scripts": {
