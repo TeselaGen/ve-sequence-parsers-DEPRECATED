@@ -55,7 +55,7 @@ describe('genbank exporter/parser conversion', function() {
         });
     });
 
-    it('parses and converts pj5_00001 (aka testGenbankFile.gb) correctly', function(done) {
+    it('parses and converts pj5_00001 (aka testGenbankFile.gb) correctly (handling joined feature spans correctly also)', function(done) {
         var string = fs.readFileSync(path.join(__dirname, './testData/genbank/testGenbankFile.gb'), "utf8");
         parseGenbank(string, function(result) {
             result[0].parsedSequence.name.should.equal('pj5_00001');
@@ -63,7 +63,21 @@ describe('genbank exporter/parser conversion', function() {
             result[0].parsedSequence.circular.should.equal(true);
             result[0].parsedSequence.extraLines.length.should.equal(2);
             result[0].parsedSequence.features.length.should.equal(17);
-            result[0].parsedSequence.features.should.containSubset([{
+            console.log('result[0].parsedSequence.features:',JSON.stringify(result[0].parsedSequence.features,null,4))
+            result[0].parsedSequence.features.should.containSubset([ 
+                {
+                    name: "XhoI_silent_mutation",
+                    start: 100,
+                    end: 400,
+                    locations: [{
+                        start: 100,
+                        end: 200
+                    },{
+                        start: 300,
+                        end: 400
+                    }]
+                },
+                {
                 notes: {
                     pragma: ['Teselagen_Part'],
                     preferred3PrimeOverhangs: [''],
@@ -83,7 +97,20 @@ describe('genbank exporter/parser conversion', function() {
                 result[0].parsedSequence.circular.should.equal(true);
                 result[0].parsedSequence.extraLines.length.should.equal(2);
                 result[0].parsedSequence.features.length.should.equal(17);
-                result[0].parsedSequence.features.should.include.something.that.deep.equals({
+                result[0].parsedSequence.features.should.containSubset([ 
+                    {
+                        name: "XhoI_silent_mutation",
+                        start: 100,
+                        end: 400,
+                        locations: [{
+                            start: 100,
+                            end: 200
+                        },{
+                            start: 300,
+                            end: 400
+                        }]
+                    },
+                    {
                     notes: {
                         pragma: ['Teselagen_Part'],
                         preferred3PrimeOverhangs: [''],
@@ -94,7 +121,7 @@ describe('genbank exporter/parser conversion', function() {
                     end: 1234,
                     type: 'misc_feature',
                     strand: 1
-                });
+                }]);
                 result[0].parsedSequence.sequence.length.should.equal(5299);
                 done();
             });
