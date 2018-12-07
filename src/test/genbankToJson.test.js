@@ -249,17 +249,17 @@ describe('genbankToJson tests', function() {
             result[0].parsedSequence.name.should.equal('pj5_00001');
             result[0].parsedSequence.circular.should.equal(true);
             result[0].parsedSequence.extraLines.length.should.equal(2);
-            result[0].parsedSequence.features.length.should.equal(17);
-            result[0].parsedSequence.features.should.include.something.that.deep.equals({
+            result[0].parsedSequence.features.length.should.equal(16);
+            result[0].parsedSequence.parts.length.should.equal(1);
+            result[0].parsedSequence.parts.should.include.something.that.deep.equals({
                 notes: {
-                    pragma: ['Teselagen_Part'],
                     preferred3PrimeOverhangs: [''],
                     preferred5PrimeOverhangs: ['']
                 },
                 name: 'pS8c-gfpuv_sig_pep_vector_backbone',
                 start: 1238,
                 end: 1234,
-                type: 'misc_feature',
+                type: 'part',
                 strand: 1
             });
             result[0].parsedSequence.sequence.length.should.equal(5299);
@@ -297,9 +297,8 @@ describe('genbankToJson tests', function() {
         genbankToJson(string, function(result) {
            result.should.be.an('array');
             result[0].success.should.be.true;
-            result[0].parsedSequence.features.should.include.something.that.deep.equals({
+            result[0].parsedSequence.parts.should.include.something.that.deep.equals({
                 notes: {
-                    pragma: ['Teselagen_Part'],
                     preferred3PrimeOverhangs: [''],
                     preferred5PrimeOverhangs: [''],
                     tag: ['blue', 'red']
@@ -307,12 +306,11 @@ describe('genbankToJson tests', function() {
                 name: 'pS8c-gfpuv',
                 start: 1238,
                 end: 1234,
-                type: 'misc_feature',
+                type: 'part',
                 strand: 1
             });
-            result[0].parsedSequence.features.should.include.something.that.deep.equals({
+            result[0].parsedSequence.parts.should.include.something.that.deep.equals({
                 notes: {
-                    pragma: ['Teselagen_Part'],
                     preferred3PrimeOverhangs: [''],
                     preferred5PrimeOverhangs: [''],
                     tag: ['red', 'green']
@@ -320,20 +318,19 @@ describe('genbankToJson tests', function() {
                 name: 'pS8c-gfpuv_sig_pep_vector_backbone',
                 start: 1238,
                 end: 1234,
-                type: 'misc_feature',
+                type: 'part',
                 strand: 1
             });
             done();
         });
     });
-    it('parses a .gb file with tags on parts, adding parts if acceptParts = true', function(done) {
+    it('parses a .gb file with tags on parts, adding parts', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbFileWithTagsOnParts.gb'), "utf8");
         genbankToJson(string, function(result) {
            result.should.be.an('array');
             result[0].success.should.be.true;
             result[0].parsedSequence.features.should.not.include.something.that.deep.equals({
                 notes: {
-                    pragma: ['Teselagen_Part'],
                     preferred3PrimeOverhangs: [''],
                     preferred5PrimeOverhangs: [''],
                     tag: ['blue', 'red']
@@ -346,7 +343,6 @@ describe('genbankToJson tests', function() {
             });
             result[0].parsedSequence.parts.should.include.something.that.deep.equals({
                 notes: {
-                    pragma: ['Teselagen_Part'],
                     preferred3PrimeOverhangs: [''],
                     preferred5PrimeOverhangs: [''],
                     tag: ['red', 'green']
@@ -358,8 +354,6 @@ describe('genbankToJson tests', function() {
                 strand: 1
             });
             done();
-        }, {
-            acceptParts: true
         });
     });
 

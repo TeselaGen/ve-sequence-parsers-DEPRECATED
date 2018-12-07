@@ -20,7 +20,7 @@ module.exports = function validateSequence(sequence, {
     inclusive1BasedStart,
     inclusive1BasedEnd,
     additionalValidChars,
-    acceptParts
+    acceptParts=true
 }={}) {
     
 
@@ -185,6 +185,7 @@ module.exports = function validateSequence(sequence, {
                 sequence.parts = [] //initialize an empty array if necessary
             }
             feature.type = "part"
+            delete feature.notes.pragma
             sequence.parts.push(feature)
             return false //don't include the features 
         }

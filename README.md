@@ -158,7 +158,7 @@ const options = {
   //genbankToJson options only
   inclusive1BasedStart: false //by default feature starts are parsed out as 0-based and inclusive 
   inclusive1BasedEnd: false //by default feature ends are parsed out as 0-based and inclusive 
-  acceptParts: false //by default features with a feature.notes.pragma[0] === "Teselagen_Part" are not added to the sequenceData.parts array. Setting this true will add them
+  acceptParts: true //by default features with a feature.notes.pragma[0] === "Teselagen_Part" are added to the sequenceData.parts array. Setting this to false will keep them as features instead
 }
 ```
 
