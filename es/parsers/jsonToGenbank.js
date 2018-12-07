@@ -1,6 +1,9 @@
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 /* eslint-disable no-var*/
 
 var each = require("lodash/each");
+var map = require("lodash/map");
 var nameUtils = require("./utils/NameUtils.js");
 var StringUtil = {
   /** Trims white space at beginning and end of string
@@ -92,6 +95,12 @@ module.exports = function (serSeq, options) {
     if (serSeq.description) {
       lines.push("COMMENT             description: " + serSeq.description);
     }
+    serSeq.features = map(serSeq.features).concat(map(serSeq.parts, function (p) {
+      p.notes = _extends({}, p.notes, {
+        pragma: ["Teselagen_Part"]
+      });
+      return p;
+    }));
     var printedFeatureHeader;
     each(serSeq.features, function (feat, index) {
       if (!printedFeatureHeader) {

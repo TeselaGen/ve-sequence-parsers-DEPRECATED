@@ -1,7 +1,5 @@
 /* eslint-disable no-var*/
-
-var each = require("lodash/each");
-var map = require("lodash/map");
+const {cloneDeep, map, each} = require("lodash");
 var nameUtils = require("./utils/NameUtils.js");
 var StringUtil = {
   /** Trims white space at beginning and end of string
@@ -57,11 +55,12 @@ function cutUpStr(val, start, end) {
   return val.slice(start, end);
 }
 
-module.exports = function(serSeq, options) {
+module.exports = function(_serSeq, options) {
   options = options || {};
   options.reformatSeqName = options.reformatSeqName !== false;
-
+const serSeq = cloneDeep(_serSeq)
   if (!serSeq) return false;
+  
 
   try {
     var content = null;
