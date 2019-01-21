@@ -118,6 +118,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
           line = line.trim();
           if (result.parsedSequence) {
             result.parsedSequence.definition = line;
+            result.parsedSequence.description = line;
           } else {
             throw new Error("no sequence yet created upon which to extract an extra line!");
           }
@@ -134,8 +135,6 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
               result.parsedSequence.teselagen_unique_id = line.replace(/ /g, "").replace("teselagen_unique_id:", "");
             } else if (line.indexOf("library:") > -1) {
               result.parsedSequence.library = line.replace(/ /g, "").replace("library:", "");
-            } else if (line.indexOf("description:") > -1) {
-              result.parsedSequence.description = line.trim().replace("description: ", "");
             } else {
               result.parsedSequence.comments.push(line);
             }

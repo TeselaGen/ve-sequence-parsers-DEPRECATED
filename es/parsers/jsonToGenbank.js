@@ -76,8 +76,8 @@ module.exports = function (_serSeq, options) {
 
     var lines = [];
     lines.push(createGenbankLocus(serSeq, options));
-    if (serSeq.definition) {
-      lines.push("DEFINITION  " + serSeq.definition);
+    if (serSeq.definition || serSeq.description) {
+      lines.push("DEFINITION  " + (serSeq.definition || serSeq.description));
     }
 
     if (serSeq.extraLines) {
@@ -93,9 +93,6 @@ module.exports = function (_serSeq, options) {
     }
     if (serSeq.library) {
       lines.push("COMMENT             library: " + serSeq.library);
-    }
-    if (serSeq.description) {
-      lines.push("COMMENT             description: " + serSeq.description);
     }
     serSeq.features = map(serSeq.features).concat(map(serSeq.parts, function (p) {
       p.notes = _extends({}, p.notes, {
