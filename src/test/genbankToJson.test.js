@@ -66,9 +66,21 @@ describe('genbankToJson tests', function() {
         genbankToJson(string, function(result) {
            result.should.be.an('array');
             result[0].success.should.be.true;
+            result[0].parsedSequence.type.should.equal("PROTEIN")
             result[0].parsedSequence.features.forEach(function(feat){
                 feat.name.length.should.be.below(101);
             });
+            done();
+        }, options);
+    });
+    it('handles parsing of a protein genbank that only has DNA chars', function(done) {
+        const string = fs.readFileSync(path.join(__dirname, './testData/genbank/proteinTestSeq2_onlyDnaChars.gp'), "utf8");
+        const options = {isProtein: true}
+        genbankToJson(string, function(result) {
+           result.should.be.an('array');
+            result[0].success.should.be.true;
+            console.log(`result[0].parsedSequence.type:`,result[0].parsedSequence.type)
+            result[0].parsedSequence.type.should.equal("PROTEIN")
             done();
         }, options);
     });

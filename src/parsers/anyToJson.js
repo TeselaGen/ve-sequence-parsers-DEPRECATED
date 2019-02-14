@@ -16,7 +16,6 @@ const addPromiseOption = require('./utils/addPromiseOption');
 async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     let fileContentString
     options = options || {}
-    // const isProtein = options.isProtein || false;
     const fileName = options.fileName || '';
     const ext = extractFileExtension(fileName);
     if (typeof fileContentStringOrFileObj === "string") {
@@ -99,7 +98,7 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
         });
     }
 
-};
+}
 
 module.exports = addPromiseOption(anyToJson);
 
