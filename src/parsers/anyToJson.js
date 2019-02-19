@@ -46,7 +46,7 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     else if (/^(xml|rdf)$/.test(ext)) { // XML/RDF
         xmlParser(fileContentString, onFileParsed, options);
     }
-    else if (/^(gff|gff3)$/.test(ext)) { // XML/RDF
+    else if (/^(gff|gff3)$/.test(ext)) { // GFF
         xmlParser(fileContentString, onFileParsed, options);
     }
     else {
