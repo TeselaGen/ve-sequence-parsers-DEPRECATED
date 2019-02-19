@@ -43,6 +43,7 @@
     "ve-sequence-utils": "^3.2.19"
   },
   "dependencies": {
+    "@gmod/gff": "^1.1.2",
     "bufferpack": "^0.0.6",
     "flatmap": "0.0.3",
     "lodash": "^4.17.10",

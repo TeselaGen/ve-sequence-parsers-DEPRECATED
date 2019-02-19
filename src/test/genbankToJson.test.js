@@ -32,7 +32,6 @@ describe('genbankToJson tests', function() {
     it('parses the sequence definition field', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/pRF127_GanBankStandard.gb'), "utf8");
         genbankToJson(string, function(result) {
-            // console.log('result:',result)
             result[0].parsedSequence.definition.should.equal("synthetic circular DNA")
             done();
         });
@@ -48,7 +47,7 @@ describe('genbankToJson tests', function() {
     it('truncates a feature that runs off the end to the end instead of to 0', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbWithWrappingFeature.gb'), "utf8");
         genbankToJson(string, function(result) {
-           result.should.be.an('array');
+      result.should.be.an('array');
             result[0].success.should.be.true;
             result[0].parsedSequence.size.should.equal(103)
             result[0].parsedSequence.features.should.containSubset([{
@@ -79,7 +78,7 @@ describe('genbankToJson tests', function() {
         genbankToJson(string, function(result) {
            result.should.be.an('array');
             result[0].success.should.be.true;
-            console.log(`result[0].parsedSequence.type:`,result[0].parsedSequence.type)
+            // console.log(`result[0].parsedSequence.type:`,result[0].parsedSequence.type)
             result[0].parsedSequence.type.should.equal("PROTEIN")
             done();
         }, options);
