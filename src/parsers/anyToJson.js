@@ -4,6 +4,7 @@ const xmlParser = require('./sbolXmlToJson');
 const extractFileExtension = require('./utils/extractFileExtension.js');
 const snapgeneToJson = require('./snapgeneToJson');
 const ab1ToJson = require('./ab1ToJson');
+const gffToJson = require('./gffToJson');
 
 /**
  * takes in file content string and its file name and determines what parser it needs to be sent to.
@@ -16,7 +17,10 @@ const addPromiseOption = require('./utils/addPromiseOption');
 async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     let fileContentString
     options = options || {}
-    const fileName = options.fileName || '';
+    let fileName = options.fileName || ""
+    if (!fileName && typeof(fileContentStringOrFileObj) !== "string") {
+        fileName = fileContentStringOrFileObj.name
+    }
     const ext = extractFileExtension(fileName);
     if (typeof fileContentStringOrFileObj === "string") {
         fileContentString = fileContentStringOrFileObj
@@ -46,6 +50,9 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     else if (/^(xml|rdf)$/.test(ext)) { // XML/RDF
         xmlParser(fileContentString, onFileParsed, options);
     }
+    else if (/^(gff|gff3)$/.test(ext)) { // GFF
+        gffToJson(fileContentString, onFileParsed, options);
+    }
     else {
         //runs from BOTTOM to TOP
         const parsersToTry = [{
@@ -57,6 +64,9 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
         }, {
             fn: xmlParser,
             name: "XML Parser"
+        }, {
+            fn: gffToJson,
+            name: "GFF Parser"
         }];
         //pop the LAST parser off the array and try to parse with it, using the modified onFileParsed callback
         //evaluates to something like:
