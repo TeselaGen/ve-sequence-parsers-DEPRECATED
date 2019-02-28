@@ -8,6 +8,7 @@ const fastaToJson = require("../parsers/fastaToJson");
 const path = require("path");
 const fs = require("fs");
 const chai = require("chai");
+const {proteinFasta3} = require("./resultStrings")
 chai.use(require("chai-things"));
 chai.should();
 
@@ -127,6 +128,18 @@ gacta --- asdf-c-a
     fastaToJson(string, function(result) {
       result[0].parsedSequence.sequence.length.should.equal(5213);
       done();
+    });
+  });
+  it("tests protein FASTA and checks for correctness", function(done) {
+    const string = fs.readFileSync(
+      path.join(__dirname, "./testData/fasta/proteinFasta3.fasta"),
+      "utf8"
+    );
+    fastaToJson(string, function(result) {
+      result[0].parsedSequence.sequence.should.equal(proteinFasta3);
+      done();
+    }, {
+      isProtein: true
     });
   });
   it("handles the option to guessIfProtein correctly", function(done) {

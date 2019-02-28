@@ -18,8 +18,6 @@ function fastaToJson(fileString, onFileParsedUnwrapped, options) {
     let result = null;
     try {
         const lines = splitStringIntoLines(fileString);
-        
-
 
         for (let i = 0; i < lines.length; i++) {
             parseLine(lines[i]);
