@@ -1,21 +1,35 @@
-/* eslint-disable no-var*/
+/* eslint-disable no-unused-expressions*/
 const assert = require("assert");
 
-var parseGenbank = require("../parsers/genbankToJson");
-var jsonToGenbank = require("../parsers/jsonToGenbank");
-var path = require("path");
-var fs = require("fs");
-var chai = require("chai");
-var chaiSubset = require("chai-subset");
+const parseGenbank = require("../parsers/genbankToJson");
+const jsonToGenbank = require("../parsers/jsonToGenbank");
+const path = require("path");
+const fs = require("fs");
+const chai = require("chai");
+const chaiSubset = require("chai-subset");
 chai.use(chaiSubset);
 chai.use(require("chai-things"));
 chai.should();
 describe("genbank exporter/parser conversion", function() {
+  it(`should convert a protein sequence into a genpept`, ()=> {
+
+    const proteinSequence = "MTCAGRRAYL"
+    const string = jsonToGenbank({
+      isProtein: true,
+      proteinSequence,
+    });
+    assert(string.indexOf(proteinSequence) !== -1)
+    assert(string.indexOf("10 aa            linear") !== -1)
+    parseGenbank(string, function(result) {
+      result[0].parsedSequence.proteinSequence.should.equal(proteinSequence)
+      result[0].parsedSequence.isProtein.should.equal(true)
+    });
+  })
   it(`should convert the .description field into a //DEFINITION block in 
   the genbank and then have it be parsed back out as a .description again`, ()=> {
 
     const description = "Hey I am a test description"
-    var string = jsonToGenbank({
+    const string = jsonToGenbank({
       sequence: "agagagagagag",
       description
     });
@@ -27,8 +41,8 @@ describe("genbank exporter/parser conversion", function() {
   it(`
     should by default convert "sequenceData.parts" into genbank features 
     with a note of pragma: ['Teselagen_Part'] on it, and by default convert those features back into parts  `, function() {
-    // var breakingJSON = require('./testData/json/breakingJSON_stringified')
-    var string = jsonToGenbank({
+    // const breakingJSON = require('./testData/json/breakingJSON_stringified')
+    const string = jsonToGenbank({
       sequence: "agagagagagag",
       parts: [
         {
@@ -44,9 +58,9 @@ describe("genbank exporter/parser conversion", function() {
     });
   });
   it("should parse notes that come in as a JSON stringified object correctly", function() {
-    // var breakingJSON = require('./testData/json/breakingJSON_stringified')
-    var breakingJSON = require("./testData/json/1.json");
-    var string = jsonToGenbank(breakingJSON);
+    // const breakingJSON = require('./testData/json/breakingJSON_stringified')
+    const breakingJSON = require("./testData/json/1.json");
+    const string = jsonToGenbank(breakingJSON);
     parseGenbank(string, function(result) {
       result[0].parsedSequence.features[0].notes.should.to.not.be.null;
     });
@@ -55,12 +69,12 @@ describe("genbank exporter/parser conversion", function() {
   it("can interconvert between our parser and our exporter with a malformed genbank", function(
     done
   ) {
-    var string = fs.readFileSync(
+    const string = fs.readFileSync(
       path.join(__dirname, "./testData/breakingGenbank.gb"),
       "utf8"
     );
     parseGenbank(string, function(result) {
-      var feat1 = {
+      const feat1 = {
         notes: {},
         name: "araC",
         start: 6,
@@ -68,7 +82,7 @@ describe("genbank exporter/parser conversion", function() {
         type: "CDS",
         strand: -1
       };
-      var feat2 = {
+      const feat2 = {
         notes: {},
         name: "T0",
         start: 4300,
@@ -85,7 +99,7 @@ describe("genbank exporter/parser conversion", function() {
       result[0].parsedSequence.features.should.include.something.that.deep.equals(
         feat2
       );
-      var exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
+      const exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
       parseGenbank(exportedGenbankString, function(result) {
         result.should.be.an("array");
         result[0].success.should.be.true;
@@ -105,11 +119,10 @@ describe("genbank exporter/parser conversion", function() {
   it("parses and converts pj5_00001 (aka testGenbankFile.gb) correctly (handling joined feature spans correctly also)", function(
     done
   ) {
-    var string = fs.readFileSync(
+    const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/testGenbankFile.gb"),
       "utf8"
     );
-    debugger
     parseGenbank(string, function(result) {
       result[0].parsedSequence.name.should.equal("pj5_00001");
       result[0].parsedSequence.definition.should.equal(
@@ -150,7 +163,7 @@ describe("genbank exporter/parser conversion", function() {
         }
       ]);
       result[0].parsedSequence.sequence.length.should.equal(5299);
-      var exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
+      const exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
       parseGenbank(exportedGenbankString, function(result) {
         result[0].parsedSequence.name.should.equal("pj5_00001");
         result[0].parsedSequence.definition.should.equal(
@@ -198,7 +211,7 @@ describe("genbank exporter/parser conversion", function() {
   it("parses and converts a genbank with just feature start locations correctly", function(
     done
   ) {
-    var string = fs.readFileSync(
+    const string = fs.readFileSync(
       path.join(__dirname, "./testData/rhaBp-Pfu-pUN_alt.gb"),
       "utf8"
     );
@@ -217,7 +230,7 @@ describe("genbank exporter/parser conversion", function() {
           end: 291
         }
       ]);
-      var exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
+      const exportedGenbankString = jsonToGenbank(result[0].parsedSequence);
       parseGenbank(exportedGenbankString, function(result) {
         result.should.be.an("array");
         result[0].success.should.be.true;
@@ -238,7 +251,7 @@ describe("genbank exporter/parser conversion", function() {
     });
   });
   it("handles features in an array or a keyed object", function(done) {
-    var exportedGenbankString = jsonToGenbank({
+    const exportedGenbankString = jsonToGenbank({
       sequence: "gagagagagga",
       features: {
         feat1: { start: 2, end: 4 }
@@ -257,7 +270,7 @@ describe("genbank exporter/parser conversion", function() {
   it("handles inclusive1BasedStart and inclusive1BasedEnd options", function(
     done
   ) {
-    var exportedGenbankString = jsonToGenbank(
+    const exportedGenbankString = jsonToGenbank(
       {
         sequence: "gagagagagga",
         features: {
@@ -280,7 +293,7 @@ describe("genbank exporter/parser conversion", function() {
     });
   });
   it("gives genbank that is linear when circular is falsy", function(done) {
-    var exportedGenbankString = jsonToGenbank({
+    const exportedGenbankString = jsonToGenbank({
       sequence: "gagagagagga",
       circular: false
     });
@@ -290,7 +303,7 @@ describe("genbank exporter/parser conversion", function() {
     });
   });
   it('gives genbank that is linear when sequence.circular="0"', function(done) {
-    var exportedGenbankString = jsonToGenbank({
+    const exportedGenbankString = jsonToGenbank({
       sequence: "gagagagagga",
       circular: "0"
     });
@@ -300,8 +313,8 @@ describe("genbank exporter/parser conversion", function() {
     });
   });
   it("handles reformatSeqName=false option", function(done) {
-    var name = "$%^@#";
-    var exportedGenbankString = jsonToGenbank(
+    const name = "$%^@#";
+    const exportedGenbankString = jsonToGenbank(
       {
         sequence: "gagagagagga",
         name: name
@@ -320,8 +333,8 @@ describe("genbank exporter/parser conversion", function() {
     );
   });
   // it('handles reformatSeqName=true (this is on by default) option', function(done) {
-  //     var name = '$%^@#'
-  //     var exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga',
+  //     const name = '$%^@#'
+  //     const exportedGenbankString = jsonToGenbank({sequence: 'gagagagagga',
   //       name: name
   //     }, {
   //       reformatSeqName: true
@@ -332,8 +345,8 @@ describe("genbank exporter/parser conversion", function() {
   //     },{reformatSeqName: false});
   // });
   it("does not reformat a name with parens in it", function(done) {
-    var name = "aaa(aaa)";
-    var exportedGenbankString = jsonToGenbank(
+    const name = "aaa(aaa)";
+    const exportedGenbankString = jsonToGenbank(
       {
         sequence: "gagagagagga",
         name: name
@@ -352,7 +365,7 @@ describe("genbank exporter/parser conversion", function() {
     );
   });
   it("provides a default name if none is provided", function(done) {
-    var exportedGenbankString = jsonToGenbank(
+    const exportedGenbankString = jsonToGenbank(
       {
         sequence: "gagagagagga"
       },
@@ -373,7 +386,7 @@ describe("genbank exporter/parser conversion", function() {
   it("adds a comment with the words teselagen_unique_id: XXXX if given a .teselagen_unique_id property", function(
     done
   ) {
-    var exportedGenbankString = jsonToGenbank({
+    const exportedGenbankString = jsonToGenbank({
       sequence: "gagagagagga",
       teselagen_unique_id: "gaslgawlgiubawg;12312asdf"
     });
@@ -387,7 +400,7 @@ describe("genbank exporter/parser conversion", function() {
   it("adds a comment for the library field if the sequence has one", function(
     done
   ) {
-    var exportedGenbankString = jsonToGenbank({
+    const exportedGenbankString = jsonToGenbank({
       sequence: "gagagagagga",
       library: "libraryField"
     });
@@ -399,7 +412,7 @@ describe("genbank exporter/parser conversion", function() {
   it("adds a comment for the description if the sequence has one", function(
     done
   ) {
-    var exportedGenbankString = jsonToGenbank({
+    const exportedGenbankString = jsonToGenbank({
       sequence: "gagagagagga",
       description: "my sequence description"
     });
@@ -411,7 +424,7 @@ describe("genbank exporter/parser conversion", function() {
     });
   });
   it("handles comments parsing and formatting", function(done) {
-    var exportedGenbankString = jsonToGenbank({
+    const exportedGenbankString = jsonToGenbank({
       sequence: "gagagagagga",
       comments: ["gaslgawlgiubawg;12312asdf", "I am alive!"]
     });
