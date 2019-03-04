@@ -58,7 +58,7 @@ module.exports = function validateSequence(sequence, {
         sequence.sequence = '';
     }
     let validChars;
-    if (guessIfProtein) {
+    if (isProtein === undefined && guessIfProtein) {
         isProtein = !guessIfSequenceIsDnaAndNotProtein(sequence.sequence, guessIfProteinOptions)
     }
     if (isProtein) {
@@ -69,6 +69,11 @@ module.exports = function validateSequence(sequence, {
             response.messages.push("Import Error: Illegal character(s) detected and removed from amino acid sequence. Allowed characters are: xtgalmfwkqespvicyhrndu");
         }
         sequence.type = 'PROTEIN';
+        sequence.isProtein = true
+        if (!sequence.proteinSequence) {
+            sequence.proteinSequence = sequence.sequence
+        }
+        sequence.proteinSize = sequence.proteinSequence.length
     } else {
         //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
         let newSeq =sequence.sequence.replace(/u/g,'t');

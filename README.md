@@ -101,7 +101,7 @@ const jsonToGenbank = require('bio-parsers').jsonToGenbank;
 const jsonToGenbank = require('bio-parsers/parsers/jsonToGenbank');
 //You can pass an optional options object as the second argument. Here are the defaults
 const options = {
-  isProtein: false, //by default the sequence will be parsed and validated as type DNA (unless U's instead of T's are found). If isProtein=true the sequence will be validated as a PROTEIN type 
+  isProtein: false, //by default the sequence will be parsed and validated as type DNA (unless U's instead of T's are found). If isProtein=true the sequence will be parsed and validated as a PROTEIN type (seqData.isProtein === true)
   guessIfProtein: false, //if true the parser will attempt to guess if the sequence is of type DNA or type PROTEIN (this will override the isProtein flag)
   guessIfProteinOptions: {
     threshold = 0.90, //percent of characters that must be DNA letters to be considered of type DNA
@@ -154,7 +154,7 @@ const results = await anyToJson(stringOrFile, options)
 //You can pass an optional options object as the third argument. Here are the defaults
 const options = {
   fileName: "example.gb", //the filename is used if none is found in the genbank           
-  isProtein: false, //used to strip unwanted characters
+  isProtein: false, //if you know that it is a protein string being parsed you can pass true here
   //genbankToJson options only
   inclusive1BasedStart: false //by default feature starts are parsed out as 0-based and inclusive 
   inclusive1BasedEnd: false //by default feature ends are parsed out as 0-based and inclusive 

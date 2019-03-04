@@ -1,5 +1,4 @@
-// const tap = require('tap');
-// tap.mochaGlobals();
+/* eslint-disable no-unused-expressions*/
 const genbankToJson = require('../parsers/genbankToJson');
 const path = require("path");
 const fs = require('fs');
@@ -10,6 +9,35 @@ chai.use(require('chai-things'));
 chai.should();
 
 describe('genbankToJson tests', function() {
+    it(`does not parse a dna file with the name ProteinSeq into a protein `, (done)=> {
+const string = `LOCUS       ProteinSeq          10 bp    DNA  linear    04-MAR-2019
+ORIGIN      
+    1 gtagaggccg     
+//`
+genbankToJson(string, function(result) {
+    result[0].parsedSequence.name.should.equal("ProteinSeq")
+    result[0].parsedSequence.type.should.equal("DNA")
+    // result[0].parsedSequence.isProtein.should.be.
+    result[0].parsedSequence.sequence.should.equal("gtagaggccg")
+    result[0].parsedSequence.size.should.equal(10)
+    done();
+}, {/* preserveLocations: true */});
+});
+    it(`parses a protein genbank file into a protein sequence json by default `, (done)=> {
+const string = `LOCUS       Untitled_Sequence          10 aa  linear    04-MAR-2019
+ORIGIN      
+    1 MTCAGRRAYL     
+//`
+genbankToJson(string, function(result) {
+    result[0].parsedSequence.name.should.equal("Untitled_Sequence")
+    result[0].parsedSequence.type.should.equal("PROTEIN")
+    result[0].parsedSequence.isProtein.should.equal(true)
+    result[0].parsedSequence.proteinSequence.should.equal("MTCAGRRAYL")
+    result[0].parsedSequence.proteinSize.should.equal(10)
+    done();
+}, {/* preserveLocations: true */});
+});
+
     it('handles joined features/parts correctly', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbWithJoinedFeaturesAndParts.gb'), "utf8");
         genbankToJson(string, function(result) {
@@ -39,7 +67,6 @@ describe('genbankToJson tests', function() {
     it('does not give an erroneous feature name too long warning', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/pRF127_GanBankStandard.gb'), "utf8");
         genbankToJson(string, function(result) {
-            // console.log('result:',result)
             result[0].messages.length.should.equal(0)
             done();
         });
@@ -55,7 +82,6 @@ describe('genbankToJson tests', function() {
                 start: 0,
                 end: 102
             }])
-            // result[0].parsedSequence.size.should.equal(108)
             done();
         });
     });
@@ -78,7 +104,6 @@ describe('genbankToJson tests', function() {
         genbankToJson(string, function(result) {
            result.should.be.an('array');
             result[0].success.should.be.true;
-            // console.log(`result[0].parsedSequence.type:`,result[0].parsedSequence.type)
             result[0].parsedSequence.type.should.equal("PROTEIN")
             done();
         }, options);

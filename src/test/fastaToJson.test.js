@@ -1,5 +1,3 @@
-// const tap = require('tap');
-// tap.mochaGlobals();
 /**
  * testing file for the FASTA parser, which should be able to handle multiple sequences in the same file, comments, and any other sort of vaild FASTA format
  * @author Joshua P Nixon
