@@ -1,35 +1,35 @@
 /* eslint-disable no-var*/
-const {cloneDeep, map, each} = require("lodash");
+const { cloneDeep, map, each } = require("lodash");
 var nameUtils = require("./utils/NameUtils.js");
 var StringUtil = {
   /** Trims white space at beginning and end of string
-	 * @param {String} line
-	 * @returns {String} line
-	 */
+   * @param {String} line
+   * @returns {String} line
+   */
   trim: function(line) {
     return line.replace(/^\s+|\s+$/g, "");
   },
 
   /** Trims white space at beginning string
-	 * @param {String} line
-	 * @returns {String} line
-	 */
+   * @param {String} line
+   * @returns {String} line
+   */
   ltrim: function(line) {
     return line.replace(/^\s+/, "");
   },
 
   /** Trims white space at end of string
-	 * @param {String} line
-	 * @returns {String} line
-	 */
+   * @param {String} line
+   * @returns {String} line
+   */
   rtrim: function(line) {
     return line.replace(/\s+$/, "");
   },
 
   /** Pads white space at beginning of string
-	 * @param {String} line
-	 * @returns {String} line
-	 */
+   * @param {String} line
+   * @returns {String} line
+   */
   lpad: function(line, padString, length) {
     var str = line;
     while (str.length < length) str = padString + str;
@@ -37,9 +37,9 @@ var StringUtil = {
   },
 
   /** Pads white space at end of string
-	 * @param {String} line
-	 * @returns {String} line
-	 */
+   * @param {String} line
+   * @returns {String} line
+   */
   rpad: function(line, padString, length) {
     var str = line;
     while (str.length < length) str = str + padString;
@@ -58,14 +58,14 @@ function cutUpStr(val, start, end) {
 module.exports = function(_serSeq, options) {
   options = options || {};
   options.reformatSeqName = options.reformatSeqName !== false;
-const serSeq = cloneDeep(_serSeq)
+  const serSeq = cloneDeep(_serSeq);
   if (!serSeq) return false;
-  
 
   try {
-    if (serSeq.isProtein || serSeq.type === "protein" ||  serSeq.type === "AA" ) {
-      serSeq.isProtein = true 
-      serSeq.sequence = serSeq.proteinSequence || serSeq.sequence
+    if (serSeq.isProtein || serSeq.type === "protein" || serSeq.type === "AA") {
+      serSeq.isProtein = true;
+      serSeq.sequence = serSeq.proteinSequence || serSeq.sequence;
+      options.isProtein = true;
     }
     var content = null;
     var cutUp = typeof serSeq.sequence === "string" ? cutUpStr : cutUpArray;
@@ -93,13 +93,15 @@ const serSeq = cloneDeep(_serSeq)
     if (serSeq.library) {
       lines.push("COMMENT             library: " + serSeq.library);
     }
-    serSeq.features = map(serSeq.features).concat(map(serSeq.parts, (p) => {
-      p.notes = {
-        ...p.notes,
-        pragma: ["Teselagen_Part"]
-      }
-      return p
-    }))
+    serSeq.features = map(serSeq.features).concat(
+      map(serSeq.parts, p => {
+        p.notes = {
+          ...p.notes,
+          pragma: ["Teselagen_Part"]
+        };
+        return p;
+      })
+    );
     var printedFeatureHeader;
     each(serSeq.features, function(feat, index) {
       if (!printedFeatureHeader) {
@@ -217,10 +219,15 @@ function featureToGenbankString(feat, options) {
   if (feat.locations && feat.locations.length > 1) {
     feat.locations.forEach((loc, i) => {
       locStr +=
-        parseInt(loc.start, 10) +
-        (options.inclusive1BasedStart ? 0 : 1) +
+        getProteinStart(
+          parseInt(loc.start, 10) + (options.inclusive1BasedStart ? 0 : 1),
+          options.isProtein
+        ) +
         ".." +
-        (parseInt(loc.end, 10) + (options.inclusive1BasedEnd ? 0 : 1));
+        getProteinEnd(
+          parseInt(loc.end, 10) + (options.inclusive1BasedEnd ? 0 : 1),
+          options.isProtein
+        );
 
       if (i !== feat.locations.length - 1) {
         locStr += ",";
@@ -229,10 +236,15 @@ function featureToGenbankString(feat, options) {
     locStr = "join(" + locStr + ")";
   } else {
     locStr +=
-      parseInt(feat.start, 10) +
-      (options.inclusive1BasedStart ? 0 : 1) +
+      getProteinStart(
+        parseInt(feat.start, 10) + (options.inclusive1BasedStart ? 0 : 1),
+        options.isProtein
+      ) +
       ".." +
-      (parseInt(feat.end, 10) + (options.inclusive1BasedEnd ? 0 : 1));
+      getProteinEnd(
+        parseInt(feat.end, 10) + (options.inclusive1BasedEnd ? 0 : 1),
+        options.isProtein
+      );
   }
 
   // locStr = locStr.join(",");
@@ -274,4 +286,13 @@ function featureToGenbankString(feat, options) {
   }
 
   return lines.join("\r\n");
+}
+
+function getProteinStart(val, isProtein) {
+  if (!isProtein) return val;
+  return Math.floor((val + 2) / 3);
+}
+function getProteinEnd(val, isProtein) {
+  if (!isProtein) return val;
+  return Math.floor((val) / 3);
 }

@@ -1,4 +1,5 @@
 /* eslint-disable no-var*/
+const {convertAACaretPositionOrRangeToDna} = require("ve-sequence-utils");
 
 var constants = require("./utils/constants");
 var flattenSequenceArray = require("./utils/flattenSequenceArray");
@@ -315,7 +316,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       //the line is a continuation of the above line
       if (lastLineWasLocation) {
         //the last line was a location, so the run-on line is expected to be a feature location as well
-        parseFeatureLocation(line.trim());
+        parseFeatureLocation(line.trim(), options);
         lastLineWasLocation = true;
       } else {
         //the last line was a note
@@ -352,7 +353,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
         feat.type = key;
         feat.strand = strand;
 
-        parseFeatureLocation(val);
+        parseFeatureLocation(val, options);
         lastLineWasLocation = true;
       }
     }
@@ -385,7 +386,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     return qual;
   }
 
-  function parseFeatureLocation(locStr) {
+  function parseFeatureLocation(locStr, options) {
     locStr = locStr.trim();
     var locArr = [];
     locStr.replace(/(\d+)/g, function(string, match) {
@@ -407,7 +408,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
         end: end
       };
       var feat = getCurrentFeature();
-      feat.locations.push(location);
+      feat.locations.push(options.isProtein  ? convertAACaretPositionOrRangeToDna(location) : location);
     }
   }
 
