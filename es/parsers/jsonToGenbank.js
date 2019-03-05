@@ -9,33 +9,33 @@ var _require = require("lodash"),
 var nameUtils = require("./utils/NameUtils.js");
 var StringUtil = {
   /** Trims white space at beginning and end of string
-  * @param {String} line
-  * @returns {String} line
-  */
+   * @param {String} line
+   * @returns {String} line
+   */
   trim: function trim(line) {
     return line.replace(/^\s+|\s+$/g, "");
   },
 
   /** Trims white space at beginning string
-  * @param {String} line
-  * @returns {String} line
-  */
+   * @param {String} line
+   * @returns {String} line
+   */
   ltrim: function ltrim(line) {
     return line.replace(/^\s+/, "");
   },
 
   /** Trims white space at end of string
-  * @param {String} line
-  * @returns {String} line
-  */
+   * @param {String} line
+   * @returns {String} line
+   */
   rtrim: function rtrim(line) {
     return line.replace(/\s+$/, "");
   },
 
   /** Pads white space at beginning of string
-  * @param {String} line
-  * @returns {String} line
-  */
+   * @param {String} line
+   * @returns {String} line
+   */
   lpad: function lpad(line, padString, length) {
     var str = line;
     while (str.length < length) {
@@ -44,9 +44,9 @@ var StringUtil = {
   },
 
   /** Pads white space at end of string
-  * @param {String} line
-  * @returns {String} line
-  */
+   * @param {String} line
+   * @returns {String} line
+   */
   rpad: function rpad(line, padString, length) {
     var str = line;
     while (str.length < length) {
@@ -73,6 +73,7 @@ module.exports = function (_serSeq, options) {
     if (serSeq.isProtein || serSeq.type === "protein" || serSeq.type === "AA") {
       serSeq.isProtein = true;
       serSeq.sequence = serSeq.proteinSequence || serSeq.sequence;
+      options.isProtein = true;
     }
     var content = null;
     var cutUp = typeof serSeq.sequence === "string" ? cutUpStr : cutUpArray;
@@ -218,7 +219,7 @@ function featureToGenbankString(feat, options) {
 
   if (feat.locations && feat.locations.length > 1) {
     feat.locations.forEach(function (loc, i) {
-      locStr += parseInt(loc.start, 10) + (options.inclusive1BasedStart ? 0 : 1) + ".." + (parseInt(loc.end, 10) + (options.inclusive1BasedEnd ? 0 : 1));
+      locStr += getProteinStart(parseInt(loc.start, 10) + (options.inclusive1BasedStart ? 0 : 1), options.isProtein) + ".." + getProteinEnd(parseInt(loc.end, 10) + (options.inclusive1BasedEnd ? 0 : 1), options.isProtein);
 
       if (i !== feat.locations.length - 1) {
         locStr += ",";
@@ -226,7 +227,7 @@ function featureToGenbankString(feat, options) {
     });
     locStr = "join(" + locStr + ")";
   } else {
-    locStr += parseInt(feat.start, 10) + (options.inclusive1BasedStart ? 0 : 1) + ".." + (parseInt(feat.end, 10) + (options.inclusive1BasedEnd ? 0 : 1));
+    locStr += getProteinStart(parseInt(feat.start, 10) + (options.inclusive1BasedStart ? 0 : 1), options.isProtein) + ".." + getProteinEnd(parseInt(feat.end, 10) + (options.inclusive1BasedEnd ? 0 : 1), options.isProtein);
   }
 
   // locStr = locStr.join(",");
@@ -266,4 +267,13 @@ function featureToGenbankString(feat, options) {
   }
 
   return lines.join("\r\n");
+}
+
+function getProteinStart(val, isProtein) {
+  if (!isProtein) return val;
+  return Math.floor((val + 2) / 3);
+}
+function getProteinEnd(val, isProtein) {
+  if (!isProtein) return val;
+  return Math.floor(val / 3);
 }
