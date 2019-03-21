@@ -1,15 +1,15 @@
 /* eslint-disable no-var*/
-import { convertAACaretPositionOrRangeToDna } from 've-sequence-utils';
+import { convertAACaretPositionOrRangeToDna } from "ve-sequence-utils";
 
-import constants from './utils/constants';
-import flattenSequenceArray from './utils/flattenSequenceArray';
-import validateSequenceArray from './utils/validateSequenceArray';
+import constants from "./utils/constants";
+import flattenSequenceArray from "./utils/flattenSequenceArray";
+import validateSequenceArray from "./utils/validateSequenceArray";
 
 // var some = require('lodash/collection/some');
-import splitStringIntoLines from './utils/splitStringIntoLines.js';
+import splitStringIntoLines from "./utils/splitStringIntoLines.js";
 
-import createInitialSequence from './utils/createInitialSequence';
-import addPromiseOption from './utils/addPromiseOption';
+import createInitialSequence from "./utils/createInitialSequence";
+import addPromiseOption from "./utils/addPromiseOption";
 
 function genbankToJson(string, onFileParsedUnwrapped, options) {
   var onFileParsed = function onFileParsed(sequences, options) {
@@ -272,8 +272,11 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       throw new Error("no sequence yet created upon which to extract an extra line!");
     }
   }
-  var lastLineWasFeaturesTag = void 0;
-  var lastLineWasLocation = void 0;
+  /* eslint-disable no-var */
+  var lastLineWasFeaturesTag;
+  var lastLineWasLocation;
+  /* eslint-enable no-var*/
+
   function parseFeatures(line, key, val) {
     var strand = void 0;
     // FOR THE MAIN FEATURES LOCATION/QUALIFIER LINE
@@ -493,7 +496,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       //shorten the name to a reasonable length if necessary and warn the user about it
       var oldName = feat.name;
       feat.name = feat.name.substr(0, 100);
-      addMessage('Warning: Shortening name of feature ' + oldName + ' (max 100 chars)');
+      addMessage("Warning: Shortening name of feature " + oldName + " (max 100 chars)");
     }
     return feat;
   }

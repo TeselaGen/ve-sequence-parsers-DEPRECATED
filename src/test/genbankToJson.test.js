@@ -42,7 +42,6 @@ genbankToJson(string, function(result) {
     it('handles joined features/parts correctly', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbWithJoinedFeaturesAndParts.gb'), "utf8");
         genbankToJson(string, function(result) {
-            console.log(`result[0].parsedSequence:`,result[0].parsedSequence)
             result[0].parsedSequence.features.should.containSubset([{
                 name: 'reg_elem',
                 start: 867,

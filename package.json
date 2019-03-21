@@ -13,6 +13,11 @@
     "test1": "jest --env=node ./src/test --testNamePattern='tests protein FASTA and checks for correctness'",
     "test-debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand --env=node ./src/test"
   },
+  "jest": {
+    "transform": {
+    "^.+\\.js$": "<rootDir>/jest.transform.js"
+    }
+  },
   "author": "teselagen",
   "license": "MIT",
   "devDependencies": {

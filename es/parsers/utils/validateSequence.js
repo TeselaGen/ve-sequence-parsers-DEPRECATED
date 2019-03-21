@@ -197,4 +197,4 @@ export default function validateSequence(sequence) {
   });
   response.validatedAndCleanedSequence = sequence;
   return response;
-};
+}

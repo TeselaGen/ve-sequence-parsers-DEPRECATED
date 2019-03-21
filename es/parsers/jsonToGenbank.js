@@ -1,7 +1,7 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /* eslint-disable no-var*/
-import { cloneDeep, map, each } from 'lodash';
+import { cloneDeep, map, each, isObject, flatMap } from 'lodash';
 
 import nameUtils from './utils/NameUtils.js';
 var StringUtil = {
@@ -96,7 +96,10 @@ export default function (_serSeq, options) {
     if (serSeq.library) {
       lines.push("COMMENT             library: " + serSeq.library);
     }
-    serSeq.features = map(serSeq.features).concat(map(serSeq.parts, function (p) {
+    serSeq.features = map(serSeq.features).concat(flatMap(serSeq.parts, function (p) {
+      if (!isObject(p)) {
+        return [];
+      }
       p.notes = _extends({}, p.notes, {
         pragma: ["Teselagen_Part"]
       });
