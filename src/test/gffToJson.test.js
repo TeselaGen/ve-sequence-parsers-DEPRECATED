@@ -1,9 +1,9 @@
 
-const path = require("path");
-const fs = require('fs');
-const chai = require('chai');
-const chaiSubset = require('chai-subset');
-const gffToJson = require("../parsers/gffToJson");
+import path from 'path';
+import fs from 'fs';
+import chai from 'chai';
+import chaiSubset from 'chai-subset';
+import gffToJson from '../parsers/gffToJson';
 
 chai.use(chaiSubset);
 chai.use(require('chai-things'));

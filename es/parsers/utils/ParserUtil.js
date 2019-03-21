@@ -83,4 +83,4 @@ ParserUtil.isAGenbankFeatureLabel = function (name) {
 		return false;
 	}
 };
-module.exports = ParserUtil;
+export default ParserUtil;

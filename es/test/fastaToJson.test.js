@@ -2,11 +2,12 @@
  * testing file for the FASTA parser, which should be able to handle multiple sequences in the same file, comments, and any other sort of vaild FASTA format
  * @author Joshua P Nixon
  */
-const fastaToJson = require("../parsers/fastaToJson");
-const path = require("path");
-const fs = require("fs");
-const chai = require("chai");
-const {proteinFasta3} = require("./resultStrings")
+import fastaToJson from '../parsers/fastaToJson';
+
+import path from 'path';
+import fs from 'fs';
+import chai from 'chai';
+import { proteinFasta3 } from './resultStrings';
 chai.use(require("chai-things"));
 chai.should();
 

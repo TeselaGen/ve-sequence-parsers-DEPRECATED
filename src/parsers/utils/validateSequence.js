@@ -1,12 +1,8 @@
-const areNonNegativeIntegers = require("validate.io-nonnegative-integer-array");
-const { FeatureTypes } = require("ve-sequence-utils");
-const NameUtils = require("./NameUtils.js");
+import areNonNegativeIntegers from 'validate.io-nonnegative-integer-array';
+import { FeatureTypes } from 've-sequence-utils';
+import NameUtils from './NameUtils.js';
+import { filterAminoAcidSequenceString, filterSequenceString, guessIfSequenceIsDnaAndNotProtein } from 've-sequence-utils';
 
-const {
-  filterAminoAcidSequenceString,
-  filterSequenceString,
-  guessIfSequenceIsDnaAndNotProtein
-} = require("ve-sequence-utils");
 //validation checking
 /**
  * validation and sanitizing of our teselagen sequence data type
@@ -16,7 +12,7 @@ const {
     messages: [],
   };
  */
-module.exports = function validateSequence(
+export default function validateSequence(
   sequence,
   {
     isProtein,
@@ -264,4 +260,4 @@ module.exports = function validateSequence(
   });
   response.validatedAndCleanedSequence = sequence;
   return response;
-};
+}

@@ -139,13 +139,13 @@ var anyToJson = function () {
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-var fastaToJson = require('./fastaToJson');
-var genbankToJson = require('./genbankToJson');
-var xmlParser = require('./sbolXmlToJson');
-var extractFileExtension = require('./utils/extractFileExtension.js');
-var snapgeneToJson = require('./snapgeneToJson');
-var ab1ToJson = require('./ab1ToJson');
-var gffToJson = require('./gffToJson');
+import fastaToJson from './fastaToJson';
+import genbankToJson from './genbankToJson';
+import xmlParser from './sbolXmlToJson';
+import extractFileExtension from './utils/extractFileExtension.js';
+import snapgeneToJson from './snapgeneToJson';
+import ab1ToJson from './ab1ToJson';
+import gffToJson from './gffToJson';
 
 /**
  * takes in file content string and its file name and determines what parser it needs to be sent to.
@@ -153,9 +153,9 @@ var gffToJson = require('./gffToJson');
  * @param  {string} fileContentString content of the file as a string
  * @param  {callback} onFileParsed    //tnr: fill this out
  */
-var addPromiseOption = require('./utils/addPromiseOption');
+import addPromiseOption from './utils/addPromiseOption';
 
-module.exports = addPromiseOption(anyToJson);
+export default addPromiseOption(anyToJson);
 
 function getFileString(file) {
     if (typeof window === "undefined") {

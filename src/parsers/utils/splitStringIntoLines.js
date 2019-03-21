@@ -1,5 +1,5 @@
-module.exports = function splitStringIntoLines(string) {
-	var lines = [];
+export default function splitStringIntoLines(string) {
+	let lines = [];
 	if (string === "") {
 		return lines;
 	}

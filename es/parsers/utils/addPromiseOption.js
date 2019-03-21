@@ -1,4 +1,4 @@
-module.exports = function addPromiseOption(func) {
+export default function addPromiseOption(func) {
   return function (fileOrString, optionsOrCallback, options) {
     if (typeof optionsOrCallback !== "function") {
       //if there is no callback, assume the promise interface should be used

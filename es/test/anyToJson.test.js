@@ -1,14 +1,15 @@
 //this test takes a sequence represented in several different file types and
 //makes sure that they give the same results regardless (for fields that make sense)
-const anyToJson = require('../parsers/anyToJson.js');
-const fs = require('fs');
-const path = require("path");
-const async = require('async');
-const assert = require('assert');
-const chai = require('chai');
+import anyToJson from '../parsers/anyToJson.js';
+
+import fs from 'fs';
+import path from 'path';
+import async from 'async';
+import assert from 'assert';
+import chai from 'chai';
+import example1OutputChromatogram from './testData/ab1/example1_output_chromatogram.json';
+import ab1ToJson from '../parsers/ab1ToJson';
 chai.use(require('chai-things'));
-const example1OutputChromatogram = require('./testData/ab1/example1_output_chromatogram.json');
-const ab1ToJson = require('../parsers/ab1ToJson');
 
 chai.should();
 

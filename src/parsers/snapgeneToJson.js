@@ -1,15 +1,15 @@
 //note: Huge credit and thanks go to IsaacLuo from whose python repository this code was adapted
 // https://github.com/IsaacLuo/SnapGeneFileReader
 
-const bufferpack = require("bufferpack");
-const xml2Js = require("xml2js");
-const { StringDecoder } = require("string_decoder");
+import bufferpack from 'bufferpack';
 
-const addPromiseOption = require("./utils/addPromiseOption");
-const getArrayBufferFromFile = require("./utils/getArrayBufferFromFile");
-const createInitialSequence = require("./utils/createInitialSequence");
-const validateSequenceArray = require("./utils/validateSequenceArray");
-const flattenSequenceArray = require("./utils/flattenSequenceArray");
+import xml2Js from 'xml2js';
+import { StringDecoder } from 'string_decoder';
+import addPromiseOption from './utils/addPromiseOption';
+import getArrayBufferFromFile from './utils/getArrayBufferFromFile';
+import createInitialSequence from './utils/createInitialSequence';
+import validateSequenceArray from './utils/validateSequenceArray';
+import flattenSequenceArray from './utils/flattenSequenceArray';
 
 async function snapgeneToJson(
   fileObj,
@@ -221,7 +221,7 @@ function parseXml(string) {
 }
 
 
-module.exports = addPromiseOption(snapgeneToJson)
+export default addPromiseOption(snapgeneToJson);
 
 function dec2bin(dec){
   return (dec >>> 0).toString(2);

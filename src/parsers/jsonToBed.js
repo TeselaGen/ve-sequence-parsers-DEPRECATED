@@ -1,4 +1,4 @@
-const { tidyUpSequenceData } = require('ve-sequence-utils');
+import { tidyUpSequenceData } from 've-sequence-utils';
 
 function jsonToBed(jsonSequence, options) {
   const cleanedData = tidyUpSequenceData(jsonSequence);
@@ -21,4 +21,4 @@ function jsonToBed(jsonSequence, options) {
   return outString;
 }
 
-module.exports = jsonToBed;
+export default jsonToBed;

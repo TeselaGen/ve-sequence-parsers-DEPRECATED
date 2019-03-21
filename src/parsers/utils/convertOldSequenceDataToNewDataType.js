@@ -1,6 +1,6 @@
-const { isRangeWithinRange } = require("ve-range-utils");
+import { isRangeWithinRange } from 've-range-utils';
 
-module.exports = function convertOldSequenceDataToNewDataType(
+export default function convertOldSequenceDataToNewDataType(
   oldTeselagenJson,
   opts
 ) {

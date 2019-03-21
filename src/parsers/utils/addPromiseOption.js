@@ -1,4 +1,4 @@
-module.exports = function addPromiseOption(func) {
+export default function addPromiseOption(func) {
   return (fileOrString, optionsOrCallback, options) => {
     if (typeof optionsOrCallback !== "function") { 
       //if there is no callback, assume the promise interface should be used
@@ -12,4 +12,4 @@ module.exports = function addPromiseOption(func) {
       return func(fileOrString, optionsOrCallback, options)
     }
   }
-}
+};

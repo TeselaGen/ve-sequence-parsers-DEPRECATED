@@ -1,5 +1,6 @@
-var constants = require('./constants');
-module.exports = function createInitialSequence(options) {
+import constants from './constants';
+
+export default function createInitialSequence(options) {
     options = options || {};
     return {
         messages: [],

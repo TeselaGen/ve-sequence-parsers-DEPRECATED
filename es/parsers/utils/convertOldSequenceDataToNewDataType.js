@@ -1,7 +1,6 @@
-var _require = require("ve-range-utils"),
-    isRangeWithinRange = _require.isRangeWithinRange;
+import { isRangeWithinRange } from 've-range-utils';
 
-module.exports = function convertOldSequenceDataToNewDataType(oldTeselagenJson, opts) {
+export default function convertOldSequenceDataToNewDataType(oldTeselagenJson, opts) {
   if (opts && opts.splitLocations) {
     //after the file has been parsed, but before it's been saved, check for features with multiple locations and split them
     oldTeselagenJson && oldTeselagenJson.features.forEach(function (feature) {

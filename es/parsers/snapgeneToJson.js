@@ -1,4 +1,4 @@
-import _regeneratorRuntime from "babel-runtime/regenerator";
+import _regeneratorRuntime from 'babel-runtime/regenerator';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -29,17 +29,17 @@ var snapgeneToJson = function () {
                   break;
                 }
 
-                return _context.abrupt("return", undefined);
+                return _context.abrupt('return', undefined);
 
               case 8:
                 _context.next = 10;
                 return unpacked[0];
 
               case 10:
-                return _context.abrupt("return", _context.sent);
+                return _context.abrupt('return', _context.sent);
 
               case 11:
-              case "end":
+              case 'end':
                 return _context.stop();
             }
           }
@@ -177,7 +177,7 @@ var snapgeneToJson = function () {
               break;
             }
 
-            return _context3.abrupt("return");
+            return _context3.abrupt('return');
 
           case 50:
             data.size = size;
@@ -277,12 +277,12 @@ var snapgeneToJson = function () {
                       });
 
                     case 12:
-                    case "end":
+                    case 'end':
                       return _context2.stop();
                   }
                 }
               }, _callee2, _this);
-            })(), "t8", 58);
+            })(), 't8', 58);
 
           case 58:
             _context3.next = 62;
@@ -301,7 +301,7 @@ var snapgeneToJson = function () {
             onFileParsed([returnVal]);
 
           case 66:
-          case "end":
+          case 'end':
             return _context3.stop();
         }
       }
@@ -318,17 +318,15 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 //note: Huge credit and thanks go to IsaacLuo from whose python repository this code was adapted
 // https://github.com/IsaacLuo/SnapGeneFileReader
 
-var bufferpack = require("bufferpack");
-var xml2Js = require("xml2js");
+import bufferpack from 'bufferpack';
 
-var _require = require("string_decoder"),
-    StringDecoder = _require.StringDecoder;
-
-var addPromiseOption = require("./utils/addPromiseOption");
-var getArrayBufferFromFile = require("./utils/getArrayBufferFromFile");
-var createInitialSequence = require("./utils/createInitialSequence");
-var validateSequenceArray = require("./utils/validateSequenceArray");
-var flattenSequenceArray = require("./utils/flattenSequenceArray");
+import xml2Js from 'xml2js';
+import { StringDecoder } from 'string_decoder';
+import addPromiseOption from './utils/addPromiseOption';
+import getArrayBufferFromFile from './utils/getArrayBufferFromFile';
+import createInitialSequence from './utils/createInitialSequence';
+import validateSequenceArray from './utils/validateSequenceArray';
+import flattenSequenceArray from './utils/flattenSequenceArray';
 
 function getStartAndEndFromRangeString(rangestring) {
   var _rangestring$split = rangestring.split("-"),
@@ -390,7 +388,7 @@ function parseXml(string) {
   });
 }
 
-module.exports = addPromiseOption(snapgeneToJson);
+export default addPromiseOption(snapgeneToJson);
 
 function dec2bin(dec) {
   return (dec >>> 0).toString(2);

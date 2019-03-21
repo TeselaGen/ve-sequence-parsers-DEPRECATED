@@ -1,6 +1,6 @@
-const createInitialSequence = require('./utils/createInitialSequence')
-const addPromiseOption = require('./utils/addPromiseOption')
-const getArrayBufferFromFile = require('./utils/getArrayBufferFromFile')
+import createInitialSequence from './utils/createInitialSequence';
+import addPromiseOption from './utils/addPromiseOption';
+import getArrayBufferFromFile from './utils/getArrayBufferFromFile';
 
 async function ab1ToJson(fileObj, onFileParsed, options = {}) {
   const arrayBuffer = await getArrayBufferFromFile(fileObj);
@@ -16,7 +16,7 @@ async function ab1ToJson(fileObj, onFileParsed, options = {}) {
   onFileParsed([returnVal]);
 }
 
-module.exports = addPromiseOption(ab1ToJson);
+export default addPromiseOption(ab1ToJson);
 
 
 
@@ -113,24 +113,24 @@ function abConverter(inputArrayBuffer) {
     return time;
   };
 
-  this.getPString = (inOffset, counter) => {
-    let outString = "";
-    for (let count = 1; count < inputArrayBuffer.getInt8(inOffset); count++) {
-      outString += inputArrayBuffer.getInt8(inOffset + count);
-    }
-  };
+  // this.getPString = (inOffset, counter) => {
+  //   let outString = "";
+  //   for (let count = 1; count < inputArrayBuffer.getInt8(inOffset); count++) {
+  //     outString += inputArrayBuffer.getInt8(inOffset + count);
+  //   }
+  // };
 
-  this.getCString = (inOffset, counter) => {
-    let outString = "";
-    let offset = inOffset;
-    let currentByte = inputArrayBuffer.getInt8(offset);
-    while (currentByte != 0) {
-      outString += String.fromCharCode(currentByte);
-      offset++;
-      currentByte = inputArrayBuffer.getInt8(offset);
-    }
-    return outString;
-  };
+  // this.getCString = (inOffset, counter) => {
+  //   let outString = "";
+  //   let offset = inOffset;
+  //   let currentByte = inputArrayBuffer.getInt8(offset);
+  //   while (currentByte != 0) {
+  //     outString += String.fromCharCode(currentByte);
+  //     offset++;
+  //     currentByte = inputArrayBuffer.getInt8(offset);
+  //   }
+  //   return outString;
+  // };
 
   this.getTagName = inOffset => {
     let name = "";
@@ -146,6 +146,7 @@ function abConverter(inputArrayBuffer) {
     do {
       const currTagName = this.getTagName(curElem);
       const tagNum = inputArrayBuffer.getInt32(curElem + 4);
+      // eslint-disable-next-line eqeqeq
       if (currTagName == inTag.tagName && tagNum === inTag.tagNum) {
         const numEntries = inputArrayBuffer.getInt32(curElem + 16);
         const entryOffset = inputArrayBuffer.getInt32(curElem + 20);

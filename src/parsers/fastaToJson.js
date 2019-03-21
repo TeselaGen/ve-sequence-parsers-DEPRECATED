@@ -1,13 +1,14 @@
-const createInitialSequence = require('./utils/createInitialSequence');
-const splitStringIntoLines = require('./utils/splitStringIntoLines.js');
-const validateSequenceArray = require('./utils/validateSequenceArray');
+import createInitialSequence from './utils/createInitialSequence';
+import splitStringIntoLines from './utils/splitStringIntoLines.js';
+import validateSequenceArray from './utils/validateSequenceArray';
+
 /**
  * parses a fasta file that may or may not contain multiple resultArray
  * @param  {[string]} fileString   [string respresentation of file contents]
  * @param  {[function]} onFileParsed [callback for a parsed sequence]
  * @author Joshua P Nixon
  */
-const addPromiseOption = require('./utils/addPromiseOption');
+import addPromiseOption from './utils/addPromiseOption';
 
 
 function fastaToJson(fileString, onFileParsedUnwrapped, options) {
@@ -89,7 +90,7 @@ function fastaToJson(fileString, onFileParsedUnwrapped, options) {
         // }
         result.parsedSequence.sequence += line;
     }
-};
+}
 
 
-module.exports = addPromiseOption(fastaToJson);
+export default addPromiseOption(fastaToJson);

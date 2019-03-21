@@ -1,8 +1,8 @@
-const chai = require("chai");
-const path = require("path");
-const fs = require('fs');
-const genbankToJson = require("../parsers/genbankToJson");
-const jsonToBed = require("../parsers/jsonToBed");
+import chai from 'chai';
+import path from 'path';
+import fs from 'fs';
+import genbankToJson from '../parsers/genbankToJson';
+import jsonToBed from '../parsers/jsonToBed';
 
 chai.should();
 describe("testing genbank to json to bed file format", function() {

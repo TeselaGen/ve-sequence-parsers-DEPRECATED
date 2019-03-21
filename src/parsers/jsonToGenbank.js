@@ -1,7 +1,8 @@
 /* eslint-disable no-var*/
-const { cloneDeep, map, each } = require("lodash");
-var nameUtils = require("./utils/NameUtils.js");
-var StringUtil = {
+import { cloneDeep, map, each, isObject, flatMap } from 'lodash';
+
+import nameUtils from './utils/NameUtils.js';
+const StringUtil = {
   /** Trims white space at beginning and end of string
    * @param {String} line
    * @returns {String} line
@@ -31,7 +32,7 @@ var StringUtil = {
    * @returns {String} line
    */
   lpad: function(line, padString, length) {
-    var str = line;
+    let str = line;
     while (str.length < length) str = padString + str;
     return str;
   },
@@ -41,7 +42,7 @@ var StringUtil = {
    * @returns {String} line
    */
   rpad: function(line, padString, length) {
-    var str = line;
+    let str = line;
     while (str.length < length) str = str + padString;
     return str;
   }
@@ -55,7 +56,7 @@ function cutUpStr(val, start, end) {
   return val.slice(start, end);
 }
 
-module.exports = function(_serSeq, options) {
+export default function(_serSeq, options) {
   options = options || {};
   options.reformatSeqName = options.reformatSeqName !== false;
   const serSeq = cloneDeep(_serSeq);
@@ -67,11 +68,11 @@ module.exports = function(_serSeq, options) {
       serSeq.sequence = serSeq.proteinSequence || serSeq.sequence;
       options.isProtein = true;
     }
-    var content = null;
-    var cutUp = typeof serSeq.sequence === "string" ? cutUpStr : cutUpArray;
+    let content = null;
+    const cutUp = typeof serSeq.sequence === "string" ? cutUpStr : cutUpArray;
     if (!serSeq.sequence) serSeq.sequence = "";
 
-    var lines = [];
+    let lines = [];
     lines.push(createGenbankLocus(serSeq, options));
     if (serSeq.definition || serSeq.description) {
       lines.push("DEFINITION  " + (serSeq.definition || serSeq.description));
@@ -94,7 +95,10 @@ module.exports = function(_serSeq, options) {
       lines.push("COMMENT             library: " + serSeq.library);
     }
     serSeq.features = map(serSeq.features).concat(
-      map(serSeq.parts, p => {
+      flatMap(serSeq.parts, p => {
+        if (!isObject(p)) {
+          return []
+        }
         p.notes = {
           ...p.notes,
           pragma: ["Teselagen_Part"]
@@ -102,7 +106,7 @@ module.exports = function(_serSeq, options) {
         return p;
       })
     );
-    var printedFeatureHeader;
+    let printedFeatureHeader;
     each(serSeq.features, function(feat, index) {
       if (!printedFeatureHeader) {
         printedFeatureHeader = true;
@@ -112,12 +116,12 @@ module.exports = function(_serSeq, options) {
     });
 
     lines.push("ORIGIN      ");
-    for (var i = 0; i < serSeq.sequence.length; i = i + 60) {
-      var line = [];
-      var ind = StringUtil.lpad("" + (i + 1), " ", 9);
+    for (let i = 0; i < serSeq.sequence.length; i = i + 60) {
+      const line = [];
+      const ind = StringUtil.lpad("" + (i + 1), " ", 9);
       line.push(ind);
 
-      for (var j = i; j < i + 60; j = j + 10) {
+      for (let j = i; j < i + 60; j = j + 10) {
         // line.push(serSeq.sequence.slice(j,j+10).join(''));
         line.push(cutUp(serSeq.sequence, j, j + 10));
       }
@@ -142,8 +146,8 @@ function createGenbankLocus(serSeq, options) {
     serSeq.sequence = serSeq.sequence.symbols.split("");
   }
 
-  var tmp;
-  var dnaType;
+  let tmp;
+  let dnaType;
   if (serSeq.isProtein) {
     dnaType = "";
   } else if (serSeq.type === "RNA") {
@@ -151,10 +155,10 @@ function createGenbankLocus(serSeq, options) {
   } else {
     dnaType = "DNA";
   }
-  var date = getCurrentDateString();
+  const date = getCurrentDateString();
 
-  var line = StringUtil.rpad("LOCUS", " ", 12);
-  var nameToUse = serSeq.name || "Untitled_Sequence";
+  let line = StringUtil.rpad("LOCUS", " ", 12);
+  let nameToUse = serSeq.name || "Untitled_Sequence";
   nameToUse = options.reformatSeqName
     ? nameUtils.reformatName(nameToUse)
     : nameToUse;
@@ -193,11 +197,11 @@ function createGenbankLocus(serSeq, options) {
 }
 
 function getCurrentDateString() {
-  var date = new Date();
+  let date = new Date();
   date = date.toString().split(" ");
-  var day = date[2];
-  var month = date[1].toUpperCase();
-  var year = date[3];
+  const day = date[2];
+  const month = date[1].toUpperCase();
+  const year = date[3];
   return day + "-" + month + "-" + year;
 }
 
@@ -206,10 +210,10 @@ function featureNoteInDataToGenbankString(name, value) {
 }
 
 function featureToGenbankString(feat, options) {
-  var lines = [];
+  const lines = [];
 
-  var line = "     " + StringUtil.rpad(feat.type || "misc_feature", " ", 16);
-  var locStr = "";
+  const line = "     " + StringUtil.rpad(feat.type || "misc_feature", " ", 16);
+  let locStr = "";
 
   //for(var i=0;i<feat.locations.length;i++) {
   //	var loc = feat.locations[i];
@@ -259,7 +263,7 @@ function featureToGenbankString(feat, options) {
     featureNoteInDataToGenbankString("label", feat.name || "Untitled Feature")
   );
 
-  var notes = feat.notes;
+  let notes = feat.notes;
   if (notes) {
     try {
       if (typeof notes === "string") {

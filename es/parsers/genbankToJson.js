@@ -1,14 +1,15 @@
 /* eslint-disable no-var*/
-var _require = require("ve-sequence-utils"),
-    convertAACaretPositionOrRangeToDna = _require.convertAACaretPositionOrRangeToDna;
+import { convertAACaretPositionOrRangeToDna } from 've-sequence-utils';
 
-var constants = require("./utils/constants");
-var flattenSequenceArray = require("./utils/flattenSequenceArray");
-var validateSequenceArray = require("./utils/validateSequenceArray");
+import constants from './utils/constants';
+import flattenSequenceArray from './utils/flattenSequenceArray';
+import validateSequenceArray from './utils/validateSequenceArray';
+
 // var some = require('lodash/collection/some');
-var splitStringIntoLines = require("./utils/splitStringIntoLines.js");
-var createInitialSequence = require("./utils/createInitialSequence");
-var addPromiseOption = require("./utils/addPromiseOption");
+import splitStringIntoLines from './utils/splitStringIntoLines.js';
+
+import createInitialSequence from './utils/createInitialSequence';
+import addPromiseOption from './utils/addPromiseOption';
 
 function genbankToJson(string, onFileParsedUnwrapped, options) {
   var onFileParsed = function onFileParsed(sequences, options) {
@@ -20,8 +21,8 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   var inclusive1BasedEnd = options.inclusive1BasedEnd;
 
   var resultsArray = [];
-  var result;
-  var currentFeatureNote;
+  var result = void 0;
+  var currentFeatureNote = void 0;
 
   var genbankAnnotationKey = {
     LOCUS_TAG: "LOCUS",
@@ -47,10 +48,10 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     END_SEQUENCE_TAG: "//"
   };
 
+  var featureLocationIndentation = void 0;
   try {
     var lines = splitStringIntoLines(string);
     var LINETYPE = false;
-    var featureLocationIndentation;
 
     if (lines === null) {
       addMessage("Import Error: Sequence file is empty");
@@ -222,9 +223,9 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
   function parseLocus(line) {
     result = createInitialSequence(options);
-    var locusName;
-    var linear;
-    var date;
+    var locusName = void 0;
+    var linear = void 0;
+    var date = void 0;
     var lineArr = line.split(/[\s]+/g);
 
     if (lineArr.length <= 1) {
@@ -271,10 +272,10 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       throw new Error("no sequence yet created upon which to extract an extra line!");
     }
   }
-  var lastLineWasFeaturesTag;
-  var lastLineWasLocation;
+  var lastLineWasFeaturesTag = void 0;
+  var lastLineWasLocation = void 0;
   function parseFeatures(line, key, val) {
-    var strand;
+    var strand = void 0;
     // FOR THE MAIN FEATURES LOCATION/QUALIFIER LINE
     if (key === genbankAnnotationKey.FEATURES_TAG) {
       lastLineWasFeaturesTag = true;
@@ -383,7 +384,8 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function parseFeatureNote(line) {
-    var newLine, lineArr;
+    var newLine = void 0,
+        lineArr = void 0;
 
     newLine = line.trim();
     newLine = newLine.replace(/^\/|"$/g, "");
@@ -413,7 +415,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function getLineKey(line) {
-    var arr;
+    var arr = void 0;
     line = line.replace(/^[\s]*/, "");
 
     if (line.indexOf("=") < 0) {
@@ -426,7 +428,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function getLineVal(line) {
-    var arr;
+    var arr = void 0;
 
     if (line.indexOf("=") < 0) {
       line = line.replace(/^[\s]*[\S]+[\s]+|[\s]+$/, "");
@@ -455,7 +457,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function isKeywordRunon(line) {
-    var runon;
+    var runon = void 0;
     if (line.substr(0, 10).match(/[\s]{10}/)) {
       runon = true;
     } else {
@@ -491,7 +493,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       //shorten the name to a reasonable length if necessary and warn the user about it
       var oldName = feat.name;
       feat.name = feat.name.substr(0, 100);
-      addMessage("Warning: Shortening name of feature " + oldName + " (max 100 chars)");
+      addMessage('Warning: Shortening name of feature ' + oldName + ' (max 100 chars)');
     }
     return feat;
   }
@@ -543,4 +545,4 @@ function getLengthOfWhiteSpaceBeforeStartOfLetters(string) {
   }
 }
 
-module.exports = addPromiseOption(genbankToJson);
+export default addPromiseOption(genbankToJson);

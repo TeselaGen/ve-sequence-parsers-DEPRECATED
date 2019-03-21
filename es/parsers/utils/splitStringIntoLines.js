@@ -1,4 +1,4 @@
-module.exports = function splitStringIntoLines(string) {
+export default function splitStringIntoLines(string) {
 	var lines = [];
 	if (string === "") {
 		return lines;

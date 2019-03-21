@@ -1,4 +1,4 @@
-module.exports = function extractFileExtension(name) {
+export default function extractFileExtension(name) {
 	if (typeof name === 'string') {
 		var ext = "";
 		var match = name.match(/\.(\w+)$/);

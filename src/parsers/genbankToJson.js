@@ -1,30 +1,32 @@
 /* eslint-disable no-var*/
-const {convertAACaretPositionOrRangeToDna} = require("ve-sequence-utils");
+import { convertAACaretPositionOrRangeToDna } from "ve-sequence-utils";
 
-var constants = require("./utils/constants");
-var flattenSequenceArray = require("./utils/flattenSequenceArray");
-var validateSequenceArray = require("./utils/validateSequenceArray");
+import constants from "./utils/constants";
+import flattenSequenceArray from "./utils/flattenSequenceArray";
+import validateSequenceArray from "./utils/validateSequenceArray";
+
 // var some = require('lodash/collection/some');
-var splitStringIntoLines = require("./utils/splitStringIntoLines.js");
-var createInitialSequence = require("./utils/createInitialSequence");
-const addPromiseOption = require("./utils/addPromiseOption");
+import splitStringIntoLines from "./utils/splitStringIntoLines.js";
+
+import createInitialSequence from "./utils/createInitialSequence";
+import addPromiseOption from "./utils/addPromiseOption";
 
 function genbankToJson(string, onFileParsedUnwrapped, options) {
-  var onFileParsed = function(sequences, options) {
+  const onFileParsed = function(sequences, options) {
     //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
     onFileParsedUnwrapped(
       validateSequenceArray(flattenSequenceArray(sequences, options), options)
     );
   };
   options = options || {};
-  var inclusive1BasedStart = options.inclusive1BasedStart;
-  var inclusive1BasedEnd = options.inclusive1BasedEnd;
+  const inclusive1BasedStart = options.inclusive1BasedStart;
+  const inclusive1BasedEnd = options.inclusive1BasedEnd;
 
-  var resultsArray = [];
-  var result;
-  var currentFeatureNote;
+  let resultsArray = [];
+  let result;
+  let currentFeatureNote;
 
-  var genbankAnnotationKey = {
+  const genbankAnnotationKey = {
     LOCUS_TAG: "LOCUS",
     DEFINITION_TAG: "DEFINITION",
     ACCESSION_TAG: "ACCESSION",
@@ -48,25 +50,25 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     END_SEQUENCE_TAG: "//"
   };
 
+  let featureLocationIndentation;
   try {
-    var lines = splitStringIntoLines(string);
-    var LINETYPE = false;
-    var featureLocationIndentation;
+    const lines = splitStringIntoLines(string);
+    let LINETYPE = false;
 
     if (lines === null) {
       addMessage("Import Error: Sequence file is empty");
     }
-    var hasFoundLocus = false;
+    let hasFoundLocus = false;
 
     lines.some(function(line) {
       if (line === null) {
         return true; //break the some loop
       }
-      var key = getLineKey(line);
-      var val = getLineVal(line);
-      var isKeyRunon = isKeywordRunon(line);
-      var isSubKey = isSubKeyword(line);
-      var isKey = isKeyword(line);
+      const key = getLineKey(line);
+      const val = getLineVal(line);
+      const isKeyRunon = isKeywordRunon(line);
+      const isSubKey = isSubKeyword(line);
+      const isKey = isKeyword(line);
 
       //only set a new LINETYPE in the case that we've encountered a key that warrants it.
       if (key === "LOCUS") {
@@ -128,7 +130,9 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
             result.parsedSequence.definition = line;
             result.parsedSequence.description = line;
           } else {
-            throw new Error("no sequence yet created upon which to extract an extra line!");
+            throw new Error(
+              "no sequence yet created upon which to extract an extra line!"
+            );
           }
           break;
         case "COMMENT":
@@ -151,7 +155,9 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
               result.parsedSequence.comments.push(line);
             }
           } else {
-            throw new Error("no sequence yet created upon which to extract an extra line!");
+            throw new Error(
+              "no sequence yet created upon which to extract an extra line!"
+            );
           }
           break;
         default:
@@ -180,7 +186,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
             addMessage("Warning: This line has been ignored: " + line);
           }
       }
-    return false
+      return false;
     });
   } catch (e) {
     //catch any errors and set the result
@@ -221,7 +227,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
   function postProcessCurSeq() {
     if (result.parsedSequence && result.parsedSequence.features) {
-      for (var i = 0; i < result.parsedSequence.features.length; i++) {
+      for (let i = 0; i < result.parsedSequence.features.length; i++) {
         result.parsedSequence.features[i] = postProcessGenbankFeature(
           result.parsedSequence.features[i]
         );
@@ -231,17 +237,17 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
   function parseOrigin(line, key) {
     if (key !== genbankAnnotationKey.ORIGIN_TAG) {
-      var new_line = line.replace(/[\s]*[0-9]*/g, "");
+      const new_line = line.replace(/[\s]*[0-9]*/g, "");
       result.parsedSequence.sequence += new_line;
     }
   }
 
   function parseLocus(line) {
     result = createInitialSequence(options);
-    var locusName;
-    var linear;
-    var date;
-    var lineArr = line.split(/[\s]+/g);
+    let locusName;
+    let linear;
+    let date;
+    const lineArr = line.split(/[\s]+/g);
 
     if (lineArr.length <= 1) {
       console.warn(
@@ -254,7 +260,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
     // Linear vs Circular?
     linear = true;
-    for (var i = 1; i < lineArr.length; i++) {
+    for (let i = 1; i < lineArr.length; i++) {
       if (lineArr[i].match(/circular/gi)) {
         linear = false;
       }
@@ -262,12 +268,12 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
     // Date and Div
     // Date is in format:1-APR-2012
-    for (var j = 1; j < lineArr.length; j++) {
+    for (let j = 1; j < lineArr.length; j++) {
       if (lineArr[j].match(/-[A-Z]{3}-/g)) {
         date = lineArr[j];
       }
       if (j === 3 && lineArr[j].match(/aa/i)) {
-        options.isProtein = true
+        options.isProtein = true;
       }
     }
 
@@ -289,13 +295,18 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       }
       result.parsedSequence.extraLines.push(line);
     } else {
-      throw new Error("no sequence yet created upon which to extract an extra line!");
+      throw new Error(
+        "no sequence yet created upon which to extract an extra line!"
+      );
     }
   }
+  /* eslint-disable no-var */
   var lastLineWasFeaturesTag;
   var lastLineWasLocation;
+  /* eslint-enable no-var*/
+
   function parseFeatures(line, key, val) {
-    var strand;
+    let strand;
     // FOR THE MAIN FEATURES LOCATION/QUALIFIER LINE
     if (key === genbankAnnotationKey.FEATURES_TAG) {
       lastLineWasFeaturesTag = true;
@@ -349,7 +360,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
         }
 
         newFeature();
-        var feat = getCurrentFeature();
+        let feat = getCurrentFeature();
         feat.type = key;
         feat.strand = strand;
 
@@ -367,7 +378,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function isNote(line) {
-    var qual = false;
+    let qual = false;
     /*if (line.charAt(21) === "/") {//T.H. Hard coded method
            qual = true;
          }*/
@@ -388,13 +399,13 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
   function parseFeatureLocation(locStr, options) {
     locStr = locStr.trim();
-    var locArr = [];
+    const locArr = [];
     locStr.replace(/(\d+)/g, function(string, match) {
       locArr.push(match);
     });
-    for (var i = 0; i < locArr.length; i += 2) {
-      var start = parseInt(locArr[i], 10) - (inclusive1BasedStart ? 0 : 1);
-      var end = parseInt(locArr[i + 1], 10) - (inclusive1BasedEnd ? 0 : 1);
+    for (let i = 0; i < locArr.length; i += 2) {
+      const start = parseInt(locArr[i], 10) - (inclusive1BasedStart ? 0 : 1);
+      let end = parseInt(locArr[i + 1], 10) - (inclusive1BasedEnd ? 0 : 1);
       if (isNaN(end)) {
         //if no end is supplied, assume that the end should be set to whatever the start is
         //this makes a feature location passed as:
@@ -403,23 +414,27 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
         //147..147
         end = start;
       }
-      var location = {
+      const location = {
         start: start,
         end: end
       };
-      var feat = getCurrentFeature();
-      feat.locations.push(options.isProtein  ? convertAACaretPositionOrRangeToDna(location) : location);
+      let feat = getCurrentFeature();
+      feat.locations.push(
+        options.isProtein
+          ? convertAACaretPositionOrRangeToDna(location)
+          : location
+      );
     }
   }
 
   function parseFeatureNote(line) {
-    var newLine, lineArr;
+    let newLine, lineArr;
 
     newLine = line.trim();
     newLine = newLine.replace(/^\/|"$/g, "");
     lineArr = newLine.split(/="|=/);
 
-    var val = lineArr[1];
+    let val = lineArr[1];
 
     if (val) {
       val = val.replace(/\\/g, " ");
@@ -427,11 +442,11 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       if (line.match(/="/g)) {
         val = val.replace(/".*/g, "");
       } else if (val.match(/^\d+$/g)) {
-        val = parseInt(val,10);
+        val = parseInt(val, 10);
       }
     }
-    var key = lineArr[0];
-    var currentNotes = getCurrentFeature().notes;
+    const key = lineArr[0];
+    let currentNotes = getCurrentFeature().notes;
     if (currentNotes[key]) {
       //array already exists, so push value into it
       currentNotes[key].push(val);
@@ -443,7 +458,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function getLineKey(line) {
-    var arr;
+    let arr;
     line = line.replace(/^[\s]*/, "");
 
     if (line.indexOf("=") < 0) {
@@ -456,7 +471,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function getLineVal(line) {
-    var arr;
+    let arr;
 
     if (line.indexOf("=") < 0) {
       line = line.replace(/^[\s]*[\S]+[\s]+|[\s]+$/, "");
@@ -469,7 +484,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function isKeyword(line) {
-    var isKey = false;
+    let isKey = false;
     if (line.substr(0, 10).match(/^[\S]+/)) {
       isKey = true;
     }
@@ -477,7 +492,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function isSubKeyword(line) {
-    var isSubKey = false;
+    let isSubKey = false;
     if (line.substr(0, 10).match(/^[\s]+[\S]+/)) {
       isSubKey = true;
     }
@@ -485,7 +500,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function isKeywordRunon(line) {
-    var runon;
+    let runon;
     if (line.substr(0, 10).match(/[\s]{10}/)) {
       runon = true;
     } else {
@@ -519,7 +534,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     }
     if (feat.name.length > 100) {
       //shorten the name to a reasonable length if necessary and warn the user about it
-      var oldName = feat.name;
+      const oldName = feat.name;
       feat.name = feat.name.substr(0, 100);
       addMessage(
         `Warning: Shortening name of feature ${oldName} (max 100 chars)`
@@ -530,7 +545,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 }
 
 function isFeatureLineRunon(line, featureLocationIndentation) {
-  var indentationOfLine = getLengthOfWhiteSpaceBeforeStartOfLetters(line);
+  const indentationOfLine = getLengthOfWhiteSpaceBeforeStartOfLetters(line);
   if (featureLocationIndentation === indentationOfLine) {
     //the feature location indentation calculated right after the feature tag
     //cannot be the same as the indentation of the line
@@ -541,7 +556,7 @@ function isFeatureLineRunon(line, featureLocationIndentation) {
     return false; //the line is NOT a run on
   }
 
-  var trimmed = line.trim();
+  const trimmed = line.trim();
   if (trimmed.charAt(0).match(/\//)) {
     //the first char in the trimmed line cannot be a /
     return false; //the line is NOT a run on
@@ -567,7 +582,7 @@ function isFeatureLineRunon(line, featureLocationIndentation) {
 }
 
 function getLengthOfWhiteSpaceBeforeStartOfLetters(string) {
-  var match = /^\s*/.exec(string);
+  const match = /^\s*/.exec(string);
   if (match !== null) {
     return match[0].length;
   } else {
@@ -575,4 +590,4 @@ function getLengthOfWhiteSpaceBeforeStartOfLetters(string) {
   }
 }
 
-module.exports = addPromiseOption(genbankToJson);
+export default addPromiseOption(genbankToJson);

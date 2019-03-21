@@ -1,5 +1,5 @@
-const chai = require("chai");
-const jsonToBed = require("../parsers/jsonToBed");
+import chai from 'chai';
+import jsonToBed from '../parsers/jsonToBed';
 
 chai.should();
 describe("json to bed parser", function() {

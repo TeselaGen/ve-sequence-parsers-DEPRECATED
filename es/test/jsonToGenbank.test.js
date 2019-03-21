@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-expressions*/
-const assert = require("assert");
+import assert from 'assert';
 
-const parseGenbank = require("../parsers/genbankToJson");
-const jsonToGenbank = require("../parsers/jsonToGenbank");
-const path = require("path");
-const fs = require("fs");
-const chai = require("chai");
-const chaiSubset = require("chai-subset");
+import parseGenbank from '../parsers/genbankToJson';
+import jsonToGenbank from '../parsers/jsonToGenbank';
+import path from 'path';
+import fs from 'fs';
+import chai from 'chai';
+import chaiSubset from 'chai-subset';
 chai.use(chaiSubset);
 chai.use(require("chai-things"));
 chai.should();

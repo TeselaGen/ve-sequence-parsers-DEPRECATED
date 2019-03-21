@@ -1,5 +1,6 @@
-const validateSequence = require('./validateSequence.js');
-module.exports = function validateSequenceArray(parsingResultArray, options) {
+import validateSequence from './validateSequence.js';
+
+export default function validateSequenceArray(parsingResultArray, options) {
     if (parsingResultArray) {
         if (!Array.isArray(parsingResultArray)) {
             //wrap the parsingResult into an array if it isn't one already

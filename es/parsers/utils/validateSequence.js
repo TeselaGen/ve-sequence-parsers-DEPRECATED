@@ -1,16 +1,10 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var areNonNegativeIntegers = require("validate.io-nonnegative-integer-array");
+import areNonNegativeIntegers from 'validate.io-nonnegative-integer-array';
+import { FeatureTypes } from 've-sequence-utils';
+import NameUtils from './NameUtils.js';
+import { filterAminoAcidSequenceString, filterSequenceString, guessIfSequenceIsDnaAndNotProtein } from 've-sequence-utils';
 
-var _require = require("ve-sequence-utils"),
-    FeatureTypes = _require.FeatureTypes;
-
-var NameUtils = require("./NameUtils.js");
-
-var _require2 = require("ve-sequence-utils"),
-    filterAminoAcidSequenceString = _require2.filterAminoAcidSequenceString,
-    filterSequenceString = _require2.filterSequenceString,
-    guessIfSequenceIsDnaAndNotProtein = _require2.guessIfSequenceIsDnaAndNotProtein;
 //validation checking
 /**
  * validation and sanitizing of our teselagen sequence data type
@@ -20,9 +14,7 @@ var _require2 = require("ve-sequence-utils"),
     messages: [],
   };
  */
-
-
-module.exports = function validateSequence(sequence) {
+export default function validateSequence(sequence) {
   var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
       isProtein = _ref.isProtein,
       guessIfProtein = _ref.guessIfProtein,
@@ -38,7 +30,7 @@ module.exports = function validateSequence(sequence) {
     validatedAndCleanedSequence: {},
     messages: []
   };
-  if (!sequence || (typeof sequence === "undefined" ? "undefined" : _typeof(sequence)) !== "object") {
+  if (!sequence || (typeof sequence === 'undefined' ? 'undefined' : _typeof(sequence)) !== "object") {
     throw new Error("Invalid sequence");
   }
   if (!sequence.name) {
@@ -121,7 +113,7 @@ module.exports = function validateSequence(sequence) {
   }
   //tnr: maybe this should be wrapped in its own function (in case we want to use it elsewhere)
   sequence.features = sequence.features.filter(function (feature) {
-    if (!feature || (typeof feature === "undefined" ? "undefined" : _typeof(feature)) !== "object") {
+    if (!feature || (typeof feature === 'undefined' ? 'undefined' : _typeof(feature)) !== "object") {
       response.messages.push("Invalid feature detected and removed");
       return false;
     }

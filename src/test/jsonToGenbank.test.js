@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-expressions*/
-const assert = require("assert");
+import assert from 'assert';
 
-const parseGenbank = require("../parsers/genbankToJson");
-const jsonToGenbank = require("../parsers/jsonToGenbank");
-const path = require("path");
-const fs = require("fs");
-const chai = require("chai");
-const chaiSubset = require("chai-subset");
+import parseGenbank from '../parsers/genbankToJson';
+import jsonToGenbank from '../parsers/jsonToGenbank';
+import path from 'path';
+import fs from 'fs';
+import chai from 'chai';
+import chaiSubset from 'chai-subset';
 chai.use(chaiSubset);
 chai.use(require("chai-things"));
 chai.should();
@@ -33,6 +33,7 @@ describe("genbank exporter/parser conversion", function() {
       result[0].parsedSequence.proteinSequence.should.equal(proteinSequence)
       // result[0].parsedSequence.sequence.should.equal(sequence) //todo maybe the underlying sequence should be preserved somehow?
       result[0].parsedSequence.isProtein.should.equal(true)
+
       result[0].parsedSequence.features[0].start.should.equal(3)
       result[0].parsedSequence.features[0].end.should.equal(29)
 
@@ -74,7 +75,9 @@ describe("genbank exporter/parser conversion", function() {
     // const breakingJSON = require('./testData/json/breakingJSON_stringified')
     const breakingJSON = require("./testData/json/1.json");
     const string = jsonToGenbank(breakingJSON);
+    console.log(`string:`,string)
     parseGenbank(string, function(result) {
+      console.log(`result:`,result)
       result[0].parsedSequence.features[0].notes.should.to.not.be.null;
     });
   });

@@ -1,12 +1,12 @@
-import _regeneratorRuntime from "babel-runtime/regenerator";
+import _regeneratorRuntime from 'babel-runtime/regenerator';
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-var chai = require("chai");
-var path = require("path");
-var fs = require('fs');
-var genbankToJson = require("../parsers/genbankToJson");
-var jsonToBed = require("../parsers/jsonToBed");
+import chai from 'chai';
+import path from 'path';
+import fs from 'fs';
+import genbankToJson from '../parsers/genbankToJson';
+import jsonToBed from '../parsers/jsonToBed';
 
 chai.should();
 describe("testing genbank to json to bed file format", function () {
@@ -32,7 +32,7 @@ describe("testing genbank to json to bed file format", function () {
             bedInfo.should.equal(correctResults);
 
           case 9:
-          case "end":
+          case 'end':
             return _context.stop();
         }
       }

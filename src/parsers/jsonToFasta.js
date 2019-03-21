@@ -1,6 +1,6 @@
-const { tidyUpSequenceData } = require("ve-sequence-utils");
+import { tidyUpSequenceData } from 've-sequence-utils';
 
-module.exports = function jsonToFasta(jsonSequence, options) {
+export default function jsonToFasta(jsonSequence, options) {
   const cleanedData = tidyUpSequenceData(jsonSequence);
   const { name, circular, description, size, sequence } = cleanedData;
   options = options || {};
@@ -13,4 +13,4 @@ module.exports = function jsonToFasta(jsonSequence, options) {
   fastaString += "\n";
   fastaString += sequence.match(/.{1,80}/g).join("\n");
   return fastaString;
-};
+}

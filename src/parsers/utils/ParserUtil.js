@@ -1,16 +1,16 @@
-var ParserUtil = {};
+const ParserUtil = {};
 ParserUtil.postProcessGenbankFeature = function(feat) {
-	var name = null;
-	var nameIndex = null;
+	let name = null;
+	let nameIndex = null;
 
-	var hasName = false;
-	var usingLabel = false;
-	var usingGene = false;
+	let hasName = false;
+	let usingLabel = false;
+	let usingGene = false;
 
-	for (var j = 0; j < feat.notes.length; j++) {
-		var note = feat.notes[j];
-		var key = note.name;
-		var value = note.value;
+	for (let j = 0; j < feat.notes.length; j++) {
+		const note = feat.notes[j];
+		const key = note.name;
+		const value = note.value;
 
 		// SET THE LABEL FIELD. DO NOT STORE AS AN ATTRIBUTE
 
@@ -90,4 +90,4 @@ ParserUtil.isAGenbankFeatureLabel = function(name) {
 		return false;
 	}
 };
-module.exports = ParserUtil;
+export default ParserUtil;

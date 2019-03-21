@@ -1,12 +1,9 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /* eslint-disable no-var*/
-var _require = require("lodash"),
-    cloneDeep = _require.cloneDeep,
-    map = _require.map,
-    each = _require.each;
+import { cloneDeep, map, each } from 'lodash';
 
-var nameUtils = require("./utils/NameUtils.js");
+import nameUtils from './utils/NameUtils.js';
 var StringUtil = {
   /** Trims white space at beginning and end of string
    * @param {String} line
@@ -63,7 +60,7 @@ function cutUpStr(val, start, end) {
   return val.slice(start, end);
 }
 
-module.exports = function (_serSeq, options) {
+export default function (_serSeq, options) {
   options = options || {};
   options.reformatSeqName = options.reformatSeqName !== false;
   var serSeq = cloneDeep(_serSeq);
@@ -105,7 +102,7 @@ module.exports = function (_serSeq, options) {
       });
       return p;
     }));
-    var printedFeatureHeader;
+    var printedFeatureHeader = void 0;
     each(serSeq.features, function (feat, index) {
       if (!printedFeatureHeader) {
         printedFeatureHeader = true;
@@ -145,8 +142,8 @@ function createGenbankLocus(serSeq, options) {
     serSeq.sequence = serSeq.sequence.symbols.split("");
   }
 
-  var tmp;
-  var dnaType;
+  var tmp = void 0;
+  var dnaType = void 0;
   if (serSeq.isProtein) {
     dnaType = "";
   } else if (serSeq.type === "RNA") {

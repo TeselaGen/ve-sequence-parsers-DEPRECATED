@@ -1,10 +1,11 @@
 /* eslint-disable no-var*/
-var parseString = require('xml2js').parseString;
-var flatmap = require('flatmap');
-var access = require('safe-access');
-var waldo = require('waldojs');
-var validateSequenceArray = require('./utils/validateSequenceArray');
-var addPromiseOption = require('./utils/addPromiseOption');
+import { parseString } from 'xml2js';
+
+import flatmap from 'flatmap';
+import access from 'safe-access';
+import waldo from 'waldojs';
+import validateSequenceArray from './utils/validateSequenceArray';
+import addPromiseOption from './utils/addPromiseOption';
 
 //Here's what should be in the callback:
 // {
@@ -70,7 +71,7 @@ function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
             messages: 'Error parsing XML to JSON'
         });
     }
-};
+}
 // Converts SBOL formats.
 //  * Specifications for SBOL can be found at http://www.sbolstandard.org/specification/core-data-model
 //  *
@@ -81,7 +82,7 @@ function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
 //  * Check for each level and parse downward from there.
 // tnrtodo: this should be tested with a wider variety of sbol file types!
 function parseSbolJson(sbolJson, options) {
-    var name;
+    var name = void 0;
     if (access(sbolJson, 'name[0]')) {
         name = access(sbolJson, 'name[0]');
     } else {
@@ -106,7 +107,7 @@ function parseSbolJson(sbolJson, options) {
                         newNotes[note.prop] = [note.value];
                     }
                 });
-                var featureName;
+                var featureName = void 0;
                 var nameMatches = waldo.byName('name', feature);
                 if (nameMatches[0] && nameMatches[0].value && nameMatches[0].value[0]) {
                     featureName = nameMatches[0].value[0];
@@ -132,4 +133,4 @@ function parseSbolJson(sbolJson, options) {
     };
 }
 
-module.exports = addPromiseOption(sbolXmlToJson);
+export default addPromiseOption(sbolXmlToJson);

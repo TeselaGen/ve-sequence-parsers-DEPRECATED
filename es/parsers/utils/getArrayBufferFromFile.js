@@ -1,4 +1,4 @@
-module.exports = function getArrayBufferFromFile(file) {
+export default function getArrayBufferFromFile(file) {
   if (typeof window === "undefined") {
     return toArrayBuffer(file);
   }
@@ -14,7 +14,7 @@ module.exports = function getArrayBufferFromFile(file) {
     };
     reader.readAsArrayBuffer(file);
   });
-};
+}
 
 function toArrayBuffer(buffer) {
   var ab = new ArrayBuffer(buffer.length);

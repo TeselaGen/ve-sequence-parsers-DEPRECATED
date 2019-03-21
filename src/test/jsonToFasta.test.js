@@ -1,5 +1,5 @@
-const jsonToFasta = require("../parsers/jsonToFasta");
-const chai = require("chai");
+import jsonToFasta from '../parsers/jsonToFasta';
+import chai from 'chai';
 
 chai.should();
 describe("fasta exporter/parser conversion", function() {

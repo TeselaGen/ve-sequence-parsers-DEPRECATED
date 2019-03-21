@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-expressions*/
-const genbankToJson = require('../parsers/genbankToJson');
-const path = require("path");
-const fs = require('fs');
-const chai = require('chai');
-const chaiSubset = require('chai-subset');
+import genbankToJson from '../parsers/genbankToJson';
+
+import path from 'path';
+import fs from 'fs';
+import chai from 'chai';
+import chaiSubset from 'chai-subset';
 chai.use(chaiSubset);
 chai.use(require('chai-things'));
 chai.should();
@@ -41,6 +42,7 @@ genbankToJson(string, function(result) {
     it('handles joined features/parts correctly', function(done) {
         const string = fs.readFileSync(path.join(__dirname, './testData/genbank/gbWithJoinedFeaturesAndParts.gb'), "utf8");
         genbankToJson(string, function(result) {
+            console.log(`result[0].parsedSequence:`,result[0].parsedSequence)
             result[0].parsedSequence.features.should.containSubset([{
                 name: 'reg_elem',
                 start: 867,

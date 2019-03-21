@@ -1,10 +1,11 @@
-/* eslint-disable no-var*/ 
-var parseString = require('xml2js').parseString;
-var flatmap = require('flatmap');
-var access = require('safe-access');
-var waldo = require('waldojs');
-var validateSequenceArray = require('./utils/validateSequenceArray');
-const addPromiseOption = require('./utils/addPromiseOption');
+/* eslint-disable no-var*/
+import { parseString } from 'xml2js';
+
+import flatmap from 'flatmap';
+import access from 'safe-access';
+import waldo from 'waldojs';
+import validateSequenceArray from './utils/validateSequenceArray';
+import addPromiseOption from './utils/addPromiseOption';
 
 //Here's what should be in the callback:
 // {
@@ -14,10 +15,10 @@ const addPromiseOption = require('./utils/addPromiseOption');
 // }
 function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
     options = options || {}
-    var onFileParsed = function(sequences) { //before we call the onFileParsed callback, we need to validate the sequence
+    const onFileParsed = function(sequences) { //before we call the onFileParsed callback, we need to validate the sequence
         onFileParsedUnwrapped(validateSequenceArray(sequences, options));
     };
-    var response = {
+    let response = {
         parsedSequence: null,
         messages: [],
         success: true
@@ -31,10 +32,10 @@ function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
             });
             return;
         }
-        var sbolJsonMatches = waldo.byName('DnaComponent', result);
+        const sbolJsonMatches = waldo.byName('DnaComponent', result);
         if (sbolJsonMatches[0]) {
-            var resultArray = [];
-            for (var i = 0; i < sbolJsonMatches[0].value.length; i++) {
+            const resultArray = [];
+            for (let i = 0; i < sbolJsonMatches[0].value.length; i++) {
                 try {
                     response = {
                         parsedSequence: null,
@@ -69,7 +70,7 @@ function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
           messages: ('Error parsing XML to JSON')
       });
     }
-};
+}
 // Converts SBOL formats.
 //  * Specifications for SBOL can be found at http://www.sbolstandard.org/specification/core-data-model
 //  *
@@ -80,7 +81,7 @@ function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
 //  * Check for each level and parse downward from there.
 // tnrtodo: this should be tested with a wider variety of sbol file types!
 function parseSbolJson(sbolJson, options) {
-    var name;
+    let name;
     if (access(sbolJson, 'name[0]')) {
         name = access(sbolJson, 'name[0]');
     } else {
@@ -92,12 +93,12 @@ function parseSbolJson(sbolJson, options) {
         sequence: access(sbolJson, 'dnaSequence[0].DnaSequence[0].nucleotides'),
         name: name,
         features: flatmap(sbolJson.annotation, function(annotation) {
-            var feature = access(annotation, 'SequenceAnnotation[0]');
+            const feature = access(annotation, 'SequenceAnnotation[0]');
             if (feature) {
-                var notes = waldo.byName('ns2:about', feature);
-                var otherNotes = waldo.byName('ns2:resource', feature);
+                const notes = waldo.byName('ns2:about', feature);
+                const otherNotes = waldo.byName('ns2:resource', feature);
                 notes.push.apply(notes, otherNotes);
-                var newNotes = {};
+                const newNotes = {};
                 notes.forEach(function(note) {
                     if (newNotes[note.prop]) {
                         newNotes[note.prop].push(note.value);
@@ -105,12 +106,12 @@ function parseSbolJson(sbolJson, options) {
                         newNotes[note.prop] = [note.value];
                     }
                 });
-                var featureName;
-                var nameMatches = waldo.byName('name', feature);
+                let featureName;
+                const nameMatches = waldo.byName('name', feature);
                 if (nameMatches[0] && nameMatches[0].value && nameMatches[0].value[0]) {
                     featureName = nameMatches[0].value[0];
                 } else {
-                    var displayMatches = waldo.byName('displayId', feature);
+                    const displayMatches = waldo.byName('displayId', feature);
                     if (displayMatches[0] && displayMatches[0].value && displayMatches[0].value[0]) {
                         featureName = displayMatches[0].value[0];
                     }
@@ -131,4 +132,4 @@ function parseSbolJson(sbolJson, options) {
     };
 }
 
-module.exports = addPromiseOption(sbolXmlToJson);
+export default addPromiseOption(sbolXmlToJson);

@@ -1,6 +1,6 @@
-var gff = require('@gmod/gff').default;
-var _ = require('lodash');
-var addPromiseOption = require("./utils/addPromiseOption");
+import gff from '@gmod/gff';
+import _ from 'lodash';
+import addPromiseOption from './utils/addPromiseOption';
 
 function gffToJson(string, onFileParsed) {
   var arrayOfThings = gff.parseStringSync(string);
@@ -41,4 +41,4 @@ function gffToJson(string, onFileParsed) {
   onFileParsed(results);
 }
 
-module.exports = addPromiseOption(gffToJson);
+export default addPromiseOption(gffToJson);

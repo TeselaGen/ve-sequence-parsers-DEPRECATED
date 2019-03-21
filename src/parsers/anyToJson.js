@@ -1,10 +1,10 @@
-const fastaToJson = require('./fastaToJson');
-const genbankToJson = require('./genbankToJson');
-const xmlParser = require('./sbolXmlToJson');
-const extractFileExtension = require('./utils/extractFileExtension.js');
-const snapgeneToJson = require('./snapgeneToJson');
-const ab1ToJson = require('./ab1ToJson');
-const gffToJson = require('./gffToJson');
+import fastaToJson from './fastaToJson';
+import genbankToJson from './genbankToJson';
+import xmlParser from './sbolXmlToJson';
+import extractFileExtension from './utils/extractFileExtension.js';
+import snapgeneToJson from './snapgeneToJson';
+import ab1ToJson from './ab1ToJson';
+import gffToJson from './gffToJson';
 
 /**
  * takes in file content string and its file name and determines what parser it needs to be sent to.
@@ -12,7 +12,7 @@ const gffToJson = require('./gffToJson');
  * @param  {string} fileContentString content of the file as a string
  * @param  {callback} onFileParsed    //tnr: fill this out
  */
-const addPromiseOption = require('./utils/addPromiseOption');
+import addPromiseOption from './utils/addPromiseOption';
 
 async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     let fileContentString
@@ -110,7 +110,7 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
 
 }
 
-module.exports = addPromiseOption(anyToJson);
+export default addPromiseOption(anyToJson);
 
 
 function getFileString(file) {
