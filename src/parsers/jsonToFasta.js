@@ -11,6 +11,6 @@ export default function jsonToFasta(jsonSequence, options) {
   fastaString += description ? "|" + description : "";
   fastaString += "|" + (circular ?  "circular" : "linear");
   fastaString += "\n";
-  fastaString += sequence.match(/.{1,80}/g).join("\n");
+  fastaString += (sequence.match(/.{1,80}/g) || []).join("\n");
   return fastaString;
 }
