@@ -1,9 +1,10 @@
 import { tidyUpSequenceData } from "ve-sequence-utils";
 
-function jsonToBed(jsonSequence, options) {
-  const cleanedData = tidyUpSequenceData(jsonSequence);
-  const { name, features, size, description, circular } = cleanedData;
-  options = options || {};
+function jsonToBed(jsonSequence, options = {}) {
+  let sequenceInfo = options.featuresOnly
+    ? jsonSequence
+    : tidyUpSequenceData(jsonSequence);
+  const { name, features, size, description, circular } = sequenceInfo;
 
   let sequenceNameToMatchFasta = "";
   sequenceNameToMatchFasta += `${name || "Untitled Sequence"}|`;
