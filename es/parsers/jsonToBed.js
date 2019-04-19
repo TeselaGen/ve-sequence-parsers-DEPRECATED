@@ -1,14 +1,15 @@
 import { tidyUpSequenceData } from "ve-sequence-utils";
 
-function jsonToBed(jsonSequence, options) {
-  var cleanedData = tidyUpSequenceData(jsonSequence);
-  var name = cleanedData.name,
-      features = cleanedData.features,
-      size = cleanedData.size,
-      description = cleanedData.description,
-      circular = cleanedData.circular;
+function jsonToBed(jsonSequence) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  options = options || {};
+  var sequenceInfo = options.featuresOnly ? jsonSequence : tidyUpSequenceData(jsonSequence);
+  var name = sequenceInfo.name,
+      features = sequenceInfo.features,
+      size = sequenceInfo.size,
+      description = sequenceInfo.description,
+      circular = sequenceInfo.circular;
+
 
   var sequenceNameToMatchFasta = "";
   sequenceNameToMatchFasta += (name || "Untitled Sequence") + "|";
@@ -27,7 +28,7 @@ function jsonToBed(jsonSequence, options) {
         strand = feat.strand;
     // chromStart is 0-based, chromEnd of the BED file format is not included in the feature
 
-    outString += sequenceNameToMatchFasta + "\t" + start + "\t" + (end + 1) + "\t" + type + "\t1000\t" + (forward || strand === 1 ? "+" : "-") + "\t" + start + "\t" + (end + 1) + "\t65,105,225\n";
+    outString += sequenceNameToUse + "\t" + start + "\t" + (end + 1) + "\t" + type + "\t1000\t" + (forward || strand === 1 ? "+" : "-") + "\t" + start + "\t" + (end + 1) + "\t65,105,225\n";
   });
   return outString;
 }
