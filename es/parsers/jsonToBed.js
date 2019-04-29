@@ -30,7 +30,7 @@ function jsonToBed(jsonSequence) {
 
     var label = void 0;
     if (name && type) {
-      label = name + "/" + type;
+      label = name.replace(/\s/g, "") + "/" + type;
     } else if (name) {
       label = name;
     } else {
