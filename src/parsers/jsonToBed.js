@@ -19,7 +19,7 @@ function jsonToBed(jsonSequence, options = {}) {
     const { start, end, name, type, forward, strand } = feat;
     let label;
     if (name && type) {
-      label = `${name}, ${type}`;
+      label = `${name}/${type}`;
     } else if (name) {
       label = name;
     } else {
