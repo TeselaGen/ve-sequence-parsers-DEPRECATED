@@ -16,11 +16,27 @@ function jsonToBed(jsonSequence, options = {}) {
   outString += `track name="${sequenceNameToUse}" description="${name} Annotations" itemRgb="On"\n`;
 
   features.forEach(function(feat) {
-    const { start, end, type, forward, strand } = feat;
+    const { start, end, name, type, forward, strand } = feat;
+    let label;
+    if (name && type) {
+      label = `${name}, ${type}`;
+    } else if (name) {
+      label = name;
+    } else {
+      label = type;
+    }
+    let orientation;
+    if (forward || strand === 1) {
+      orientation = "+";
+    } else if (!forward || strand === -1) {
+      orientation = "-";
+    } else {
+      // "." = no strand
+      orientation = ".";
+    }
     // chromStart is 0-based, chromEnd of the BED file format is not included in the feature
-    outString += `${sequenceNameToUse}\t${start}\t${end + 1}\t${type}\t1000\t${
-      forward || strand === 1 ? "+" : "-"
-    }\t${start}\t${end + 1}\t65,105,225\n`;
+    outString += `${sequenceNameToUse}\t${start}\t${end +
+      1}\t${label}\t1000\t${orientation}\t${start}\t${start}\t65,105,225\n`;
   });
   return outString;
 }
