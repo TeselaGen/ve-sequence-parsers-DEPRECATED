@@ -28,14 +28,7 @@ function jsonToBed(jsonSequence) {
         forward = feat.forward,
         strand = feat.strand;
 
-    var label = void 0;
-    if (name && type) {
-      label = name.replace(/\s/g, "") + "/" + type;
-    } else if (name) {
-      label = name;
-    } else {
-      label = type;
-    }
+    var label = name ? name.replace(/\s/g, "") : type;
     var orientation = void 0;
     if (forward || strand === 1) {
       orientation = "+";
