@@ -17,14 +17,7 @@ function jsonToBed(jsonSequence, options = {}) {
 
   features.forEach(function(feat) {
     const { start, end, name, type, forward, strand } = feat;
-    let label;
-    if (name && type) {
-      label = `${name.replace(/\s/g, "")}/${type}`;
-    } else if (name) {
-      label = name;
-    } else {
-      label = type;
-    }
+    const label = name ? name.replace(/\s/g, "") : type;
     let orientation;
     if (forward || strand === 1) {
       orientation = "+";
