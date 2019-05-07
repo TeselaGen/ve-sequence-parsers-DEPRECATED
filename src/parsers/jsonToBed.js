@@ -28,8 +28,9 @@ function jsonToBed(jsonSequence, options = {}) {
       orientation = ".";
     }
     // chromStart is 0-based, chromEnd of the BED file format is not included in the feature
+    // when there is no thick part, thickStart and thickEnd are usually set to the chromStart position
     outString += `${sequenceNameToUse}\t${start}\t${end +
-      1}\t${label}\t\t${orientation}\t\t\t65,105,225\n`;
+      1}\t${label}\t0\t${orientation}\t${start}\t${start}\t65,105,225\n`;
   });
   return outString;
 }
