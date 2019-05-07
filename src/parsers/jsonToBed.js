@@ -29,7 +29,7 @@ function jsonToBed(jsonSequence, options = {}) {
     }
     // chromStart is 0-based, chromEnd of the BED file format is not included in the feature
     outString += `${sequenceNameToUse}\t${start}\t${end +
-      1}\t${label}\t1000\t${orientation}\t${start}\t${start}\t65,105,225\n`;
+      1}\t${label}\t\t${orientation}\t\t\t65,105,225\n`;
   });
   return outString;
 }
