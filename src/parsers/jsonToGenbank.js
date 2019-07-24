@@ -1,7 +1,7 @@
 /* eslint-disable no-var*/
-import { cloneDeep, map, each, isObject, flatMap } from 'lodash';
+import { cloneDeep, map, each, isObject, flatMap } from "lodash";
 
-import nameUtils from './utils/NameUtils.js';
+import nameUtils from "./utils/NameUtils.js";
 const StringUtil = {
   /** Trims white space at beginning and end of string
    * @param {String} line
@@ -94,18 +94,27 @@ export default function(_serSeq, options) {
     if (serSeq.library) {
       lines.push("COMMENT             library: " + serSeq.library);
     }
-    serSeq.features = map(serSeq.features).concat(
-      flatMap(serSeq.parts, p => {
-        if (!isObject(p)) {
-          return []
-        }
-        p.notes = {
-          ...p.notes,
-          pragma: ["Teselagen_Part"]
-        };
-        return p;
-      })
-    );
+    serSeq.features = map(serSeq.features)
+      .concat(
+        flatMap(serSeq.parts, p => {
+          if (!isObject(p)) {
+            return [];
+          }
+          p.notes = {
+            ...p.notes,
+            pragma: ["Teselagen_Part"]
+          };
+          return p;
+        })
+      )
+      .concat(
+        flatMap(serSeq.primers, primer => {
+          if (!isObject(primer)) {
+            return [];
+          }
+          return primer;
+        })
+      );
     let printedFeatureHeader;
     each(serSeq.features, function(feat, index) {
       if (!printedFeatureHeader) {
@@ -139,7 +148,7 @@ export default function(_serSeq, options) {
     console.warn(e.stack);
     return false;
   }
-};
+}
 
 function createGenbankLocus(serSeq, options) {
   if (serSeq.sequence.symbols) {
@@ -298,5 +307,5 @@ function getProteinStart(val, isProtein) {
 }
 function getProteinEnd(val, isProtein) {
   if (!isProtein) return val;
-  return Math.floor((val) / 3);
+  return Math.floor(val / 3);
 }
