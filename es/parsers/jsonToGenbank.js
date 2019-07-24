@@ -1,9 +1,9 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /* eslint-disable no-var*/
-import { cloneDeep, map, each, isObject, flatMap } from 'lodash';
+import { cloneDeep, map, each, isObject, flatMap } from "lodash";
 
-import nameUtils from './utils/NameUtils.js';
+import nameUtils from "./utils/NameUtils.js";
 var StringUtil = {
   /** Trims white space at beginning and end of string
    * @param {String} line
@@ -104,6 +104,11 @@ export default function (_serSeq, options) {
         pragma: ["Teselagen_Part"]
       });
       return p;
+    })).concat(flatMap(serSeq.primers, function (primer) {
+      if (!isObject(primer)) {
+        return [];
+      }
+      return primer;
     }));
     var printedFeatureHeader = void 0;
     each(serSeq.features, function (feat, index) {
@@ -138,7 +143,7 @@ export default function (_serSeq, options) {
     console.warn(e.stack);
     return false;
   }
-};
+}
 
 function createGenbankLocus(serSeq, options) {
   if (serSeq.sequence.symbols) {
