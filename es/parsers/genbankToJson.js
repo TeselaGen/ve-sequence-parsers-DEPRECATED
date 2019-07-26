@@ -14,7 +14,20 @@ import addPromiseOption from "./utils/addPromiseOption";
 function genbankToJson(string, onFileParsedUnwrapped, options) {
   var onFileParsed = function onFileParsed(sequences, options) {
     //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
-    onFileParsedUnwrapped(validateSequenceArray(flattenSequenceArray(sequences, options), options));
+    var sequenceData = validateSequenceArray(flattenSequenceArray(sequences, options), options);
+    // default sequence json has primers at the top level separate from features, e.g. parsedSequence: { primers: [ {}, {} ], features: [ {}, {} ] }
+    // if options.primersAsFeatures is set to true, primers are included in features with type set to primer
+    if (!options.primersAsFeatures) {
+      for (var i = 0; i < sequenceData.length; i++) {
+        sequenceData[i].parsedSequence.primers = sequenceData[i].parsedSequence.features.filter(function (feat) {
+          return feat.type === "primer";
+        });
+        sequenceData[i].parsedSequence.features = sequenceData[i].parsedSequence.features.filter(function (feat) {
+          return feat.type !== "primer";
+        });
+      }
+    }
+    onFileParsedUnwrapped(sequenceData);
   };
   options = options || {};
   var inclusive1BasedStart = options.inclusive1BasedStart;

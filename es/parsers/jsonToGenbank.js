@@ -104,12 +104,17 @@ export default function (_serSeq, options) {
         pragma: ["Teselagen_Part"]
       });
       return p;
-    })).concat(flatMap(serSeq.primers, function (primer) {
-      if (!isObject(primer)) {
-        return [];
-      }
-      return primer;
     }));
+
+    if (serSeq.primers) {
+      serSeq.features = map(serSeq.features).concat(flatMap(serSeq.primers, function (primer) {
+        if (!isObject(primer)) {
+          return [];
+        }
+        return primer;
+      }));
+    }
+
     var printedFeatureHeader = void 0;
     each(serSeq.features, function (feat, index) {
       if (!printedFeatureHeader) {
