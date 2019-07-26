@@ -10,7 +10,7 @@
     "prepush": "npm test",
     "test-browser": "jest ./src/test",
     "test": "jest --env=node ./src/test",
-    "test1": "jest --env=node ./src/test --testNamePattern='tests protein FASTA and checks for correctness'",
+    "test1": "jest --env=node ./src/test --testNamePattern='parses a multi-seq gb with features of type primer'",
     "test-debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand --env=node ./src/test"
   },
   "jest": {

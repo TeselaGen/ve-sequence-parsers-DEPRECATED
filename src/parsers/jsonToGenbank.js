@@ -94,20 +94,21 @@ export default function(_serSeq, options) {
     if (serSeq.library) {
       lines.push("COMMENT             library: " + serSeq.library);
     }
-    serSeq.features = map(serSeq.features)
-      .concat(
-        flatMap(serSeq.parts, p => {
-          if (!isObject(p)) {
-            return [];
-          }
-          p.notes = {
-            ...p.notes,
-            pragma: ["Teselagen_Part"]
-          };
-          return p;
-        })
-      )
-      .concat(
+    serSeq.features = map(serSeq.features).concat(
+      flatMap(serSeq.parts, p => {
+        if (!isObject(p)) {
+          return [];
+        }
+        p.notes = {
+          ...p.notes,
+          pragma: ["Teselagen_Part"]
+        };
+        return p;
+      })
+    );
+
+    if (serSeq.primers) {
+      serSeq.features = map(serSeq.features).concat(
         flatMap(serSeq.primers, primer => {
           if (!isObject(primer)) {
             return [];
@@ -115,6 +116,8 @@ export default function(_serSeq, options) {
           return primer;
         })
       );
+    }
+
     let printedFeatureHeader;
     each(serSeq.features, function(feat, index) {
       if (!printedFeatureHeader) {

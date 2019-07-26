@@ -74,9 +74,7 @@ describe("genbank exporter/parser conversion", function() {
     // const breakingJSON = require('./testData/json/breakingJSON_stringified')
     const breakingJSON = require("./testData/json/1.json");
     const string = jsonToGenbank(breakingJSON);
-    console.log(`string:`, string);
     parseGenbank(string, function(result) {
-      console.log(`result:`, result);
       result[0].parsedSequence.features[0].notes.should.to.not.be.null;
     });
   });
@@ -294,7 +292,7 @@ describe("genbank exporter/parser conversion", function() {
       features: {}
     });
     parseGenbank(exportedGenbankString, function(result) {
-      result[0].parsedSequence.features.should.containSubset([
+      result[0].parsedSequence.primers.should.containSubset([
         {
           type: "primer",
           strand: 1,
