@@ -1,9 +1,11 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-import areNonNegativeIntegers from 'validate.io-nonnegative-integer-array';
-import { FeatureTypes } from 've-sequence-utils';
-import NameUtils from './NameUtils.js';
-import { filterAminoAcidSequenceString, filterSequenceString, guessIfSequenceIsDnaAndNotProtein } from 've-sequence-utils';
+import areNonNegativeIntegers from "validate.io-nonnegative-integer-array";
+import { FeatureTypes } from "ve-sequence-utils";
+import NameUtils from "./NameUtils.js";
+import { filterAminoAcidSequenceString, filterSequenceString, guessIfSequenceIsDnaAndNotProtein } from "ve-sequence-utils";
+import { upperFirst } from "lodash";
+import pragmasAndTypes from "./pragmasAndTypes.js";
 
 //validation checking
 /**
@@ -15,22 +17,20 @@ import { filterAminoAcidSequenceString, filterSequenceString, guessIfSequenceIsD
   };
  */
 export default function validateSequence(sequence) {
-  var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-      isProtein = _ref.isProtein,
-      guessIfProtein = _ref.guessIfProtein,
-      guessIfProteinOptions = _ref.guessIfProteinOptions,
-      reformatSeqName = _ref.reformatSeqName,
-      inclusive1BasedStart = _ref.inclusive1BasedStart,
-      inclusive1BasedEnd = _ref.inclusive1BasedEnd,
-      additionalValidChars = _ref.additionalValidChars,
-      _ref$acceptParts = _ref.acceptParts,
-      acceptParts = _ref$acceptParts === undefined ? true : _ref$acceptParts;
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var isProtein = options.isProtein,
+      guessIfProtein = options.guessIfProtein,
+      guessIfProteinOptions = options.guessIfProteinOptions,
+      reformatSeqName = options.reformatSeqName,
+      inclusive1BasedStart = options.inclusive1BasedStart,
+      inclusive1BasedEnd = options.inclusive1BasedEnd,
+      additionalValidChars = options.additionalValidChars;
 
   var response = {
     validatedAndCleanedSequence: {},
     messages: []
   };
-  if (!sequence || (typeof sequence === 'undefined' ? 'undefined' : _typeof(sequence)) !== "object") {
+  if (!sequence || (typeof sequence === "undefined" ? "undefined" : _typeof(sequence)) !== "object") {
     throw new Error("Invalid sequence");
   }
   if (!sequence.name) {
@@ -113,7 +113,7 @@ export default function validateSequence(sequence) {
   }
   //tnr: maybe this should be wrapped in its own function (in case we want to use it elsewhere)
   sequence.features = sequence.features.filter(function (feature) {
-    if (!feature || (typeof feature === 'undefined' ? 'undefined' : _typeof(feature)) !== "object") {
+    if (!feature || (typeof feature === "undefined" ? "undefined" : _typeof(feature)) !== "object") {
       response.messages.push("Invalid feature detected and removed");
       return false;
     }
@@ -184,14 +184,41 @@ export default function validateSequence(sequence) {
       //name was used for name (if it existed)
       delete feature.notes.name;
     }
-    if (acceptParts && feature.notes.pragma && feature.notes.pragma[0] === "Teselagen_Part") {
-      if (!sequence.parts) {
-        sequence.parts = []; //initialize an empty array if necessary
+    if (feature.notes.color) {
+      feature.color = feature.notes.color[0] || feature.color;
+      delete feature.notes.color;
+    }
+    if (feature.notes.labelColor) {
+      feature.labelColor = feature.notes.labelColor[0] || feature.labelColor;
+      delete feature.notes.labelColor;
+    }
+
+    for (var _iterator = pragmasAndTypes, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
+      var _ref2;
+
+      if (_isArray) {
+        if (_i >= _iterator.length) break;
+        _ref2 = _iterator[_i++];
+      } else {
+        _i = _iterator.next();
+        if (_i.done) break;
+        _ref2 = _i.value;
       }
-      feature.type = "part";
-      delete feature.notes.pragma;
-      sequence.parts.push(feature);
-      return false; //don't include the features
+
+      var _ref = _ref2;
+      var pragma = _ref.pragma,
+          type = _ref.type;
+
+      if (options["accept" + upperFirst(type)] !== false && //acceptParts, acceptWarnings,
+      feature.notes.pragma && feature.notes.pragma[0] === pragma) {
+        if (!sequence[type]) {
+          sequence[type] = []; //initialize an empty array if necessary
+        }
+        feature.type = type.slice(0, -1); //set the type before pushing it onto the array
+        delete feature.notes.pragma;
+        sequence[type].push(feature);
+        return false; //don't include the features
+      }
     }
     return true;
   });

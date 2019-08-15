@@ -274,6 +274,85 @@ describe("genbank exporter/parser conversion", function() {
       done();
     });
   });
+  it("should export warnings, assemblyPieces, and lineageAnnotations, as features with pragmas, preserving color and label color", function(done) {
+    const exportedGenbankString = jsonToGenbank({
+      name: "testing_primer_export",
+      sequence: "ATGCATTGAGGACCTAACCATATCTAA",
+      type: "DNA",
+      lineageAnnotations: {
+        "753": {
+          id: "753",
+          start: 5,
+          end: 23,
+          color: "indigo",
+          name: "j5_lineage_annotation_to_export",
+          strand: 1
+        }
+      },
+      assemblyPieces: {
+        "6667": {
+          id: "6667",
+          start: 5,
+          end: 23,
+          color: "#f0f0f0",
+          name: "j5_assembly_piece_to_export",
+          strand: 1
+        }
+      },
+      warnings: [{
+        id: "warning1",
+        start: 5,
+        end: 23,
+        name: "warning1",
+
+        color: "red",
+        labelColor: "red",
+        strand: 1
+      }, {
+        id: "warning2",
+        start: 5,
+        end: 23,
+        name: "warning2",
+        strand: 1
+      }],
+      features: {}
+    });
+    exportedGenbankString.should.include(`/pragma="j5_lineage_annotation"`)
+    parseGenbank(exportedGenbankString, function(result) {
+      result[0].parsedSequence.lineageAnnotations.should.containSubset([{
+        start: 5,
+        end: 23,
+        notes: {},
+        color: "indigo",
+        name: "j5_lineage_annotation_to_export",
+        strand: 1
+      }]);
+      result[0].parsedSequence.assemblyPieces.should.containSubset([
+        {
+          start: 5,
+          end: 23,
+          notes: {},
+          color: "#f0f0f0",
+          name: "j5_assembly_piece_to_export",
+          strand: 1
+        }
+      ]);
+      result[0].parsedSequence.warnings.should.containSubset([{
+        start: 5,
+        end: 23,
+        color: "red",
+        labelColor: "red",
+        name: "warning1",
+        strand: 1
+      }, {
+        start: 5,
+        end: 23,
+        name: "warning2",
+        strand: 1
+      }]);
+      done();
+    });
+  });
   it("should export primers as features with type set as primer", function(done) {
     const exportedGenbankString = jsonToGenbank({
       name: "testing_primer_export",
