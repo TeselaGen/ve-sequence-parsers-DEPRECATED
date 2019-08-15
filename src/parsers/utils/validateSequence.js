@@ -1,7 +1,13 @@
-import areNonNegativeIntegers from 'validate.io-nonnegative-integer-array';
-import { FeatureTypes } from 've-sequence-utils';
-import NameUtils from './NameUtils.js';
-import { filterAminoAcidSequenceString, filterSequenceString, guessIfSequenceIsDnaAndNotProtein } from 've-sequence-utils';
+import areNonNegativeIntegers from "validate.io-nonnegative-integer-array";
+import { FeatureTypes } from "ve-sequence-utils";
+import NameUtils from "./NameUtils.js";
+import {
+  filterAminoAcidSequenceString,
+  filterSequenceString,
+  guessIfSequenceIsDnaAndNotProtein
+} from "ve-sequence-utils";
+import { upperFirst } from "lodash";
+import pragmasAndTypes from "./pragmasAndTypes.js";
 
 //validation checking
 /**
@@ -12,19 +18,16 @@ import { filterAminoAcidSequenceString, filterSequenceString, guessIfSequenceIsD
     messages: [],
   };
  */
-export default function validateSequence(
-  sequence,
-  {
+export default function validateSequence(sequence, options = {}) {
+  let {
     isProtein,
     guessIfProtein,
     guessIfProteinOptions,
     reformatSeqName,
     inclusive1BasedStart,
     inclusive1BasedEnd,
-    additionalValidChars,
-    acceptParts = true
-  } = {}
-) {
+    additionalValidChars
+  } = options;
   const response = {
     validatedAndCleanedSequence: {},
     messages: []
@@ -243,18 +246,29 @@ export default function validateSequence(
       //name was used for name (if it existed)
       delete feature.notes.name;
     }
-    if (
-      acceptParts &&
-      feature.notes.pragma &&
-      feature.notes.pragma[0] === "Teselagen_Part"
-    ) {
-      if (!sequence.parts) {
-        sequence.parts = []; //initialize an empty array if necessary
+    if (feature.notes.color) {
+      feature.color = feature.notes.color[0] || feature.color;
+      delete feature.notes.color;
+    }
+    if (feature.notes.labelColor) {
+      feature.labelColor = feature.notes.labelColor[0] || feature.labelColor;
+      delete feature.notes.labelColor;
+    }
+
+    for (const { pragma, type } of pragmasAndTypes) {
+      if (
+        options[`accept${upperFirst(type)}`] !== false && //acceptParts, acceptWarnings,
+        feature.notes.pragma &&
+        feature.notes.pragma[0] === pragma
+      ) {
+        if (!sequence[type]) {
+          sequence[type] = []; //initialize an empty array if necessary
+        }
+        feature.type = type.slice(0, -1); //set the type before pushing it onto the array
+        delete feature.notes.pragma;
+        sequence[type].push(feature);
+        return false; //don't include the features
       }
-      feature.type = "part";
-      delete feature.notes.pragma;
-      sequence.parts.push(feature);
-      return false; //don't include the features
     }
     return true;
   });

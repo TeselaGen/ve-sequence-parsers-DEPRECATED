@@ -1,7 +1,10 @@
 /* eslint-disable no-var*/
 import { cloneDeep, map, each, isObject, flatMap } from "lodash";
+import color from "color";
 
 import nameUtils from "./utils/NameUtils.js";
+import pragmasAndTypes from "./utils/pragmasAndTypes.js";
+import { featureColors } from "ve-sequence-utils";
 const StringUtil = {
   /** Trims white space at beginning and end of string
    * @param {String} line
@@ -94,29 +97,23 @@ export default function(_serSeq, options) {
     if (serSeq.library) {
       lines.push("COMMENT             library: " + serSeq.library);
     }
-    serSeq.features = map(serSeq.features).concat(
-      flatMap(serSeq.parts, p => {
-        if (!isObject(p)) {
-          return [];
-        }
-        p.notes = {
-          ...p.notes,
-          pragma: ["Teselagen_Part"]
-        };
-        return p;
-      })
-    );
 
-    if (serSeq.primers) {
-      serSeq.features = map(serSeq.features).concat(
-        flatMap(serSeq.primers, primer => {
-          if (!isObject(primer)) {
+    serSeq.features = map(serSeq.features).concat(
+      flatMap(pragmasAndTypes, ({ pragma, type }) => {
+        return flatMap(serSeq[type], ann => {
+          if (!isObject(ann)) {
             return [];
           }
-          return primer;
-        })
-      );
-    }
+          ann.notes = pragma
+            ? {
+                ...ann.notes,
+                pragma: [pragma]
+              }
+            : ann.notes;
+          return ann;
+        });
+      })
+    );
 
     let printedFeatureHeader;
     each(serSeq.features, function(feat, index) {
@@ -287,6 +284,7 @@ function featureToGenbankString(feat, options) {
         }
       }
       Object.keys(notes).forEach(function(key) {
+        if (key === "color" || key === "labelColor") return; //we'll handle this below
         if (notes[key] instanceof Array) {
           notes[key].forEach(function(value) {
             lines.push(featureNoteInDataToGenbankString(key, value));
@@ -299,6 +297,19 @@ function featureToGenbankString(feat, options) {
     } catch (e) {
       console.warn("Warning: Note cannot be processed");
     }
+  }
+  feat.color = (feat.notes && feat.notes.color) || feat.color;
+  feat.labelColor = (feat.notes && feat.notes.labelColor) || feat.labelColor;
+
+  if (
+    feat.color &&
+    color.rgb(feat.color).string() !==
+      color.rgb(featureColors[feat.type]).string() //don't save a color note if the color is already the same as our defaults
+  ) {
+    lines.push(featureNoteInDataToGenbankString("color", feat.color));
+  }
+  if (feat.labelColor) {
+    lines.push(featureNoteInDataToGenbankString("labelColor", feat.labelColor));
   }
 
   return lines.join("\r\n");

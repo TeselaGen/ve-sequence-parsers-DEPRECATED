@@ -31,6 +31,7 @@
     "chai": "^3.4.1",
     "chai-subset": "^1.1.0",
     "chai-things": "^0.2.0",
+    "color": "^3.1.2",
     "eslint": "^4.8.0",
     "eslint-config-react-app": "^2.0.1",
     "eslint-config-teselagen": "^4.1.2",
@@ -54,6 +55,7 @@
   },
   "dependencies": {
     "@gmod/gff": "^1.1.2",
+    "@types/lodash": "npm:@types/lodash-es",
     "bufferpack": "^0.0.6",
     "flatmap": "0.0.3",
     "lodash": "^4.17.11",
