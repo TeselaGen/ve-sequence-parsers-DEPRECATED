@@ -36,7 +36,7 @@
     "eslint-config-react-app": "^2.0.1",
     "eslint-config-teselagen": "^4.1.2",
     "eslint-plugin-flowtype": "2.33.0",
-    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-import": "2.18.2",
     "eslint-plugin-jsx-a11y": "5.0.1",
     "eslint-plugin-react": "7.0.1",
     "husky": "^0.11.4",
