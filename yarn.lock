@@ -4008,27 +4008,16 @@ eslint-config-react-app@^5.0.0, eslint-config-react-app@^5.0.1:
   dependencies:
     confusing-browser-globals "^1.0.8"
 
-eslint-config-teselagen@^4.1.0:
-  version "4.1.6"
-  resolved "https://registry.yarnpkg.com/eslint-config-teselagen/-/eslint-config-teselagen-4.1.6.tgz#33a9e27f898937e265286a0d223179f81f626984"
-  integrity sha512-bv+sOtjsXoxtP+SKgjv8wJYt3GTHpYzNYMKHZ62AGvYNrQ4zDIGwGFMPGwuDmrxQT1tXgdt0+ikBnC2XMDAWSg==
-  dependencies:
-    eslint-config-teselagen "^4.1.0"
-    eslint-plugin-cypress "^2.2.1"
-    eslint-plugin-no-only-tests "^2.1.0"
-    eslint-plugin-react-app "^6.0.1"
-
 eslint-config-teselagen@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/eslint-config-teselagen/-/eslint-config-teselagen-5.0.2.tgz#91ad7a027e638abadf21c92e42319397101609cf"
-  integrity sha512-i+o/h0MHUdAin5OH6aQwRLY3/tk4DxsMUem06FmTj8NRUmy6J3PkA+PeGWopSgcq3lOv3I2ES3RntPmg5YW52A==
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/eslint-config-teselagen/-/eslint-config-teselagen-5.0.5.tgz#d182928acb4ae8fe10386b14213742501668c417"
+  integrity sha512-0djFnWD867b9jhiYZklGlgQE1ImSbAig1QuFE6zfe6bMgH1xBRz+UYlaP88w47O0tp6AAjMGbonIDMNB5vN2lg==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^1.13.0"
     "@typescript-eslint/parser" "^1.13.0"
     babel-eslint "^10.0.2"
     eslint "^6.1.0"
     eslint-config-react-app "^5.0.1"
-    eslint-config-teselagen "^4.1.0"
     eslint-plugin-cypress "^2.2.1"
     eslint-plugin-flowtype "^3.13.0"
     eslint-plugin-import "^2.18.2"
