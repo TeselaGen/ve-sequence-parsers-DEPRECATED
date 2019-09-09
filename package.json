@@ -31,7 +31,6 @@
     "chai": "^3.4.1",
     "chai-subset": "^1.1.0",
     "chai-things": "^0.2.0",
-    "color": "^3.1.2",
     "eslint": "^6.1.0",
     "eslint-config-teselagen": "^5.0.2",
     "husky": "^0.11.4",
@@ -50,6 +49,7 @@
   "dependencies": {
     "@gmod/gff": "^1.1.2",
     "bufferpack": "^0.0.6",
+    "color": "^3.1.2",
     "flatmap": "0.0.3",
     "lodash": "^4.17.11",
     "safe-access": "^0.1.0",
