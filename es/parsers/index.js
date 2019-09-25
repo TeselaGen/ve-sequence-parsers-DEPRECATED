@@ -7,3 +7,4 @@ export { default as ab1ToJson } from "./ab1ToJson";
 export { default as jsonToFasta } from "./jsonToFasta";
 export { default as snapgeneToJson } from "./snapgeneToJson";
 export { default as jsonToBed } from "./jsonToBed";
+export { default as cleanUpTeselagenJsonForExport } from "./utils/cleanUpTeselagenJsonForExport";
