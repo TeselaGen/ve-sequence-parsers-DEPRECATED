@@ -1,15 +1,42 @@
 /* eslint-disable no-unused-expressions*/
+import assert from "assert";
 import genbankToJson from "../parsers/genbankToJson";
 
 import path from "path";
 import fs from "fs";
 import chai from "chai";
 import chaiSubset from "chai-subset";
+import jsonToGenbank from "../parsers/jsonToGenbank";
+
 chai.use(chaiSubset);
 chai.use(require("chai-things"));
 chai.should();
 
 describe("genbankToJson tests", function() {
+  it(`parses out the DIVISION property correctly https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html#GenBankDivisionB`, done => {
+    const string = `LOCUS       ProteinSeq          10 bp    DNA  linear  PLN  04-MAR-2019
+ORIGIN      
+    1 gtagaggccg     
+//`;
+    genbankToJson(
+      string,
+      function(result) {
+        result[0].parsedSequence.name.should.equal("ProteinSeq");
+        result[0].parsedSequence.gbDivision.should.equal("PLN");
+        result[0].parsedSequence.type.should.equal("DNA");
+        // result[0].parsedSequence.isProtein.should.be.
+        result[0].parsedSequence.sequence.should.equal("gtagaggccg");
+        result[0].parsedSequence.size.should.equal(10);
+        const gbString = jsonToGenbank(result[0].parsedSequence);
+        console.log(`gbString:`,gbString)
+        assert(gbString.includes(" PLN "))
+        done();
+      },
+      {
+        /* preserveLocations: true */
+      }
+    );
+  });
   it(`does not parse a dna file with the name ProteinSeq into a protein `, done => {
     const string = `LOCUS       ProteinSeq          10 bp    DNA  linear    04-MAR-2019
 ORIGIN      

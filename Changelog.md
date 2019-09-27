@@ -1,3 +1,4 @@
+6.0.0 - adding a .gbDivision property to tgJson and always including a DIVISION property on exported genbank files (https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html#GenBankDivisionB)
 3.0.7 - jsonToGenbank can now handle features as an array or as a keyed object Eg. features: {'feat1': {start: 1, end: 4}} 
 3.0.3 - Fixed browserify incompatibility with require('fs')
 3.0.0 - Added options to parse feature start/end as 1-based inclusive (instead of 0-based inclusive by default) (for json->genbank, genbank->json only)
