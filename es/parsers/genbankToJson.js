@@ -1,7 +1,7 @@
 /* eslint-disable no-var*/
 import { convertAACaretPositionOrRangeToDna } from "ve-sequence-utils";
 
-import constants from "./utils/constants";
+import constants, { gbDivisions } from "./utils/constants";
 import flattenSequenceArray from "./utils/flattenSequenceArray";
 import validateSequenceArray from "./utils/validateSequenceArray";
 
@@ -238,6 +238,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     result = createInitialSequence(options);
     var locusName = void 0;
     var linear = void 0;
+    var gbDivision = void 0;
     var date = void 0;
     var lineArr = line.split(/[\s]+/g);
 
@@ -267,10 +268,18 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       }
     }
 
+    // Division
+    for (var _i = 1; _i < lineArr.length; _i++) {
+      if (typeof lineArr[_i] === "string" && gbDivisions[lineArr[_i].toUpperCase()]) {
+        gbDivision = lineArr[_i].toUpperCase();
+      }
+    }
+
     //don't use "exported as a file name unless it is out last option"
     if (locusName !== "Exported" || result.parsedSequence.name === constants.untitledSequenceName) {
       result.parsedSequence.name = locusName;
     }
+    result.parsedSequence.gbDivision = gbDivision;
     result.parsedSequence.date = date;
     result.parsedSequence.circular = !linear;
   }
