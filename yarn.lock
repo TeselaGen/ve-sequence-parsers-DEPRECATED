@@ -10681,9 +10681,9 @@ vary@~1.1.2:
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
 ve-range-utils@^2.5.2:
-  version "2.5.5"
-  resolved "https://registry.yarnpkg.com/ve-range-utils/-/ve-range-utils-2.5.5.tgz#54d8bb442666b10b4cfe9bfef457c3f6cbd7a1a0"
-  integrity sha512-rxdps7rO3WO0btj5zrR34aPTolYxSHxAPNkX+AyuufaaiggAoinRcsu9Xx1sTmVa7uwQuLeTKr8U7j9VhZAPZw==
+  version "2.5.7"
+  resolved "https://registry.yarnpkg.com/ve-range-utils/-/ve-range-utils-2.5.7.tgz#04894e22d41055387ffe3104893ada6615c3d315"
+  integrity sha512-9wQQIO1DcYgGMVLCI6UT6agG4gDYOokECMJufF4ZF7Cr8W2ckXGH3eyCeBr7FJUhuU4pP8uqWGj5z9ex4nKpug==
   dependencies:
     lodash "^4.17.4"
     validate.io-nonnegative-integer-array "^1.0.1"
