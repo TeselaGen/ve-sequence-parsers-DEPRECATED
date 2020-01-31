@@ -28,8 +28,7 @@ ORIGIN
         result[0].parsedSequence.sequence.should.equal("gtagaggccg");
         result[0].parsedSequence.size.should.equal(10);
         const gbString = jsonToGenbank(result[0].parsedSequence);
-        console.log(`gbString:`,gbString)
-        assert(gbString.includes(" PLN "))
+        assert(gbString.includes(" PLN "));
         done();
       },
       {
@@ -343,6 +342,21 @@ ORIGIN
       result.should.be.an("array");
       result[0].success.should.be.true;
       result[0].parsedSequence.circular.should.equal(false);
+      done();
+    });
+  });
+
+  it("handles feature names with = signs in them (doesn't truncate them before the equal sign)", function(done) {
+    const string = fs.readFileSync(
+      path.join(__dirname, "./testData/genbankFeatWithEqualSignInIt.gb"),
+      "utf8"
+    );
+    genbankToJson(string, function(result) {
+      result.should.be.an("array");
+      result[0].success.should.be.true;
+      result[0].parsedSequence.features.should.containSubset([{
+        name: "CRP=cAMP binding site"
+      }])
       done();
     });
   });
