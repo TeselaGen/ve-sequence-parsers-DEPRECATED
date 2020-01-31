@@ -460,7 +460,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     newLine = newLine.replace(/^\/|"$/g, "");
     lineArr = newLine.split(/="|=/);
 
-    let val = lineArr[1];
+    let val = lineArr.slice(1).join('=')
 
     if (val) {
       val = val.replace(/\\/g, " ");
@@ -498,14 +498,13 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
   function getLineVal(line) {
     let arr;
-
     if (line.indexOf("=") < 0) {
       line = line.replace(/^[\s]*[\S]+[\s]+|[\s]+$/, "");
       line = line.trim();
       return line;
     } else {
       arr = line.split(/=/);
-      return arr[1];
+      return arr.slice(1).join('')
     }
   }
 
