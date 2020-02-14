@@ -155,4 +155,16 @@ gacta --- asdf-c-a
       { guessIfProtein: true }
     );
   });
+  it("handles the defaultToCircular option correctly", function(done) {
+    fastaToJson(
+      `>mySeq1
+gtagagtagagagagg
+      `,
+      function(result) {
+        result[0].parsedSequence.circular.should.equal(true)
+        done();
+      },
+      { defaultToCircular: true }
+    );
+  });
 });

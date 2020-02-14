@@ -71,6 +71,9 @@ function fastaToJson(fileString, onFileParsedUnwrapped, options) {
     }
 
     function parseTitle(line) {
+        if (options && options.defaultToCircular) {
+            result.parsedSequence.circular = true
+        }
         const pipeIndex = line.indexOf('|');
         if (pipeIndex > -1) {
             result.parsedSequence.name = line.slice(1, pipeIndex);
