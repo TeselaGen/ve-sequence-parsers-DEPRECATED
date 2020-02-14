@@ -155,6 +155,7 @@ const results = await anyToJson(stringOrFile, options)
 const options = {
   fileName: "example.gb", //the filename is used if none is found in the genbank           
   isProtein: false, //if you know that it is a protein string being parsed you can pass true here
+  parseFastaAsCircular: false; //by default fasta files are parsed as linear sequences. You can change this by setting parseFastaAsCircular=true 
   //genbankToJson options only
   inclusive1BasedStart: false //by default feature starts are parsed out as 0-based and inclusive 
   inclusive1BasedEnd: false //by default feature ends are parsed out as 0-based and inclusive 
