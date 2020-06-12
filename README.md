@@ -8,8 +8,8 @@
   - [Useage](#useage)
     - [install](#install)
     - [jsonToGenbank (same interface as jsonToFasta) (no async required!)](#jsontogenbank-same-interface-as-jsontofasta-no-async-required)
-    - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anytojson-same-interface-as-genbanktojson-fastatojson-xxxxtojson-async-required)
-    - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxtojson)
+    - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anytojson-same-interface-as-genbanktojson-fastatojson-xxxxTojson-async-required)
+    - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxTojson)
     - [ab1ToJson](#ab1tojson)
     - [snapgeneToJson (.dna files)](#snapgenetojson-dna-files)
     - [genbankToJson](#genbanktojson)
@@ -191,7 +191,7 @@ const results = await ab1ToJson(file, options)
 
 ### snapgeneToJson (.dna files) 
 ```js
-//All of the xXXXtoJson parsers work like this:
+//All of the xxxxToJson parsers work like this:
 const snapgeneToJson = require('bio-parsers').snapgeneToJson;
 //or alternatively (if using the package on the front end and you want to keep memory usage low)
 const snapgeneToJson = require('bio-parsers/parsers/snapgeneToJson');
@@ -206,7 +206,7 @@ snapgeneToJson(file, function(result) {
 ### genbankToJson
 
 ```js
-//All of the xxxxtoJson parsers work like this:
+//All of the xxxxToJson parsers work like this:
 const genbankToJson = require('bio-parsers').genbankToJson;
 //or alternatively (if using the package on the front end and you want to keep memory usage low)
 const genbankToJson = require('bio-parsers/parsers/genbankToJson');
