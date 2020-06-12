@@ -4937,7 +4937,7 @@ eslint-config-react-app@^5.0.1, eslint-config-react-app@^5.2.1:
   dependencies:
     confusing-browser-globals "^1.0.9"
 
-eslint-config-teselagen@^5.0.2:
+eslint-config-teselagen@^5.0.5:
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/eslint-config-teselagen/-/eslint-config-teselagen-5.0.5.tgz#d182928acb4ae8fe10386b14213742501668c417"
   integrity sha512-0djFnWD867b9jhiYZklGlgQE1ImSbAig1QuFE6zfe6bMgH1xBRz+UYlaP88w47O0tp6AAjMGbonIDMNB5vN2lg==
@@ -11613,7 +11613,7 @@ w3c-xmlserializer@^2.0.0:
   dependencies:
     xml-name-validator "^3.0.0"
 
-waldojs@^0.1.9:
+waldojs@^0.1.10:
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/waldojs/-/waldojs-0.1.10.tgz#0d46adfa2bcf5695aaebed8e7f12733a474b15fc"
   integrity sha1-DUat+ivPVpWq6+2OfxJzOkdLFfw=
