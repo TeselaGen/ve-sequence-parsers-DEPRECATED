@@ -9,32 +9,32 @@ import pragmasAndTypes from "./utils/pragmasAndTypes.js";
 import { featureColors } from "ve-sequence-utils";
 var StringUtil = {
   /** Trims white space at beginning and end of string
-   * @param {String} line
-   * @returns {String} line
+   * @param {string} line
+   * @returns {string} line
    */
   trim: function trim(line) {
     return line.replace(/^\s+|\s+$/g, "");
   },
 
   /** Trims white space at beginning string
-   * @param {String} line
-   * @returns {String} line
+   * @param {string} line
+   * @returns {string} line
    */
   ltrim: function ltrim(line) {
     return line.replace(/^\s+/, "");
   },
 
   /** Trims white space at end of string
-   * @param {String} line
-   * @returns {String} line
+   * @param {string} line
+   * @returns {string} line
    */
   rtrim: function rtrim(line) {
     return line.replace(/\s+$/, "");
   },
 
   /** Pads white space at beginning of string
-   * @param {String} line
-   * @returns {String} line
+   * @param {string} line
+   * @returns {string} line
    */
   lpad: function lpad(line, padString, length) {
     var str = line;
@@ -44,8 +44,8 @@ var StringUtil = {
   },
 
   /** Pads white space at end of string
-   * @param {String} line
-   * @returns {String} line
+   * @param {string} line
+   * @returns {string} line
    */
   rpad: function rpad(line, padString, length) {
     var str = line;
