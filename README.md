@@ -5,9 +5,9 @@
   - [About this Repo](#about-this-repo)
   - [Exported Functions](#exported-functions)
   - [Format Specification](#format-specification)
-  - [Usage](#useage)
+  - [Usage](#usage)
     - [install](#install)
-    - [jsonToGenbank (same interface as jsonToFasta) (no async required!)](#jsontogenbank-same-interface-as-jsontofasta-no-async-required)
+    - [jsonToGenbank (same interface as jsonToFasta) (no async required!)](#jsonToGenbank-same-interface-as-jsonToFasta-no-async-required)
     - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anyToJson-same-interface-as-genbankToJson-fastaToJson-xxxxTojson-async-required)
     - [Options (for anyToJson or xxxxToJson)](#options-for-anyToJson-or-xxxxToJson)
     - [ab1ToJson](#ab1ToJson)
@@ -200,7 +200,7 @@ const snapgeneToJson = require('bio-parsers/parsers/snapgeneToJson');
 // or a node file snapgeneToJson(fs.readFileSync(path.join(__dirname, './testData/ab1/example1.ab1')));
 snapgeneToJson(file, function(result) { 
   console.info(result)
-},options)
+}, options)
 ```
 
 ### genbankToJson
