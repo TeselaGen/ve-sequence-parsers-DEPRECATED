@@ -30,6 +30,14 @@ describe('anyToJson', function() {
             done();
         }, {fileName: 'pBbS0c-RFP_no_name.txt', parseFastaAsCircular: true, isProtein: false});    
     });
+    it('handles parseFastaAsCircular=true', function(done) {
+        anyToJson(">simpleFasta \n gatggagagag", function(result) {
+            result[0].parsedSequence.sequence.length.should.equal(11)
+            result[0].parsedSequence.circular.should.equal(true)
+            result[0].parsedSequence.name.should.equal('simpleFasta')
+            done();
+        }, {parseFastaAsCircular: true, isProtein: false});    
+    });
     it('parse in an ab1 file without failing :)', function(done) {
         const fileObj = fs.readFileSync(path.join(__dirname, './testData/ab1/example1.ab1'));
         ab1ToJson(fileObj, function(result) {
