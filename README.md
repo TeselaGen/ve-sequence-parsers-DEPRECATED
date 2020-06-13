@@ -5,7 +5,7 @@
   - [About this Repo](#about-this-repo)
   - [Exported Functions](#exported-functions)
   - [Format Specification](#format-specification)
-  - [Usage](#usage)
+  - [Usage](#useage)
     - [install](#install)
     - [jsonToGenbank (same interface as jsonToFasta) (no async required!)](#jsontogenbank-same-interface-as-jsontofasta-no-async-required)
     - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anyToJson-same-interface-as-genbankToJson-fastaToJson-xxxxTojson-async-required)
