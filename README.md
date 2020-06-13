@@ -5,14 +5,14 @@
   - [About this Repo](#about-this-repo)
   - [Exported Functions](#exported-functions)
   - [Format Specification](#format-specification)
-  - [Useage](#useage)
+  - [Usage](#usage)
     - [install](#install)
     - [jsonToGenbank (same interface as jsonToFasta) (no async required!)](#jsontogenbank-same-interface-as-jsontofasta-no-async-required)
-    - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anytojson-same-interface-as-genbanktojson-fastatojson-xxxxTojson-async-required)
-    - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxTojson)
-    - [ab1ToJson](#ab1tojson)
-    - [snapgeneToJson (.dna files)](#snapgenetojson-dna-files)
-    - [genbankToJson](#genbanktojson)
+    - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anyToJson-same-interface-as-genbankToJson-fastaToJson-xxxxTojson-async-required)
+    - [Options (for anyToJson or xxxxToJson)](#options-for-anyToJson-or-xxxxToJson)
+    - [ab1ToJson](#ab1ToJson)
+    - [snapgeneToJson (.dna files)](#snapgeneToJson-dna-files)
+    - [genbankToJson](#genbankToJson)
   - [Editing This Repo](#editing-this-repo)
     - [All collaborators:](#all-collaborators)
   - [Debug](#debug)
@@ -61,24 +61,24 @@ const generalizedJsonFormat = {
       "baseCalls": ["A","T", ...etc],
       "qualNums": [],
     },
-    "features" : [
+    "features": [
         {
-            "name" : "anonymous feature",
-            "type" : "misc_feature",
-            "id" : "5590c1978979df000a4f02c7", //Must be a unique id. If no id is provided, we'll autogenerate one for you
-            "start" : 1,
-            "end" : 3,
-            "strand" : 1,
-            "notes" : {},
+            "name": "anonymous feature",
+            "type": "misc_feature",
+            "id": "5590c1978979df000a4f02c7", //Must be a unique id. If no id is provided, we'll autogenerate one for you
+            "start": 1,
+            "end": 3,
+            "strand": 1,
+            "notes": {},
         },
         {
-            "name" : "coding region 1",
-            "type" : "CDS",
-            "id" : "5590c1d88979df000a4f02f5",
-            "start" : 12,
-            "end" : 9,
-            "strand" : -1,
-            "notes" : {},
+            "name": "coding region 1",
+            "type": "CDS",
+            "id": "5590c1d88979df000a4f02f5",
+            "start": 12,
+            "end": 9,
+            "strand": -1,
+            "notes": {},
         }
     ],
 }
