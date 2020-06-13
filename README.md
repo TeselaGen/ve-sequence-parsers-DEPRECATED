@@ -5,14 +5,14 @@
   - [About this Repo](#about-this-repo)
   - [Exported Functions](#exported-functions)
   - [Format Specification](#format-specification)
-  - [Useage](#useage)
+  - [Usage](#usage)
     - [install](#install)
-    - [jsonToGenbank (same interface as jsonToFasta) (no async required!)](#jsontogenbank-same-interface-as-jsontofasta-no-async-required)
-    - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anytojson-same-interface-as-genbanktojson-fastatojson-xxxxtojson-async-required)
-    - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxtojson)
-    - [ab1ToJson](#ab1tojson)
-    - [snapgeneToJson (.dna files)](#snapgenetojson-dna-files)
-    - [genbankToJson](#genbanktojson)
+    - [jsonToGenbank (same interface as jsonToFasta) (no async required!)](#jsonToGenbank-same-interface-as-jsonToFasta-no-async-required)
+    - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anyToJson-same-interface-as-genbankToJson-fastaToJson-xxxxToJson-async-required)
+    - [Options (for anyToJson or xxxxToJson)](#options-for-anyToJson-or-xxxxToJson)
+    - [ab1ToJson](#ab1ToJson)
+    - [snapgeneToJson (.dna files)](#snapgeneToJson-dna-files)
+    - [genbankToJson](#genbankToJson)
   - [Editing This Repo](#editing-this-repo)
     - [All collaborators:](#all-collaborators)
   - [Debug](#debug)
@@ -29,7 +29,7 @@ This repo contains a set of parsers to convert between datatypes through a gener
 Use the following exports to convert to a generalized JSON format:
 ```
 fastaToJson //handles fasta files (.fa, .fasta)
-genbankToJson //handles genbank files (.gb .gbk)
+genbankToJson //handles genbank files (.gb, .gbk)
 ab1ToJson //handles .ab1 sequencing read files 
 sbolXmlToJson //handles .sbol files
 snapgeneToJson //handles snapgene (.dna) files
@@ -47,45 +47,45 @@ jsonToFasta
 The generalized JSON format looks like:
 ```js
 const generalizedJsonFormat = {
-    "size" : 25,
-    "sequence" : "asaasdgasdgasdgasdgasgdasgdasdgasdgasgdagasdgasdfasdfdfasdfa",
-    "circular" : true,
-    "name" : "pBbS8c-RFP",
-    "description" : "",
+    "size": 25,
+    "sequence": "asaasdgasdgasdgasdgasgdasgdasdgasdgasgdagasdgasdfasdfdfasdfa",
+    "circular": true,
+    "name": "pBbS8c-RFP",
+    "description": "",
     "chromatogramData": { //only if parsing in an ab1 file
       "aTrace": [], //same as cTrace but for a
       "tTrace": [], //same as cTrace but for t
       "gTrace": [], //same as cTrace but for g
       "cTrace": [0,0,0,1,3,5,11,24,56,68,54,30,21,3,1,4,1,0,0, ...etc], //heights of the curve spaced 1 per x position (aka if the cTrace.length === 1000, then the max basePos can be is 1000)
-      "basePos": [33, 46, 55,], //x position of the bases (can be unevenly spaced)
-      "baseCalls": ["A","T", ...etc],
+      "basePos": [33, 46, 55, ...etc], //x position of the bases (can be unevenly spaced)
+      "baseCalls": ["A", "T", ...etc],
       "qualNums": [],
     },
-    "features" : [
+    "features": [
         {
-            "name" : "anonymous feature",
-            "type" : "misc_feature",
-            "id" : "5590c1978979df000a4f02c7", //Must be a unique id. If no id is provided, we'll autogenerate one for you
-            "start" : 1,
-            "end" : 3,
-            "strand" : 1,
-            "notes" : {},
+            "name": "anonymous feature",
+            "type": "misc_feature",
+            "id": "5590c1978979df000a4f02c7", //Must be a unique id. If no id is provided, we'll autogenerate one for you
+            "start": 1,
+            "end": 3,
+            "strand": 1,
+            "notes": {},
         },
         {
-            "name" : "coding region 1",
-            "type" : "CDS",
-            "id" : "5590c1d88979df000a4f02f5",
-            "start" : 12,
-            "end" : 9,
-            "strand" : -1,
-            "notes" : {},
+            "name": "coding region 1",
+            "type": "CDS",
+            "id": "5590c1d88979df000a4f02f5",
+            "start": 12,
+            "end": 9,
+            "strand": -1,
+            "notes": {},
         }
     ],
 }
 ```
 
 
-## Useage
+## Usage
 ### install
 `npm install -S bio-parsers` 
 
@@ -132,7 +132,7 @@ const anyToJson = require('bio-parsers').anyToJson;
 anyToJson(
   stringOrFile, //if ab1 files are being passed in you should pass files only, otherwise strings or files are fine as inputs
   onFinishedCallback, 
-  options //options.fileName (eg "pBad.ab1" or "pCherry.fasta") is important to pass here in order for the parser to !
+  options //options.fileName (eg "pBad.ab1" or "pCherry.fasta") is important to pass here in order for the parser to!
 ) 
 
 function onFinishedCallback (results) {
@@ -172,7 +172,7 @@ ab1ToJson(
   // or a node file ab1ToJson(fs.readFileSync(path.join(__dirname, './testData/ab1/example1.ab1')));
   file, 
   onFinishedCallback, 
-  options //options.fileName (eg "pBad.ab1" or "pCherry.fasta") is important to pass here in order for the parser to !
+  options //options.fileName (eg "pBad.ab1" or "pCherry.fasta") is important to pass here in order for the parser to!
 )
 
 function onFinishedCallback (results) {
@@ -191,27 +191,27 @@ const results = await ab1ToJson(file, options)
 
 ### snapgeneToJson (.dna files) 
 ```js
-//All of the xXXXtoJson parsers work like this:
+//All of the xxxxToJson parsers work like this:
 const snapgeneToJson = require('bio-parsers').snapgeneToJson;
 //or alternatively (if using the package on the front end and you want to keep memory usage low)
 const snapgeneToJson = require('bio-parsers/parsers/snapgeneToJson');
 
 //file can be either a browser file  <input type="file" id="input" multiple onchange="snapgeneToJson(this.files[0])">
 // or a node file snapgeneToJson(fs.readFileSync(path.join(__dirname, './testData/ab1/example1.ab1')));
-snapgeneToJson(file, function(result) { 
+snapgeneToJson(file, result => { 
   console.info(result)
-},options)
+}, options)
 ```
 
 ### genbankToJson
 
 ```js
-//All of the xXXXtoJson parsers work like this:
+//All of the xxxxToJson parsers work like this:
 const genbankToJson = require('bio-parsers').genbankToJson;
 //or alternatively (if using the package on the front end and you want to keep memory usage low)
 const genbankToJson = require('bio-parsers/parsers/genbankToJson');
 
-genbankToJson(string, function(result) {
+genbankToJson(string, result => {
   console.info(result)
   // [
   //     {
@@ -259,7 +259,7 @@ genbankToJson(string, function(result) {
   //         }
   //     }
   // ]
-},options)
+}, options)
 
 
 
