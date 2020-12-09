@@ -4,7 +4,7 @@ import NameUtils from "./NameUtils.js";
 import {
   filterAminoAcidSequenceString,
   filterSequenceString,
-  guessIfSequenceIsDnaAndNotProtein
+  guessIfSequenceIsDnaAndNotProtein,
 } from "ve-sequence-utils";
 import { upperFirst } from "lodash";
 import pragmasAndTypes from "./pragmasAndTypes.js";
@@ -21,16 +21,17 @@ import pragmasAndTypes from "./pragmasAndTypes.js";
 export default function validateSequence(sequence, options = {}) {
   let {
     isProtein,
+    isOligo,
     guessIfProtein,
     guessIfProteinOptions,
     reformatSeqName,
     inclusive1BasedStart,
     inclusive1BasedEnd,
-    additionalValidChars
+    additionalValidChars,
   } = options;
   const response = {
     validatedAndCleanedSequence: {},
-    messages: []
+    messages: [],
   };
   if (!sequence || typeof sequence !== "object") {
     throw new Error("Invalid sequence");
@@ -86,14 +87,18 @@ export default function validateSequence(sequence, options = {}) {
     }
     sequence.proteinSize = sequence.proteinSequence.length;
   } else {
-    //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
-    let newSeq = sequence.sequence.replace(/u/g, "t");
-    newSeq = newSeq.replace(/U/g, "T");
-    if (newSeq !== sequence.sequence) {
-      sequence.type = "RNA";
-      sequence.sequence = newSeq;
-    } else {
+    if (isOligo) {
       sequence.type = "DNA";
+    } else {
+      //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
+      let newSeq = sequence.sequence.replace(/u/g, "t");
+      newSeq = newSeq.replace(/U/g, "T");
+      if (newSeq !== sequence.sequence) {
+        sequence.type = "RNA";
+        sequence.sequence = newSeq;
+      } else {
+        sequence.type = "DNA";
+      }
     }
 
     validChars = filterSequenceString(sequence.sequence, additionalValidChars);
