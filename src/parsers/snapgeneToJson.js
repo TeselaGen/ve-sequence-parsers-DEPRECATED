@@ -2,7 +2,6 @@
 // https://github.com/IsaacLuo/SnapGeneFileReader
 
 import bufferpack from 'bufferpack';
-
 import xml2Js from 'xml2js';
 import { StringDecoder } from 'string_decoder';
 import addPromiseOption from './utils/addPromiseOption';
@@ -10,6 +9,8 @@ import getArrayBufferFromFile from './utils/getArrayBufferFromFile';
 import createInitialSequence from './utils/createInitialSequence';
 import validateSequenceArray from './utils/validateSequenceArray';
 import flattenSequenceArray from './utils/flattenSequenceArray';
+
+const Buffer = require('buffer/').Buffer
 
 async function snapgeneToJson(
   fileObj,
