@@ -19,6 +19,7 @@ import pragmasAndTypes from "./pragmasAndTypes.js";
 export default function validateSequence(sequence) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var isProtein = options.isProtein,
+      isOligo = options.isOligo,
       guessIfProtein = options.guessIfProtein,
       guessIfProteinOptions = options.guessIfProteinOptions,
       reformatSeqName = options.reformatSeqName,
@@ -77,14 +78,18 @@ export default function validateSequence(sequence) {
     }
     sequence.proteinSize = sequence.proteinSequence.length;
   } else {
-    //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
-    var newSeq = sequence.sequence.replace(/u/g, "t");
-    newSeq = newSeq.replace(/U/g, "T");
-    if (newSeq !== sequence.sequence) {
-      sequence.type = "RNA";
-      sequence.sequence = newSeq;
-    } else {
+    if (isOligo) {
       sequence.type = "DNA";
+    } else {
+      //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
+      var newSeq = sequence.sequence.replace(/u/g, "t");
+      newSeq = newSeq.replace(/U/g, "T");
+      if (newSeq !== sequence.sequence) {
+        sequence.type = "RNA";
+        sequence.sequence = newSeq;
+      } else {
+        sequence.type = "DNA";
+      }
     }
 
     validChars = filterSequenceString(sequence.sequence, additionalValidChars);
