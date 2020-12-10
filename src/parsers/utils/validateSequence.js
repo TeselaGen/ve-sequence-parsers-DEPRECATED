@@ -91,8 +91,16 @@ export default function validateSequence(sequence, options = {}) {
       sequence.type = "DNA";
     } else {
       //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
-      let newSeq = sequence.sequence.replace(/u/g, "t");
-      newSeq = newSeq.replace(/U/g, "T");
+      const newSeq = sequence.sequence.replace(/u/gi, (u, index) => {
+        sequence.features.push({
+          type: "misc_feature",
+          name: "tg_uracil",
+          strand: 1,
+          start: index,
+          end: index,
+        });
+        return u === "U" ? "T" : "t";
+      });
       if (newSeq !== sequence.sequence) {
         sequence.type = "RNA";
         sequence.sequence = newSeq;
