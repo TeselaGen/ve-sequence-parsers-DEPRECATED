@@ -6,6 +6,7 @@ import NameUtils from "./NameUtils.js";
 import { filterAminoAcidSequenceString, filterSequenceString, guessIfSequenceIsDnaAndNotProtein } from "ve-sequence-utils";
 import { upperFirst } from "lodash";
 import pragmasAndTypes from "./pragmasAndTypes.js";
+import parseUracilFeatures from "./parseUracilFeatures.js";
 
 //validation checking
 /**
@@ -82,16 +83,7 @@ export default function validateSequence(sequence) {
       sequence.type = "DNA";
     } else {
       //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
-      var newSeq = sequence.sequence.replace(/u/gi, function (u, index) {
-        sequence.features.push({
-          type: "misc_feature",
-          name: "tg_uracil",
-          strand: 1,
-          start: index,
-          end: index
-        });
-        return u === "U" ? "T" : "t";
-      });
+      var newSeq = parseUracilFeatures(sequence.sequence, sequence.features);
       if (newSeq !== sequence.sequence) {
         sequence.type = "RNA";
         sequence.sequence = newSeq;
