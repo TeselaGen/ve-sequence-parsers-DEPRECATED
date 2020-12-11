@@ -125,18 +125,22 @@ var anyToJson = function () {
               if (firstChar === ">") {
                 parsersToTry = parsersToTry.sort(function (a, b) {
                   if (a.name === "Fasta Parser") return 1;
+                  return -1;
                 });
               } else if (firstChar === "L") {
                 parsersToTry = parsersToTry.sort(function (a, b) {
                   if (a.name === "Genbank Parser") return 1;
+                  return -1;
                 });
               } else if (firstChar === "#") {
                 parsersToTry = parsersToTry.sort(function (a, b) {
                   if (a.name === "GFF Parser") return 1;
+                  return -1;
                 });
               } else if (firstChar === "<") {
                 parsersToTry = parsersToTry.sort(function (a, b) {
                   if (a.name === "XML Parser") return 1;
+                  return -1;
                 });
               }
               /* eslint-enable array-callback-return*/
