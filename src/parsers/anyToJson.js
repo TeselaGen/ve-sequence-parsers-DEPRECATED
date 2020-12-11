@@ -62,20 +62,20 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     let parsersToTry = [
       {
         fn: fastaToJson,
-        name: "Fasta Parser"
+        name: "Fasta Parser",
       },
       {
         fn: genbankToJson,
-        name: "Genbank Parser"
+        name: "Genbank Parser",
       },
       {
         fn: xmlParser,
-        name: "XML Parser"
+        name: "XML Parser",
       },
       {
         fn: gffToJson,
-        name: "GFF Parser"
-      }
+        name: "GFF Parser",
+      },
     ];
     const firstChar = fileContentString[fileContentString.search(/\S|$/)];
     /* eslint-disable array-callback-return*/
@@ -84,18 +84,22 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     if (firstChar === ">") {
       parsersToTry = parsersToTry.sort((a, b) => {
         if (a.name === "Fasta Parser") return 1;
+        return -1
       });
     } else if (firstChar === "L") {
       parsersToTry = parsersToTry.sort((a, b) => {
         if (a.name === "Genbank Parser") return 1;
+        return -1
       });
     } else if (firstChar === "#") {
       parsersToTry = parsersToTry.sort((a, b) => {
         if (a.name === "GFF Parser") return 1;
+        return -1
       });
     } else if (firstChar === "<") {
       parsersToTry = parsersToTry.sort((a, b) => {
         if (a.name === "XML Parser") return 1;
+        return -1
       });
     }
     /* eslint-enable array-callback-return*/
@@ -124,10 +128,10 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
           onFileParsed([
             {
               messages: [
-                "Unable to parse .seq file as FASTA, genbank, JBEI, or SBOL formats"
+                "Unable to parse .seq file as FASTA, genbank, JBEI, or SBOL formats",
               ],
-              success: false
-            }
+              success: false,
+            },
           ]);
         }
       }
@@ -153,10 +157,10 @@ function getFileString(file) {
   let reader = new window.FileReader();
   reader.readAsText(file, "UTF-8");
   return new Promise((resolve, reject) => {
-    reader.onload = evt => {
+    reader.onload = (evt) => {
       resolve(evt.target.result);
     };
-    reader.onerror = err => {
+    reader.onerror = (err) => {
       console.error("err:", err);
       reject(err);
     };
