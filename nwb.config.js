@@ -3,7 +3,7 @@ module.exports = {
     esModules: true,
     umd: {
       global: 'bioParsers',
-      entry: './src/parsers'
+      entry: './src/umd.js'
     },
   },
 };
