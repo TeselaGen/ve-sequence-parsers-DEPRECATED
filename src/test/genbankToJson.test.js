@@ -736,7 +736,7 @@ ORIGIN
     });
   });
 
-  it("will keep U base pairs in Oligo sequences", (done) => {
+  it.skip("will keep U base pairs in Oligo sequences", (done) => {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/genbankWithU.gb"),
       "utf8"
