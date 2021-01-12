@@ -8,6 +8,7 @@
     "prepublish": "in-publish && yarn build || not-in-publish",
     "precommit": "npm test",
     "prepush": "npm test",
+    "version": "auto-changelog -p && git add CHANGELOG.md",
     "test-browser": "jest ./src/test",
     "test": "jest --env=node ./src/test",
     "test1": "jest --env=node ./src/test --testNamePattern='parses a multi-seq gb with features of type primer'",
