@@ -48,8 +48,8 @@
     "lint-staged": "^4.0.4",
     "nwb": "^0.23.0",
     "prettier": "^1.16.4",
-    "ve-range-utils": "^2.5.2",
-    "ve-sequence-utils": "4.0.3"
+    "ve-range-utils": "^2.5.8",
+    "ve-sequence-utils": "5.0.0"
   },
   "peerDependencies": {
     "ve-range-utils": "^2.3.3",

@@ -3,13 +3,14 @@
 
 - [Bio Parsers](#bio-parsers)
   - [About this Repo](#about-this-repo)
+  - [[CHANGELOG](CHANGELOG.md)](#changelogchangelogmd)
   - [Exported Functions](#exported-functions)
   - [Format Specification](#format-specification)
-  - [Useage](#useage)
+  - [Usage](#usage)
     - [install](#install)
     - [jsonToGenbank (same interface as jsonToFasta) (no async required!)](#jsontogenbank-same-interface-as-jsontofasta-no-async-required)
-    - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anytojson-same-interface-as-genbanktojson-fastatojson-xxxxTojson-async-required)
-    - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxTojson)
+    - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anytojson-same-interface-as-genbanktojson-fastatojson-xxxxtojson-async-required)
+    - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxtojson)
     - [ab1ToJson](#ab1tojson)
     - [snapgeneToJson (.dna files)](#snapgenetojson-dna-files)
     - [genbankToJson](#genbanktojson)
@@ -24,6 +25,8 @@
 <!-- /TOC -->
 ## About this Repo
 This repo contains a set of parsers to convert between datatypes through a generalized JSON format.
+
+## [CHANGELOG](CHANGELOG.md) 
 
 ## Exported Functions
 Use the following exports to convert to a generalized JSON format:
