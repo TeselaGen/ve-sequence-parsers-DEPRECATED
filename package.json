@@ -48,12 +48,12 @@
     "lint-staged": "^4.0.4",
     "nwb": "^0.23.0",
     "prettier": "^1.16.4",
-    "ve-range-utils": "^2.5.8",
+    "ve-range-utils": "^2.5.9",
     "ve-sequence-utils": "5.0.0"
   },
   "peerDependencies": {
-    "ve-range-utils": "^2.3.3",
-    "ve-sequence-utils": "^3.2.19"
+    "ve-range-utils": "*",
+    "ve-sequence-utils": "*"
   },
   "dependencies": {
     "@gmod/gff": "^1.1.2",
