@@ -13,10 +13,10 @@ chai.use(require("chai-things"));
 chai.should();
 
 describe("genbankToJson tests", function() {
-  it(`parses out the DIVISION property correctly https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html#GenBankDivisionB`, done => {
+  it(`parses out the DIVISION property correctly https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html#GenBankDivisionB`, (done) => {
     const string = `LOCUS       ProteinSeq          10 bp    DNA  linear  PLN  04-MAR-2019
-ORIGIN      
-    1 gtagaggccg     
+ORIGIN
+    1 gtagaggccg
 //`;
     genbankToJson(
       string,
@@ -36,10 +36,10 @@ ORIGIN
       }
     );
   });
-  it(`does not parse a dna file with the name ProteinSeq into a protein `, done => {
+  it(`does not parse a dna file with the name ProteinSeq into a protein `, (done) => {
     const string = `LOCUS       ProteinSeq          10 bp    DNA  linear    04-MAR-2019
-ORIGIN      
-    1 gtagaggccg     
+ORIGIN
+    1 gtagaggccg
 //`;
     genbankToJson(
       string,
@@ -56,10 +56,10 @@ ORIGIN
       }
     );
   });
-  it(`parses a protein genbank file into a protein sequence json by default `, done => {
+  it(`parses a protein genbank file into a protein sequence json by default `, (done) => {
     const string = `LOCUS       Untitled_Sequence          10 aa  linear    04-MAR-2019
-ORIGIN      
-    1 MTCAGRRAYL     
+ORIGIN
+    1 MTCAGRRAYL
 //`;
     genbankToJson(
       string,
@@ -96,15 +96,15 @@ ORIGIN
             locations: [
               {
                 start: 867,
-                end: 961
+                end: 961,
               },
               {
                 start: 975,
-                end: 1017
-              }
+                end: 1017,
+              },
             ],
-            strand: 1
-          }
+            strand: 1,
+          },
         ]);
         done();
       },
@@ -148,8 +148,8 @@ ORIGIN
         {
           name: "GFPuv",
           start: 0,
-          end: 102
-        }
+          end: 102,
+        },
       ]);
       done();
     });
@@ -215,7 +215,7 @@ ORIGIN
             start: 0,
             end: 674,
             type: "protein",
-            strand: 1
+            strand: 1,
           }
         );
         done();
@@ -239,16 +239,16 @@ ORIGIN
             notes: {
               note: [
                 "REP_ORIGIN REP_ORIGIN pSC101* aka pMPP6, gives plasmid number 3 -4 copies per cell, BglII site in pSC101* ori has been dele ted by quick change agatcT changed to agatcA giving pSC101* * pSC101* aka pMPP6, gives plasmid number 3-4copies p er cell, BglII site in pSC101* ori has been deleted by quic k change agatcT changed to agatcA giving pSC101** [pBbS0a-RFP]",
-                "pSC101* aka pMPP6, gives plasmid number 3-4 copies per cell, BglII site in pSC101* ori has been deleted by quic k change agatcT changed to agatcA giving pSC101**"
+                "pSC101* aka pMPP6, gives plasmid number 3-4 copies per cell, BglII site in pSC101* ori has been deleted by quic k change agatcT changed to agatcA giving pSC101**",
               ],
               gene: ["SC101** Ori"],
-              vntifkey: ["33"]
+              vntifkey: ["33"],
             },
             name: "pSC101**",
             start: 1074,
             end: 3302,
             type: "rep_origin",
-            strand: -1
+            strand: -1,
           }
         );
         done();
@@ -272,7 +272,7 @@ ORIGIN
           start: 6,
           end: 882,
           type: "CDS",
-          strand: -1
+          strand: -1,
         }
       );
       result[0].parsedSequence.features.should.include.something.that.deep.equals(
@@ -282,7 +282,7 @@ ORIGIN
           start: 4300,
           end: 4403,
           type: "terminator",
-          strand: 1
+          strand: 1,
         }
       );
       done();
@@ -301,13 +301,13 @@ ORIGIN
         {
           name: "mutation",
           start: 264,
-          end: 264
+          end: 264,
         },
         {
           name: "TSS",
           start: 291,
-          end: 291
-        }
+          end: 291,
+        },
       ]);
       done();
     });
@@ -326,8 +326,8 @@ ORIGIN
         {
           name: "rhaBADp",
           start: 410,
-          end: 182
-        }
+          end: 182,
+        },
       ]);
       done();
     });
@@ -354,9 +354,11 @@ ORIGIN
     genbankToJson(string, function(result) {
       result.should.be.an("array");
       result[0].success.should.be.true;
-      result[0].parsedSequence.features.should.containSubset([{
-        name: "CRP=cAMP binding site"
-      }])
+      result[0].parsedSequence.features.should.containSubset([
+        {
+          name: "CRP=cAMP binding site",
+        },
+      ]);
       done();
     });
   });
@@ -372,16 +374,16 @@ ORIGIN
           notes: {
             note: [
               "REP_ORIGIN REP_ORIGIN pSC101* aka pMPP6, gives plasmid number 3 -4 copies per cell, BglII site in pSC101* ori has been dele ted by quick change agatcT changed to agatcA giving pSC101* * pSC101* aka pMPP6, gives plasmid number 3-4copies p er cell, BglII site in pSC101* ori has been deleted by quic k change agatcT changed to agatcA giving pSC101** [pBbS0a-RFP]",
-              "pSC101* aka pMPP6, gives plasmid number 3-4 copies per cell, BglII site in pSC101* ori has been deleted by quic k change agatcT changed to agatcA giving pSC101**"
+              "pSC101* aka pMPP6, gives plasmid number 3-4 copies per cell, BglII site in pSC101* ori has been deleted by quic k change agatcT changed to agatcA giving pSC101**",
             ],
             gene: ["SC101** Ori"],
-            vntifkey: ["33"]
+            vntifkey: ["33"],
           },
           name: "pSC101**",
           start: 1073,
           end: 3301,
           type: "rep_origin",
-          strand: -1
+          strand: -1,
         }
       );
       result.should.be.an("array");
@@ -408,16 +410,16 @@ ORIGIN
           notes: {
             note: [
               "GENE [ZFP-GG destination LacUV5 p15A CmR]",
-              "[ZFP-GG destination LacUV5 p15A CmR]"
+              "[ZFP-GG destination LacUV5 p15A CmR]",
             ],
             vntifkey: ["22"],
-            gene: ["CmR"]
+            gene: ["CmR"],
           },
           name: "CmR",
           start: 2010,
           end: 2669,
           type: "gene",
-          strand: -1
+          strand: -1,
         }
       );
       done();
@@ -458,7 +460,7 @@ ORIGIN
           strand: 1,
           name: "feature1",
           start: 1,
-          end: 3
+          end: 3,
         },
         {
           notes: {},
@@ -466,8 +468,8 @@ ORIGIN
           strand: 1,
           name: "feature2",
           start: 11,
-          end: 15
-        }
+          end: 15,
+        },
       ]);
       result[0].parsedSequence.primers.should.containSubset([
         {
@@ -476,7 +478,7 @@ ORIGIN
           strand: 1,
           name: "primer1",
           start: 5,
-          end: 9
+          end: 9,
         },
         {
           notes: {},
@@ -484,8 +486,8 @@ ORIGIN
           strand: 1,
           name: "primer2",
           start: 17,
-          end: 23
-        }
+          end: 23,
+        },
       ]);
 
       result.forEach(function(innerResult) {
@@ -514,7 +516,7 @@ ORIGIN
             strand: 1,
             name: "feature1",
             start: 1,
-            end: 3
+            end: 3,
           },
           {
             notes: {},
@@ -522,7 +524,7 @@ ORIGIN
             strand: 1,
             name: "primer1",
             start: 5,
-            end: 9
+            end: 9,
           },
           {
             notes: {},
@@ -530,7 +532,7 @@ ORIGIN
             strand: 1,
             name: "feature2",
             start: 11,
-            end: 15
+            end: 15,
           },
           {
             notes: {},
@@ -538,8 +540,8 @@ ORIGIN
             strand: 1,
             name: "primer2",
             start: 17,
-            end: 23
-          }
+            end: 23,
+          },
         ]);
 
         result.forEach(function(innerResult) {
@@ -608,13 +610,13 @@ ORIGIN
       result[0].parsedSequence.parts.should.include.something.that.deep.equals({
         notes: {
           preferred3PrimeOverhangs: [""],
-          preferred5PrimeOverhangs: [""]
+          preferred5PrimeOverhangs: [""],
         },
         name: "pS8c-gfpuv_sig_pep_vector_backbone",
         start: 1238,
         end: 1234,
         type: "part",
-        strand: 1
+        strand: 1,
       });
       result[0].parsedSequence.sequence.length.should.equal(5299);
       done();
@@ -675,25 +677,25 @@ ORIGIN
         notes: {
           preferred3PrimeOverhangs: [""],
           preferred5PrimeOverhangs: [""],
-          tag: ["blue", "red"]
+          tag: ["blue", "red"],
         },
         name: "pS8c-gfpuv",
         start: 1238,
         end: 1234,
         type: "part",
-        strand: 1
+        strand: 1,
       });
       result[0].parsedSequence.parts.should.include.something.that.deep.equals({
         notes: {
           preferred3PrimeOverhangs: [""],
           preferred5PrimeOverhangs: [""],
-          tag: ["red", "green"]
+          tag: ["red", "green"],
         },
         name: "pS8c-gfpuv_sig_pep_vector_backbone",
         start: 1238,
         end: 1234,
         type: "part",
-        strand: 1
+        strand: 1,
       });
       done();
     });
@@ -711,26 +713,26 @@ ORIGIN
           notes: {
             preferred3PrimeOverhangs: [""],
             preferred5PrimeOverhangs: [""],
-            tag: ["blue", "red"]
+            tag: ["blue", "red"],
           },
           name: "pS8c-gfpuv",
           start: 1238,
           end: 1234,
           type: "misc_feature",
-          strand: 1
+          strand: 1,
         }
       );
       result[0].parsedSequence.parts.should.include.something.that.deep.equals({
         notes: {
           preferred3PrimeOverhangs: [""],
           preferred5PrimeOverhangs: [""],
-          tag: ["red", "green"]
+          tag: ["red", "green"],
         },
         name: "pS8c-gfpuv_sig_pep_vector_backbone",
         start: 1238,
         end: 1234,
         type: "part",
-        strand: 1
+        strand: 1,
       });
       done();
     });
@@ -747,12 +749,12 @@ ORIGIN
         result.should.be.an("array");
         result[0].success.should.be.true;
         result[0].parsedSequence.features.length.should.equal(1);
-        expect(result[0].parsedSequence.sequence).toContain("u")
+        expect(result[0].parsedSequence.sequence).toContain("u");
         done();
       },
       { isOligo: true }
     );
-  })
+  });
 });
 // const string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
 // const string = fs.readFileSync(__dirname + '/testGenbankFile.gb', "utf8");
