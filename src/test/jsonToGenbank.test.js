@@ -92,6 +92,18 @@ describe("genbank exporter/parser conversion", function() {
         },
       ],
     });
+
+    // tnr: the old string used to look like: 
+    //  j5_propagated_part2046..2063
+    //                  /label="ssrA_tag_3prime"
+    //                  /pragma="j5_lineage_annotation"
+    // now it looks like (note the correct spacing!):  
+    //  j5_propagated_part 2046..2063
+    //              /label="ssrA_tag_3prime"
+    //              /pragma="j5_lineage_annotation"
+
+
+
     parseGenbank(string, function(result) {
       result[0].parsedSequence.features[0].start.should.equal(2);
       result[0].parsedSequence.features[1].start.should.equal(3);
