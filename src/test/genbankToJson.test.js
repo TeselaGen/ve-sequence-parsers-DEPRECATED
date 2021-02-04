@@ -13,6 +13,52 @@ chai.use(require("chai-things"));
 chai.should();
 
 describe("genbankToJson tests", function() {
+  it(`correctly handles a multi-line LOCUS and parses the sequence as circular`, (done) => {
+    const string = `LOCUS       Tt2-PstI-SphI-rev(dna)        7628 bp    DNA     circular
+    04-FEB-2021
+DEFINITION  [Heavy]
+ACCESSION   Tt2-PstI-SphI-rev(dna)
+VERSION     Tt2-PstI-SphI-rev(dna).0
+KEYWORDS    .
+SOURCE      Homo sapiens
+ORGANISM  Homo sapiens
+    .
+COMMENT     Chain:Heavy
+    Numbering:Kabat
+    AnnotationCategory:VREGION
+    Plasmid: pAETEST
+    ClonedAnnotationCategory:VREGION
+FEATURES             Location/Qualifiers
+source          1..76
+             /chain_orf="1"
+             /chain_strand="+"
+             /inference="Antibody-Extractor"
+             /numbering="Kabat"
+             /plasmid="pAETEST"
+             /lab_host="Escherichia coli"
+             /mol_type="other DNA"
+             /organism="Homo sapiens"
+             /db_xref="taxon:9606"
+ORIGIN
+1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
+61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
+121 ttggcgggtg tcggggctgg cttaactatg cggcatcaga gcagattgta ctgagagtgc
+//
+`;
+    genbankToJson(
+      string,
+      function(result) {
+        result[0].parsedSequence.name.should.equal("Tt2-PstI-SphI-rev(dna)");
+        result[0].parsedSequence.circular.should.equal(true);
+        result[0].parsedSequence.type.should.equal("DNA");
+        // result[0].parsedSequence.isProtein.should.be.
+        done();
+      },
+      {
+        /* preserveLocations: true */
+      }
+    );
+  });
   it(`parses out the DIVISION property correctly https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html#GenBankDivisionB`, (done) => {
     const string = `LOCUS       ProteinSeq          10 bp    DNA  linear  PLN  04-MAR-2019
 ORIGIN
@@ -425,7 +471,7 @@ ORIGIN
       done();
     });
   });
-  it("handles parsing of a multi-seq genbank correctly", function(done) {
+  it("handles parsing of a multi-seq (multiple sequence) genbank correctly", function(done) {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/multi-seq-genbank.gb"),
       "utf8"
@@ -435,6 +481,12 @@ ORIGIN
       result.should.be.length(4);
       result[0].parsedSequence.features.should.be.length(0);
       result[0].parsedSequence.size.should.equal(109);
+      result[1].parsedSequence.features.should.be.length(1);
+      result[1].parsedSequence.name.should.equal('sequence2');
+      result[1].parsedSequence.size.should.equal(171);
+      result[2].parsedSequence.features.should.be.length(0);
+      result[2].parsedSequence.name.should.equal('sequence3');
+      result[2].parsedSequence.size.should.equal(81);
 
       result.forEach(function(innerResult) {
         innerResult.success.should.be.true;

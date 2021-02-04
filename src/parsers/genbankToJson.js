@@ -63,7 +63,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     ORIGIN_TAG: "ORIGIN",
     END_SEQUENCE_TAG: "//"
   };
-
+  let hasFoundLocus = false;
   let featureLocationIndentation;
   try {
     const lines = splitStringIntoLines(string);
@@ -72,7 +72,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     if (lines === null) {
       addMessage("Import Error: Sequence file is empty");
     }
-    let hasFoundLocus = false;
+    
 
     lines.some(function(line) {
       if (line === null) {
@@ -115,8 +115,12 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
       switch (LINETYPE) {
         case genbankAnnotationKey.LOCUS_TAG:
-          hasFoundLocus = true;
-          parseLocus(line, key, val);
+          if (hasFoundLocus) {
+            //here we concatenate the locus lines together 
+            line = hasFoundLocus + line
+          }
+          parseLocus(line);
+          hasFoundLocus = line;
           break;
         case genbankAnnotationKey.FEATURES_TAG:
           //If no location is specified, exclude feature and return messages
@@ -222,6 +226,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
   function endSeq() {
     //do some post processing clean-up
+    hasFoundLocus = false
     postProcessCurSeq();
     //push the result into the resultsArray
     resultsArray.push(result);
