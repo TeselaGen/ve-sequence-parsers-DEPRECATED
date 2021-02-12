@@ -22,6 +22,12 @@ describe('anyToJsonPromise', function() {
     })
 })
 describe('anyToJson', function() {
+    it('should not break on LQNKMVSDKGRAHKPAWYMGMVNNAYNLSIISTMIL parsed with isProtein=true', async function(done) {
+        const results = await anyToJson("LQNKMVSDKGRAHKPAWYMGMVNNAYNLSIISTMIL", {fileName: 'randomString.txt', isProtein: true});    
+        results[0].parsedSequence.sequence.length.should.equal(36)
+        results[0].parsedSequence.name.should.equal('randomString')
+        done();
+    })
     it('parses a simple .txt file as fasta', function(done) {
         anyToJson(fs.readFileSync(path.join(__dirname, './testData/pBbS0c-RFP_no_name.txt'), "utf8"), function(result) {
             result[0].parsedSequence.sequence.length.should.equal(4224)
