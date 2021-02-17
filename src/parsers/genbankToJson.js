@@ -269,6 +269,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     result = createInitialSequence(options);
     let locusName;
     let linear;
+
     let gbDivision;
     let date;
     const lineArr = line.split(/[\s]+/g);
@@ -293,21 +294,32 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     // Date and Div
     // Date is in format:1-APR-2012
     for (let j = 1; j < lineArr.length; j++) {
-      if (lineArr[j].match(/-[A-Z]{3}-/g)) {
-        date = lineArr[j];
+      const item = lineArr[j];
+      if (item.match(/-[A-Z]{3}-/g)) {
+        date = item;
       }
-      if (j === 3 && lineArr[j].match(/aa/i)) {
+      // isProtein
+      if (j === 3 && item.match(/aa/i)) {
+        options.sequenceTypeFromLocus = item;
         options.isProtein = true;
       }
-    }
 
-    // Division
-    for (let i = 1; i < lineArr.length; i++) {
       if (
-        typeof lineArr[i] === "string" &&
-        gbDivisions[lineArr[i].toUpperCase()]
+        j === 4 &&
+        (item.match(/ds-dna/i) || item.match(/ss-dna/i) || item.match(/dna/i))
       ) {
-        gbDivision = lineArr[i].toUpperCase();
+        if (options.isProtein === undefined) {
+          options.isProtein = false;
+        }
+        options.sequenceTypeFromLocus = item;
+      }
+
+      // Division
+      if (
+        typeof lineArr[j] === "string" &&
+        gbDivisions[lineArr[j].toUpperCase()]
+      ) {
+        gbDivision = lineArr[j].toUpperCase();
       }
     }
 
@@ -319,6 +331,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       result.parsedSequence.name = locusName;
     }
     result.parsedSequence.gbDivision = gbDivision;
+    result.parsedSequence.sequenceTypeFromLocus = options.sequenceTypeFromLocus;
     result.parsedSequence.date = date;
     result.parsedSequence.circular = !linear;
   }

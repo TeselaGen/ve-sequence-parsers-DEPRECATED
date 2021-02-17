@@ -69,6 +69,7 @@ ORIGIN
       function(result) {
         result[0].parsedSequence.name.should.equal("ProteinSeq");
         result[0].parsedSequence.gbDivision.should.equal("PLN");
+        result[0].parsedSequence.sequenceTypeFromLocus.should.equal("DNA");
         result[0].parsedSequence.type.should.equal("DNA");
         // result[0].parsedSequence.isProtein.should.be.
         result[0].parsedSequence.sequence.should.equal("gtagaggccg");
@@ -112,6 +113,7 @@ ORIGIN
       function(result) {
         result[0].parsedSequence.name.should.equal("Untitled_Sequence");
         result[0].parsedSequence.type.should.equal("PROTEIN");
+        result[0].parsedSequence.sequenceTypeFromLocus.should.equal("aa");
         result[0].parsedSequence.isProtein.should.equal(true);
         result[0].parsedSequence.proteinSequence.should.equal("MTCAGRRAYL");
         result[0].parsedSequence.proteinSize.should.equal(10);
@@ -165,6 +167,7 @@ ORIGIN
       "utf8"
     );
     genbankToJson(string, function(result) {
+      result[0].parsedSequence.sequenceTypeFromLocus.should.equal("ds-DNA");
       result[0].parsedSequence.definition.should.equal(
         "synthetic circular DNA"
       );
