@@ -13,6 +13,27 @@ chai.use(require("chai-things"));
 chai.should();
 
 describe("genbankToJson tests", function() {
+  it("parses", (done) => {
+    const string = fs.readFileSync(
+      path.join(
+        __dirname,
+        // "./testData/pBbS0c-RFP_no_name.gb"
+        // "./testData/genbank/AcsBmut-3pCRISPRi-242.gb"
+        "./testData/genbank/BlueScribe.gb"
+      ),
+      "utf8"
+    );
+
+    genbankToJson(
+      string,
+      function(result) {
+        // console.log(JSON.stringify(result));
+        done();
+      },
+      {}
+    );
+  });
+
   it(`correctly handles a multi-line LOCUS and parses the sequence as circular`, (done) => {
     const string = `LOCUS       Tt2-PstI-SphI-rev(dna)        7628 bp    DNA     circular
     04-FEB-2021
@@ -482,10 +503,10 @@ ORIGIN
       result[0].parsedSequence.features.should.be.length(0);
       result[0].parsedSequence.size.should.equal(109);
       result[1].parsedSequence.features.should.be.length(1);
-      result[1].parsedSequence.name.should.equal('sequence2');
+      result[1].parsedSequence.name.should.equal("sequence2");
       result[1].parsedSequence.size.should.equal(171);
       result[2].parsedSequence.features.should.be.length(0);
-      result[2].parsedSequence.name.should.equal('sequence3');
+      result[2].parsedSequence.name.should.equal("sequence3");
       result[2].parsedSequence.size.should.equal(81);
 
       result.forEach(function(innerResult) {
@@ -806,6 +827,79 @@ ORIGIN
       },
       { isOligo: true }
     );
+  });
+
+  it("parses multiline notes correctly, where words in a file can be split in between on different lines", (done) => {
+    const string = fs.readFileSync(
+      path.join(__dirname, "./testData/pBbS0c-RFP_no_name.gb"),
+      "utf8"
+    );
+
+    genbankToJson(string, (result) => {
+      result.should.be.an("array");
+      result[0].success.should.be.true;
+      result[0].parsedSequence.features.should.include.something.that.deep.equals(
+        {
+          notes: {
+            note: [
+              "REP_ORIGIN REP_ORIGIN pSC101* aka pMPP6, gives plasmid number 3 -4 copies per cell, BglII site in pSC101* ori has been dele ted by quick change agatcT changed to agatcA giving pSC101* * pSC101* aka pMPP6, gives plasmid number 3-4copies p er cell, BglII site in pSC101* ori has been deleted by quic k change agatcT changed to agatcA giving pSC101** [pBbS0a-RFP]",
+              "pSC101* aka pMPP6, gives plasmid number 3-4 copies per cell, BglII site in pSC101* ori has been deleted by quic k change agatcT changed to agatcA giving pSC101**",
+            ],
+            gene: ["SC101** Ori"],
+            vntifkey: ["33"],
+          },
+          type: "rep_origin",
+          strand: -1,
+          name: "pSC101**",
+          start: 1073,
+          end: 3301,
+        }
+      );
+      done();
+    });
+  });
+
+  it("parses multiline notes correctly", (done) => {
+    const string = fs.readFileSync(
+      path.join(__dirname, "./testData/genbank/BlueScribe.gb"),
+      "utf8"
+    );
+
+    genbankToJson(string, (result) => {
+      result.should.be.an("array");
+      result[0].success.should.be.true;
+      result[0].parsedSequence.features.should.include.something.that.deep.equals(
+        {
+          notes: {
+            note: [
+              "common sequencing primer, one of multiple similar variants",
+            ],
+          },
+          type: "primer_bind",
+          strand: 1,
+          name: "M13 fwd",
+          start: 378,
+          end: 394,
+        }
+      );
+
+      result[0].parsedSequence.features.should.include.something.that.deep.equals(
+        {
+          notes: {
+            bound_moiety: ["lac repressor encoded by lacI"],
+            note: [
+              "The lac repressor binds to the lac operator to inhibit transcription in E. coli. This inhibition can be relieved by adding lactose or isopropyl-beta-D-thiogalactopyranoside (IPTG).",
+            ],
+          },
+          type: "protein_bind",
+          strand: 1,
+          name: "lac operator",
+          start: 548,
+          end: 564,
+        }
+      );
+      done();
+    });
   });
 });
 // const string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");

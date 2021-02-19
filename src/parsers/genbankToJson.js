@@ -41,7 +41,6 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   let resultsArray = [];
   let result;
   let currentFeatureNote;
-  let currentFeatureNoteType;
 
   const genbankAnnotationKey = {
     LOCUS_TAG: "LOCUS",
@@ -368,14 +367,12 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       } else {
         //the last line was a note
         if (currentFeatureNote) {
-          // if it's a sentence note, prepend a space before previous line of words
-          const prefix = currentFeatureNoteType === 'note' ? ' ' : '';
-          const trimmed = line.trim().replace(/"/g, "");
-
           //append to the currentFeatureNote
+          // only trim file formatting spaces (i.e. the left ones)
+          // spaces on the right are necessary (e.g. spacing between words, etc.)
           currentFeatureNote[
             currentFeatureNote.length - 1
-          ] += (prefix + trimmed);
+          ] += line.trimLeft().replace(/"/g, "");
         }
         lastLineWasLocation = false;
       }
@@ -470,7 +467,9 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   function parseFeatureNote(line) {
     let newLine, lineArr;
 
-    newLine = line.trim();
+    // only trim file formatting spaces (i.e. the left ones)
+    // spaces on the right are necessary (e.g. spacing between words, etc.)
+    newLine = line.trimLeft();
     newLine = newLine.replace(/^\/|"$/g, "");
     lineArr = newLine.split(/="|=/);
 
@@ -495,7 +494,6 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       currentNotes[key] = [val];
     }
     currentFeatureNote = currentNotes[key];
-    currentFeatureNoteType = key;
   }
 
   function getLineKey(line) {
