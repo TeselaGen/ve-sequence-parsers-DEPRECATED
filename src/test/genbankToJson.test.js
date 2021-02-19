@@ -13,27 +13,6 @@ chai.use(require("chai-things"));
 chai.should();
 
 describe("genbankToJson tests", function() {
-  it("parses", (done) => {
-    const string = fs.readFileSync(
-      path.join(
-        __dirname,
-        // "./testData/pBbS0c-RFP_no_name.gb"
-        // "./testData/genbank/AcsBmut-3pCRISPRi-242.gb"
-        "./testData/genbank/BlueScribe.gb"
-      ),
-      "utf8"
-    );
-
-    genbankToJson(
-      string,
-      function(result) {
-        // console.log(JSON.stringify(result));
-        done();
-      },
-      {}
-    );
-  });
-
   it(`correctly handles a multi-line LOCUS and parses the sequence as circular`, (done) => {
     const string = `LOCUS       Tt2-PstI-SphI-rev(dna)        7628 bp    DNA     circular
     04-FEB-2021
