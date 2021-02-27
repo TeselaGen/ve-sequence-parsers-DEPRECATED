@@ -40,7 +40,7 @@
     "chai": "^3.4.1",
     "chai-subset": "^1.1.0",
     "chai-things": "^0.2.0",
-    "eslint": "^6.1.0",
+    "eslint": "^7.20.0",
     "eslint-config-teselagen": "^5.0.2",
     "husky": "^0.11.4",
     "in-publish": "^2.0.0",
