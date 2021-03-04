@@ -3,9 +3,9 @@ import { parseString } from 'xml2js';
 
 import flatmap from 'flatmap';
 import access from 'safe-access';
-import waldo from 'waldojs';
 import validateSequenceArray from './utils/validateSequenceArray';
 import addPromiseOption from './utils/addPromiseOption';
+import searchWholeObjByName from './utils/searchWholeObjByName';
 
 //Here's what should be in the callback:
 // {
@@ -32,7 +32,7 @@ function sbolXmlToJson(string, onFileParsedUnwrapped, options) {
             });
             return;
         }
-        const sbolJsonMatches = waldo.byName('DnaComponent', result);
+        const sbolJsonMatches = searchWholeObjByName('DnaComponent', result);
         if (sbolJsonMatches[0]) {
             const resultArray = [];
             for (let i = 0; i < sbolJsonMatches[0].value.length; i++) {
@@ -95,8 +95,8 @@ function parseSbolJson(sbolJson, options) {
         features: flatmap(sbolJson.annotation, function(annotation) {
             const feature = access(annotation, 'SequenceAnnotation[0]');
             if (feature) {
-                const notes = waldo.byName('ns2:about', feature);
-                const otherNotes = waldo.byName('ns2:resource', feature);
+                const notes = searchWholeObjByName('ns2:about', feature);
+                const otherNotes = searchWholeObjByName('ns2:resource', feature);
                 notes.push.apply(notes, otherNotes);
                 const newNotes = {};
                 notes.forEach(function(note) {
@@ -107,11 +107,11 @@ function parseSbolJson(sbolJson, options) {
                     }
                 });
                 let featureName;
-                const nameMatches = waldo.byName('name', feature);
+                const nameMatches = searchWholeObjByName('name', feature);
                 if (nameMatches[0] && nameMatches[0].value && nameMatches[0].value[0]) {
                     featureName = nameMatches[0].value[0];
                 } else {
-                    const displayMatches = waldo.byName('displayId', feature);
+                    const displayMatches = searchWholeObjByName('displayId', feature);
                     if (displayMatches[0] && displayMatches[0].value && displayMatches[0].value[0]) {
                         featureName = displayMatches[0].value[0];
                     }
