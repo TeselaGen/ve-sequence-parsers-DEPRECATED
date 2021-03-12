@@ -16,8 +16,10 @@
   },
   "files": [
     "css",
-    "es",
-    "lib",
+    "es/parsers",
+    "es/umd.js",
+    "lib/parsers",
+    "lib/umd.js",
     "umd"
   ],
   "jest": {

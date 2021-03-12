@@ -6,7 +6,7 @@ node_modules
 npm-debug.log*
 lib/test
 es/test
-
+.DS_Store
 CHANGELOG.md
 jest.transform.js
 nwb.config.js
