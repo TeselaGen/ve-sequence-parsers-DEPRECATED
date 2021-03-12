@@ -1,5 +1,7 @@
 /src
-**/test
+**/test/**
+/es/test
+/lib/test
 /docs
 /.github
 node_modules
