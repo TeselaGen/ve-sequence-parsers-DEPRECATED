@@ -1,6 +1,7 @@
 /src
 **/test/**
 /es/test
+test
 /lib/test
 /docs
 /.github
