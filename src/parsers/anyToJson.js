@@ -22,9 +22,10 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     fileName = fileContentStringOrFileObj.name;
   }
   const ext = extractFileExtension(fileName);
-  if (typeof fileContentStringOrFileObj === "string") {
-    fileContentString = fileContentStringOrFileObj;
-  } else {
+  // if (typeof fileContentStringOrFileObj === "string") {
+  //   console.log(`strang`)
+  //   fileContentString = fileContentStringOrFileObj;
+  // } else {
     if (/^(ab1)$/.test(ext)) {
       // AB1 sequencing read
       //we will always want to pass the file obj and not the string to ab1
@@ -37,7 +38,7 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
       // we want to get the string from the file obj
       fileContentString = await getFileString(fileContentStringOrFileObj);
     }
-  }
+  // }
 
   if (/^(fasta|fas|fa|fna|ffn)$/.test(ext)) {
     // FASTA

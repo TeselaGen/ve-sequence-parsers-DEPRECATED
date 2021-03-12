@@ -1,22 +1,19 @@
 //note: Huge credit and thanks go to IsaacLuo from whose python repository this code was adapted
 // https://github.com/IsaacLuo/SnapGeneFileReader
 
-import bufferpack from 'bufferpack';
-import xml2Js from 'xml2js';
-import { StringDecoder } from 'string_decoder';
-import addPromiseOption from './utils/addPromiseOption';
-import getArrayBufferFromFile from './utils/getArrayBufferFromFile';
-import createInitialSequence from './utils/createInitialSequence';
-import validateSequenceArray from './utils/validateSequenceArray';
-import flattenSequenceArray from './utils/flattenSequenceArray';
+import bufferpack from "bufferpack";
+import xml2Js from "xml2js";
+import { StringDecoder } from "string_decoder";
+import addPromiseOption from "./utils/addPromiseOption";
+import getArrayBufferFromFile from "./utils/getArrayBufferFromFile";
+import createInitialSequence from "./utils/createInitialSequence";
+import validateSequenceArray from "./utils/validateSequenceArray";
+import flattenSequenceArray from "./utils/flattenSequenceArray";
+import { get } from "lodash";
 
-const Buffer = require('buffer/').Buffer
+const Buffer = require("buffer/").Buffer;
 
-async function snapgeneToJson(
-  fileObj,
-  onFileParsedUnwrapped,
-  options = {}
-) {
+async function snapgeneToJson(fileObj, onFileParsedUnwrapped, options = {}) {
   /* eslint-enable no-inner-declarations*/
 
   const onFileParsed = function(sequences, options) {
@@ -25,7 +22,7 @@ async function snapgeneToJson(
       validateSequenceArray(flattenSequenceArray(sequences, options), options)
     );
   };
-  const returnVal = createInitialSequence(options)
+  const returnVal = createInitialSequence(options);
   /* eslint-disable no-inner-declarations*/
   const arrayBuffer = await getArrayBufferFromFile(fileObj);
 
@@ -58,15 +55,15 @@ async function snapgeneToJson(
   }
   const data = await {
     ...returnVal.parsedSequence,
-    isDNA: !!await unpack(2, "H"),
+    isDNA: !!(await unpack(2, "H")),
     exportVersion: await unpack(2, "H"),
     importVersion: await unpack(2, "H"),
-    features: []
+    features: [],
   };
   while (offset <= arrayBuffer.byteLength) {
     // # READ THE WHOLE FILE, BLOCK BY BLOCK, UNTIL THE END
     const next_byte = await read(1);
-    
+
     // # next_byte table
     // # 0: dna sequence
     // # 1: compressed DNA
@@ -95,11 +92,11 @@ async function snapgeneToJson(
     if (ord(next_byte) === 0) {
       //   # READ THE SEQUENCE AND ITS PROPERTIES
       const props = await unpack(1, "b");
-      const binaryRep = dec2bin(props)
+      const binaryRep = dec2bin(props);
 
-      data.circular = isFirstBitA1(binaryRep)
+      data.circular = isFirstBitA1(binaryRep);
       const size = block_size - 1;
-      if (size < 0) return 
+      if (size < 0) return;
       data.size = size;
       //   data["dna"] = {
       //     topology="circular" if props & 0x01 else "linear",
@@ -111,13 +108,6 @@ async function snapgeneToJson(
       //   }
       data.sequence = await read(size, "ascii");
     } else if (ord(next_byte) === 10) {
-      // else if (ord(next_byte) === 6) {
-      //   //       # READ THE NOTES
-      //   const block_content = read(block_size, "utf8");
-      //   const xml = parseXml(block_content);
-      //   //   note_data = parse_dict(xmltodict.parse(block_content))
-      //   //   data['notes'] = note_data['Notes']
-      // }
       //   # READ THE FEATURES
       const strand_dict = { "0": ".", "1": "+", "2": "-", "3": "=" };
       //   const format_dict = {'@text': parse, '@int': int}
@@ -142,7 +132,7 @@ async function snapgeneToJson(
             return {
               ...seg,
               start,
-              end
+              end,
             };
           });
         const { directionality } = attrs;
@@ -152,15 +142,37 @@ async function snapgeneToJson(
           start: maxStart,
           end: maxEnd,
           color,
-          segments
+          segments,
         });
       });
+    } else if (ord(next_byte) === 6) {
+      //       # READ THE NOTES
+
+      const xml = await read(block_size, "utf8");
+      const b = await parseXml(xml);
+
+      const name = get(b, "Notes.CustomMapLabel[0]");
+      if (name) {
+        data.name = name;
+      }
+
+      const description = get(b, "Notes.Description[0]");
+      if (description) {
+        data.description = description;
+      }
+
     } else {
       // # WE IGNORE THE WHOLE BLOCK
       await read(block_size); //we don't do anything with this
+      // console.log(`next_byte:`,next_byte)
+      // console.log(`ord(string):`, ord(next_byte));
+      // const a = await read(block_size, "utf8");
+      // console.log(`a:`, a);
+      // const b = await parseXml(xml);
+      // console.log(`b:`,b)
     }
   }
-  returnVal.parsedSequence = data
+  returnVal.parsedSequence = data;
   onFileParsed([returnVal]);
 }
 
@@ -168,7 +180,7 @@ function getStartAndEndFromRangeString(rangestring) {
   const [start, end] = rangestring.split("-");
   return {
     start: start - 1,
-    end: end - 1
+    end: end - 1,
   };
 }
 
@@ -221,13 +233,19 @@ function parseXml(string) {
   });
 }
 
-
 export default addPromiseOption(snapgeneToJson);
 
-function dec2bin(dec){
+function dec2bin(dec) {
   return (dec >>> 0).toString(2);
 }
 
-function isFirstBitA1(num){
-  return Number(num.toString().split('').pop()) === 1
+function isFirstBitA1(num) {
+  return (
+    Number(
+      num
+        .toString()
+        .split("")
+        .pop()
+    ) === 1
+  );
 }
