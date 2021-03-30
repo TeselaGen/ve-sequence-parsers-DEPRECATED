@@ -22,10 +22,9 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     fileName = fileContentStringOrFileObj.name;
   }
   const ext = extractFileExtension(fileName);
-  // if (typeof fileContentStringOrFileObj === "string") {
-  //   console.log(`strang`)
-  //   fileContentString = fileContentStringOrFileObj;
-  // } else {
+  if (typeof fileContentStringOrFileObj === "string") {
+    fileContentString = fileContentStringOrFileObj;
+  } else {
     if (/^(ab1)$/.test(ext)) {
       // AB1 sequencing read
       //we will always want to pass the file obj and not the string to ab1
@@ -36,9 +35,12 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
       return snapgeneToJson(fileContentStringOrFileObj, onFileParsed, options);
     } else {
       // we want to get the string from the file obj
-      fileContentString = await getFileString(fileContentStringOrFileObj);
+      fileContentString = await getFileString(
+        fileContentStringOrFileObj,
+        options
+      );
     }
-  // }
+  }
 
   if (/^(fasta|fas|fa|fna|ffn)$/.test(ext)) {
     // FASTA
@@ -85,22 +87,22 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     if (firstChar === ">") {
       parsersToTry = parsersToTry.sort((a, b) => {
         if (a.name === "Fasta Parser") return 1;
-        return -1
+        return -1;
       });
     } else if (firstChar === "L") {
       parsersToTry = parsersToTry.sort((a, b) => {
         if (a.name === "Genbank Parser") return 1;
-        return -1
+        return -1;
       });
     } else if (firstChar === "#") {
       parsersToTry = parsersToTry.sort((a, b) => {
         if (a.name === "GFF Parser") return 1;
-        return -1
+        return -1;
       });
     } else if (firstChar === "<") {
       parsersToTry = parsersToTry.sort((a, b) => {
         if (a.name === "XML Parser") return 1;
-        return -1
+        return -1;
       });
     }
     /* eslint-enable array-callback-return*/
@@ -150,8 +152,8 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
 
 export default addPromiseOption(anyToJson);
 
-function getFileString(file) {
-  if (typeof window === "undefined") {
+function getFileString(file, { emulateBrowser } = {}) {
+  if (typeof window === "undefined" && !emulateBrowser) { //emulate browser is only used for testing purposes
     //we're in a node context
     return file;
   }
