@@ -13,159 +13,171 @@ import { get } from "lodash";
 const Buffer = require("buffer/").Buffer;
 
 async function snapgeneToJson(fileObj, options = {}) {
-  /* eslint-enable no-inner-declarations*/
+  try {
+    const returnVal = createInitialSequence(options);
+    const arrayBuffer = await getArrayBufferFromFile(fileObj);
 
-  const returnVal = createInitialSequence(options);
-  /* eslint-disable no-inner-declarations*/
-  const arrayBuffer = await getArrayBufferFromFile(fileObj);
-
-  let offset = 0;
-  function read(size, fmt) {
-    const buffer = Buffer.from(arrayBuffer.slice(offset, size + offset));
-    offset += size;
-    if (fmt) {
-      const decoder = new StringDecoder(fmt);
-      const toRet = decoder.write(buffer);
-      return toRet;
-    } else {
-      return buffer;
-    }
-  }
-
-  async function unpack(size, mode) {
-    const buffer = await read(size);
-    const unpacked = await bufferpack.unpack(">" + mode, buffer);
-    if (unpacked === undefined) return undefined;
-    return await unpacked[0];
-  }
-
-  await read(1); //read the first byte
-  // READ THE DOCUMENT PROPERTIES
-  const length = await unpack(4, "I");
-  const title = await read(8, "ascii");
-  if (length !== 14 || title !== "SnapGene") {
-    throw new Error("Wrong format for a SnapGene file !");
-  }
-  const data = await {
-    ...returnVal.parsedSequence,
-    isDNA: !!(await unpack(2, "H")),
-    exportVersion: await unpack(2, "H"),
-    importVersion: await unpack(2, "H"),
-    features: [],
-  };
-  while (offset <= arrayBuffer.byteLength) {
-    // # READ THE WHOLE FILE, BLOCK BY BLOCK, UNTIL THE END
-    const next_byte = await read(1);
-
-    // # next_byte table
-    // # 0: dna sequence
-    // # 1: compressed DNA
-    // # 2: unknown
-    // # 3: unknown
-    // # 5: primers
-    // # 6: notes
-    // # 7: history tree
-    // # 8: additional sequence properties segment
-    // # 9: file Description
-    // # 10: features
-    // # 11: history node
-    // # 13: unknown
-    // # 16: alignable sequence
-    // # 17: alignable sequence
-    // # 18: sequence trace
-    // # 19: Uracil Positions
-    // # 20: custom DNA colors
-
-    // if (!next_byte) {
-    //   //   # END OF FILE
-    //   return (keepgoing = false);
-    // }
-
-    const block_size = await unpack(4, "I");
-    if (ord(next_byte) === 0) {
-      //   # READ THE SEQUENCE AND ITS PROPERTIES
-      const props = await unpack(1, "b");
-      const binaryRep = dec2bin(props);
-
-      data.circular = isFirstBitA1(binaryRep);
-      const size = block_size - 1;
-      if (size < 0) return;
-      data.size = size;
-      //   data["dna"] = {
-      //     topology="circular" if props & 0x01 else "linear",
-      //     strandedness="double" if props & 0x02 > 0 else "single",
-      //     damMethylated=props & 0x04 > 0,
-      //     dcmMethylated=props & 0x08 > 0,
-      //     ecoKIMethylated=props & 0x10 > 0,
-      //     length=block_size - 1
-      //   }
-      data.sequence = await read(size, "ascii");
-    } else if (ord(next_byte) === 10) {
-      //   # READ THE FEATURES
-      const strand_dict = { "0": ".", "1": "+", "2": "-", "3": "=" };
-      //   const format_dict = {'@text': parse, '@int': int}
-
-      const xml = await read(block_size, "utf8");
-      const b = await parseXml(xml);
-      const { Features: { Feature = [] } = {} } = b;
-      data.features = [];
-      Feature.forEach(({ $: attrs, Q: additionalAttrs = [], Segment = [] }) => {
-        let color;
-        let maxStart = 0;
-        let maxEnd = 0;
-        const segments =
-          Segment &&
-          Segment.map(({ $: seg }) => {
-            if (!seg) throw new Error("invalid feature definition");
-            const { range } = seg;
-            color = seg.color;
-            const { start, end } = getStartAndEndFromRangeString(range);
-            maxStart = Math.max(maxStart, start);
-            maxEnd = Math.max(maxEnd, end);
-            return {
-              ...seg,
-              start,
-              end,
-            };
-          });
-        const { directionality } = attrs;
-        data.features.push({
-          ...attrs,
-          strand: strand_dict[directionality],
-          start: maxStart,
-          end: maxEnd,
-          color,
-          segments,
-        });
-      });
-    } else if (ord(next_byte) === 6) {
-      //       # READ THE NOTES
-
-      const xml = await read(block_size, "utf8");
-      const b = await parseXml(xml);
-
-      const name = get(b, "Notes.CustomMapLabel[0]");
-      if (name) {
-        data.name = name;
+    let offset = 0;
+    function read(size, fmt) {
+      const buffer = Buffer.from(arrayBuffer.slice(offset, size + offset));
+      offset += size;
+      if (fmt) {
+        const decoder = new StringDecoder(fmt);
+        const toRet = decoder.write(buffer);
+        return toRet;
+      } else {
+        return buffer;
       }
-
-      const description = get(b, "Notes.Description[0]");
-      if (description) {
-        data.description = description;
-      }
-    } else {
-      // # WE IGNORE THE WHOLE BLOCK
-      await read(block_size); //we don't do anything with this
-      // console.log(`next_byte:`,next_byte)
-      // console.log(`ord(string):`, ord(next_byte));
-      // const a = await read(block_size, "utf8");
-      // console.log(`a:`, a);
-      // const b = await parseXml(xml);
-      // console.log(`b:`,b)
     }
+
+    async function unpack(size, mode) {
+      const buffer = await read(size);
+      const unpacked = await bufferpack.unpack(">" + mode, buffer);
+      if (unpacked === undefined) return undefined;
+      return await unpacked[0];
+    }
+
+    await read(1); //read the first byte
+    // READ THE DOCUMENT PROPERTIES
+    const length = await unpack(4, "I");
+    const title = await read(8, "ascii");
+    if (length !== 14 || title !== "SnapGene") {
+      throw new Error("Wrong format for a SnapGene file !");
+    }
+    const data = await {
+      ...returnVal.parsedSequence,
+      isDNA: !!(await unpack(2, "H")),
+      exportVersion: await unpack(2, "H"),
+      importVersion: await unpack(2, "H"),
+      features: [],
+    };
+    while (offset <= arrayBuffer.byteLength) {
+      // # READ THE WHOLE FILE, BLOCK BY BLOCK, UNTIL THE END
+      const next_byte = await read(1);
+
+      // # next_byte table
+      // # 0: dna sequence
+      // # 1: compressed DNA
+      // # 2: unknown
+      // # 3: unknown
+      // # 5: primers
+      // # 6: notes
+      // # 7: history tree
+      // # 8: additional sequence properties segment
+      // # 9: file Description
+      // # 10: features
+      // # 11: history node
+      // # 13: unknown
+      // # 16: alignable sequence
+      // # 17: alignable sequence
+      // # 18: sequence trace
+      // # 19: Uracil Positions
+      // # 20: custom DNA colors
+
+      // if (!next_byte) {
+      //   //   # END OF FILE
+      //   return (keepgoing = false);
+      // }
+
+      const block_size = await unpack(4, "I");
+      if (ord(next_byte) === 0) {
+        //   # READ THE SEQUENCE AND ITS PROPERTIES
+        const props = await unpack(1, "b");
+        const binaryRep = dec2bin(props);
+
+        data.circular = isFirstBitA1(binaryRep);
+        const size = block_size - 1;
+        if (size < 0) return;
+        data.size = size;
+        //   data["dna"] = {
+        //     topology="circular" if props & 0x01 else "linear",
+        //     strandedness="double" if props & 0x02 > 0 else "single",
+        //     damMethylated=props & 0x04 > 0,
+        //     dcmMethylated=props & 0x08 > 0,
+        //     ecoKIMethylated=props & 0x10 > 0,
+        //     length=block_size - 1
+        //   }
+        data.sequence = await read(size, "ascii");
+      } else if (ord(next_byte) === 10) {
+        //   # READ THE FEATURES
+        const strand_dict = { "0": ".", "1": "+", "2": "-", "3": "=" };
+        //   const format_dict = {'@text': parse, '@int': int}
+
+        const xml = await read(block_size, "utf8");
+        const b = await parseXml(xml);
+        const { Features: { Feature = [] } = {} } = b;
+        data.features = [];
+        Feature.forEach(
+          ({ $: attrs, Q: additionalAttrs = [], Segment = [] }) => {
+            let color;
+            let maxStart = 0;
+            let maxEnd = 0;
+            const segments =
+              Segment &&
+              Segment.map(({ $: seg }) => {
+                if (!seg) throw new Error("invalid feature definition");
+                const { range } = seg;
+                color = seg.color;
+                const { start, end } = getStartAndEndFromRangeString(range);
+                maxStart = Math.max(maxStart, start);
+                maxEnd = Math.max(maxEnd, end);
+                return {
+                  ...seg,
+                  start,
+                  end,
+                };
+              });
+            const { directionality } = attrs;
+            data.features.push({
+              ...attrs,
+              strand: strand_dict[directionality],
+              start: maxStart,
+              end: maxEnd,
+              color,
+              segments,
+            });
+          }
+        );
+      } else if (ord(next_byte) === 6) {
+        //       # READ THE NOTES
+
+        const xml = await read(block_size, "utf8");
+        const b = await parseXml(xml);
+
+        const name = get(b, "Notes.CustomMapLabel[0]");
+        if (name) {
+          data.name = name;
+        }
+
+        const description = get(b, "Notes.Description[0]");
+        if (description) {
+          data.description = description;
+        }
+      } else {
+        // # WE IGNORE THE WHOLE BLOCK
+        await read(block_size); //we don't do anything with this
+        // console.log(`next_byte:`,next_byte)
+        // console.log(`ord(string):`, ord(next_byte));
+        // const a = await read(block_size, "utf8");
+        // console.log(`a:`, a);
+        // const b = await parseXml(xml);
+        // console.log(`b:`,b)
+      }
+    }
+    returnVal.parsedSequence = data;
+    return validateSequenceArray(
+      flattenSequenceArray([returnVal], options),
+      options
+    );
+  } catch (e) {
+    console.error("Error trying to parse file as snapgene:", e);
+    return [
+      {
+        success: false,
+        messages: ["Import Error: Invalid File"],
+      },
+    ];
   }
-  returnVal.parsedSequence = data;
-  return validateSequenceArray(flattenSequenceArray([returnVal], options), options);
 }
 
 function getStartAndEndFromRangeString(rangestring) {
