@@ -12,9 +12,8 @@ import gffToJson from "./gffToJson";
  * @param  {string} fileContentString content of the file as a string
  * @param  {callback} onFileParsed    //tnr: fill this out
  */
-import addPromiseOption from "./utils/addPromiseOption";
 
-async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
+async function anyToJson(fileContentStringOrFileObj, options) {
   let fileContentString;
   options = options || {};
   let fileName = options.fileName || "";
@@ -28,11 +27,11 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
     if (/^(ab1)$/.test(ext)) {
       // AB1 sequencing read
       //we will always want to pass the file obj and not the string to ab1
-      return ab1ToJson(fileContentStringOrFileObj, onFileParsed, options);
+      return ab1ToJson(fileContentStringOrFileObj, options);
     } else if (/^(dna)$/.test(ext)) {
       // snapgene file
       //we will always want to pass the file obj and not the string to the snapgene parser because it expects a binary file
-      return snapgeneToJson(fileContentStringOrFileObj, onFileParsed, options);
+      return snapgeneToJson(fileContentStringOrFileObj, options);
     } else {
       // we want to get the string from the file obj
       fileContentString = await getFileString(
@@ -44,102 +43,86 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
 
   if (/^(fasta|fas|fa|fna|ffn)$/.test(ext)) {
     // FASTA
-    fastaToJson(fileContentString, onFileParsed, options);
+    return fastaToJson(fileContentString, options);
   } else if (/^(gb|gp|gbk)$/.test(ext)) {
     // GENBANK
-    genbankToJson(fileContentString, onFileParsed, options);
+    return genbankToJson(fileContentString, options);
   } else if (/^(gp)$/.test(ext)) {
     // PROTEIN GENBANK
-    genbankToJson(fileContentString, onFileParsed, options, true);
+    return genbankToJson(fileContentString, options, true);
   } else if (/^(xml|rdf)$/.test(ext)) {
     // XML/RDF
-    xmlParser(fileContentString, onFileParsed, options);
+    return xmlParser(fileContentString, options);
   } else if (/^(gff|gff3)$/.test(ext)) {
     // GFF
-    gffToJson(fileContentString, onFileParsed, options);
+    return gffToJson(fileContentString, options);
   } else {
     // console.warn(
     //   "TNR: No filename passed to anyToJson so we're going through the list of parsers. Make sure you're passing the filename when using anyToJson!"
     // );
-    //runs from BOTTOM to TOP
     let parsersToTry = [
       {
-        fn: fastaToJson,
-        name: "Fasta Parser",
-      },
-      {
-        fn: genbankToJson,
-        name: "Genbank Parser",
+        fn: gffToJson,
+        name: "GFF Parser",
       },
       {
         fn: xmlParser,
         name: "XML Parser",
       },
       {
-        fn: gffToJson,
-        name: "GFF Parser",
+        fn: genbankToJson,
+        name: "Genbank Parser",
+      },
+      {
+        fn: fastaToJson,
+        name: "Fasta Parser",
       },
     ];
     const firstChar = fileContentString[fileContentString.search(/\S|$/)];
-    /* eslint-disable array-callback-return*/
 
     //try to guess the file type based on the first non-whitespace char in the filestring
     if (firstChar === ">") {
       parsersToTry = parsersToTry.sort((a, b) => {
-        if (a.name === "Fasta Parser") return 1;
-        return -1;
+        if (a.name === "Fasta Parser") return -1;
+        return 1;
       });
     } else if (firstChar === "L") {
       parsersToTry = parsersToTry.sort((a, b) => {
-        if (a.name === "Genbank Parser") return 1;
-        return -1;
+        if (a.name === "Genbank Parser") return -1;
+        return 1;
       });
     } else if (firstChar === "#") {
       parsersToTry = parsersToTry.sort((a, b) => {
-        if (a.name === "GFF Parser") return 1;
-        return -1;
+        if (a.name === "GFF Parser") return -1;
+        return 1;
       });
     } else if (firstChar === "<") {
       parsersToTry = parsersToTry.sort((a, b) => {
-        if (a.name === "XML Parser") return 1;
-        return -1;
+        if (a.name === "XML Parser") return -1;
+        return 1;
       });
     }
-    /* eslint-enable array-callback-return*/
 
-    //pop the LAST parser off the array and try to parse with it, using the modified onFileParsed callback
-    //evaluates to something like:
-    //xmlParser(fileContentString, onFileParsedWrapped)
-    let parser = parsersToTry.pop();
-    parser.fn(fileContentString, onFileParsedWrapped, options);
-    /* eslint-disable no-inner-declarations*/
-
-    function onFileParsedWrapped(resultArray) {
-      if (successfulParsing(resultArray)) {
+    for (const parser of parsersToTry) {
+      let toReturn = await parser.fn(fileContentString, options);
+      if (successfulParsing(toReturn)) {
         //continue on to through the normal flow
-        resultArray.forEach(function(result) {
+        toReturn.forEach(function(result) {
           result.messages.push("Parsed using " + parser.name + ".");
         });
-        onFileParsed(resultArray);
-      } else {
-        //unsuccessful parsing, so try the next parser in the array
-        if (parsersToTry.length) {
-          parser = parsersToTry.pop();
-          parser.fn(fileContentString, onFileParsedWrapped, options); //pop the next parser off the array and try to parse with it, using the modified onFileParsed callback
-        } else {
-          //none of the parsers worked
-          onFileParsed([
-            {
-              messages: [
-                "Unable to parse .seq file as FASTA, genbank, JBEI, or SBOL formats",
-              ],
-              success: false,
-            },
-          ]);
-        }
+        return toReturn;
       }
     }
-    /* eslint-enable no-inner-declarations*/
+
+    //none of the parsers worked
+    return [
+      {
+        messages: [
+          "Unable to parse .seq file as FASTA, genbank, JBEI, or SBOL formats",
+        ],
+        success: false,
+      },
+    ];
   }
 
   //helper function to determine whether or not the parsing was successful or not
@@ -150,10 +133,11 @@ async function anyToJson(fileContentStringOrFileObj, onFileParsed, options) {
   }
 }
 
-export default addPromiseOption(anyToJson);
+export default anyToJson;
 
 function getFileString(file, { emulateBrowser } = {}) {
-  if (typeof window === "undefined" && !emulateBrowser) { //emulate browser is only used for testing purposes
+  if (typeof window === "undefined" && !emulateBrowser) {
+    //emulate browser is only used for testing purposes
     //we're in a node context
     return file;
   }

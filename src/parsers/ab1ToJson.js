@@ -1,24 +1,21 @@
-import createInitialSequence from './utils/createInitialSequence';
-import addPromiseOption from './utils/addPromiseOption';
-import getArrayBufferFromFile from './utils/getArrayBufferFromFile';
+import createInitialSequence from "./utils/createInitialSequence";
+import getArrayBufferFromFile from "./utils/getArrayBufferFromFile";
 
-async function ab1ToJson(fileObj, onFileParsed, options = {}) {
+async function ab1ToJson(fileObj, options = {}) {
   const arrayBuffer = await getArrayBufferFromFile(fileObj);
   const dataview = new DataView(arrayBuffer);
   const converter = new abConverter(dataview);
   const chromatogramData = converter.getTraceData();
-  const returnVal = createInitialSequence(options)
+  const returnVal = createInitialSequence(options);
   returnVal.parsedSequence = {
-      ...returnVal.parsedSequence,
-      sequence: chromatogramData.baseCalls.join(""),
-      chromatogramData
-  }
-  onFileParsed([returnVal]);
+    ...returnVal.parsedSequence,
+    sequence: chromatogramData.baseCalls.join(""),
+    chromatogramData,
+  };
+  return [returnVal];
 }
 
-export default addPromiseOption(ab1ToJson);
-
-
+export default ab1ToJson;
 
 function abConverter(inputArrayBuffer) {
   const dirLocation = inputArrayBuffer.getInt32(26);
@@ -132,7 +129,7 @@ function abConverter(inputArrayBuffer) {
   //   return outString;
   // };
 
-  this.getTagName = inOffset => {
+  this.getTagName = (inOffset) => {
     let name = "";
     for (let loopOffset = inOffset; loopOffset < inOffset + 4; loopOffset++) {
       name += String.fromCharCode(inputArrayBuffer.getInt8(loopOffset));
@@ -183,7 +180,6 @@ function abConverter(inputArrayBuffer) {
   };
 }
 
-
 const tagDict = {
   baseCalls1: { tagName: "PBAS", tagNum: 1, typeToReturn: "getChar" },
   baseCalls2: { tagName: "PBAS", tagNum: 2, typeToReturn: "getChar" },
@@ -194,5 +190,5 @@ const tagDict = {
   colorDataA: { tagName: "DATA", tagNum: 10, typeToReturn: "getShort" },
   colorDataT: { tagName: "DATA", tagNum: 11, typeToReturn: "getShort" },
   colorDataG: { tagName: "DATA", tagNum: 9, typeToReturn: "getShort" },
-  colorDataC: { tagName: "DATA", tagNum: 12, typeToReturn: "getShort" }
+  colorDataC: { tagName: "DATA", tagNum: 12, typeToReturn: "getShort" },
 };

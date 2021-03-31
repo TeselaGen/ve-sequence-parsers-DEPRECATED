@@ -4,7 +4,6 @@
 import bufferpack from "bufferpack";
 import xml2Js from "xml2js";
 import { StringDecoder } from "string_decoder";
-import addPromiseOption from "./utils/addPromiseOption";
 import getArrayBufferFromFile from "./utils/getArrayBufferFromFile";
 import createInitialSequence from "./utils/createInitialSequence";
 import validateSequenceArray from "./utils/validateSequenceArray";
@@ -13,15 +12,9 @@ import { get } from "lodash";
 
 const Buffer = require("buffer/").Buffer;
 
-async function snapgeneToJson(fileObj, onFileParsedUnwrapped, options = {}) {
+async function snapgeneToJson(fileObj, options = {}) {
   /* eslint-enable no-inner-declarations*/
 
-  const onFileParsed = function(sequences, options) {
-    //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
-    onFileParsedUnwrapped(
-      validateSequenceArray(flattenSequenceArray(sequences, options), options)
-    );
-  };
   const returnVal = createInitialSequence(options);
   /* eslint-disable no-inner-declarations*/
   const arrayBuffer = await getArrayBufferFromFile(fileObj);
@@ -160,7 +153,6 @@ async function snapgeneToJson(fileObj, onFileParsedUnwrapped, options = {}) {
       if (description) {
         data.description = description;
       }
-
     } else {
       // # WE IGNORE THE WHOLE BLOCK
       await read(block_size); //we don't do anything with this
@@ -173,7 +165,7 @@ async function snapgeneToJson(fileObj, onFileParsedUnwrapped, options = {}) {
     }
   }
   returnVal.parsedSequence = data;
-  onFileParsed([returnVal]);
+  return validateSequenceArray(flattenSequenceArray([returnVal], options), options);
 }
 
 function getStartAndEndFromRangeString(rangestring) {
@@ -233,7 +225,7 @@ function parseXml(string) {
   });
 }
 
-export default addPromiseOption(snapgeneToJson);
+export default snapgeneToJson;
 
 function dec2bin(dec) {
   return (dec >>> 0).toString(2);

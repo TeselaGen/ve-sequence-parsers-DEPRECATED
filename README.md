@@ -8,7 +8,7 @@
   - [Format Specification](#format-specification)
   - [Usage](#usage)
     - [install](#install)
-    - [jsonToGenbank (same interface as jsonToFasta) (no async required!)](#jsontogenbank-same-interface-as-jsontofasta-no-async-required)
+    - [jsonToGenbank (same interface as jsonToFasta)](#jsontogenbank-same-interface-as-jsontofasta)
     - [anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)](#anytojson-same-interface-as-genbanktojson-fastatojson-xxxxtojson-async-required)
     - [Options (for anyToJson or xxxxToJson)](#options-for-anytojson-or-xxxxtojson)
     - [ab1ToJson](#ab1tojson)
@@ -43,6 +43,7 @@ Use the following exports to convert from a generalized JSON format back to a sp
 ```
 jsonToGenbank
 jsonToFasta
+jsonToBed
 ```
 
 
@@ -96,12 +97,10 @@ or
 
 `yarn add bio-parsers`
 
-### jsonToGenbank (same interface as jsonToFasta) (no async required!)
+### jsonToGenbank (same interface as jsonToFasta)
 ```js
 //To go from json to genbank:
-const jsonToGenbank = require('bio-parsers').jsonToGenbank;
-//or alternatively (if using the package on the front end and you want to keep memory usage low)
-const jsonToGenbank = require('bio-parsers/parsers/jsonToGenbank');
+import { jsonToGenbank } from "bio-parsers"
 //You can pass an optional options object as the second argument. Here are the defaults
 const options = {
   isProtein: false, //by default the sequence will be parsed and validated as type DNA (unless U's instead of T's are found). If isProtein=true the sequence will be parsed and validated as a PROTEIN type (seqData.isProtein === true)
@@ -131,25 +130,20 @@ const genbankString = jsonToGenbank(generalizedJsonFormat, options)
 ### anyToJson (same interface as genbankToJson, fastaToJson, xxxxToJson) (async required)
 
 ```js
-const anyToJson = require('bio-parsers').anyToJson;
-anyToJson(
+import { anyToJson } from "bio-parsers"
+
+//note, anyToJson should be called using an await to allow for file parsing to occur (if a file is being passed)
+const results = await anyToJson(
   stringOrFile, //if ab1 files are being passed in you should pass files only, otherwise strings or files are fine as inputs
-  onFinishedCallback, 
   options //options.fileName (eg "pBad.ab1" or "pCherry.fasta") is important to pass here in order for the parser to!
 ) 
 
-function onFinishedCallback (results) {
-  //we always return an array of results because some files my contain multiple sequences 
-  results[0].success //either true or false 
-  results[0].messages //either an array of strings giving any warnings or errors generated during the parsing process
-  results[0].parsedSequence //this will be the generalized json format as specified above :)
-  //chromatogram data will be here (ab1 only): 
-  results[0].parsedSequence.chromatogramData 
-}
-
-//or use it as a promise! 
-const results = await anyToJson(stringOrFile, options)
-
+//we always return an array of results because some files my contain multiple sequences 
+results[0].success //either true or false 
+results[0].messages //either an array of strings giving any warnings or errors generated during the parsing process
+results[0].parsedSequence //this will be the generalized json format as specified above :)
+//chromatogram data will be here (ab1 only): 
+results[0].parsedSequence.chromatogramData 
 ```
 
 ### Options (for anyToJson or xxxxToJson)
@@ -169,105 +163,85 @@ const options = {
 ### ab1ToJson
 
 ```js
-const ab1ToJson = require('bio-parsers').ab1ToJson;
-ab1ToJson(
+import { ab1ToJson } from "bio-parsers"
+const results = await ab1ToJson(
   //this can be either a browser file  <input type="file" id="input" multiple onchange="ab1ToJson(this.files[0])">
   // or a node file ab1ToJson(fs.readFileSync(path.join(__dirname, './testData/ab1/example1.ab1')));
   file, 
-  onFinishedCallback, 
   options //options.fileName (eg "pBad.ab1" or "pCherry.fasta") is important to pass here in order for the parser to!
 )
 
-function onFinishedCallback (results) {
-  //we always return an array of results because some files my contain multiple sequences 
-  results[0].success //either true or false 
-  results[0].messages //either an array of strings giving any warnings or errors generated during the parsing process
-  results[0].parsedSequence //this will be the generalized json format as specified above :)
-  //chromatogram data will be here (ab1 only): 
-  results[0].parsedSequence.chromatogramData 
-}
-
-
-//or use it as a promise! 
-const results = await ab1ToJson(file, options)
+//we always return an array of results because some files my contain multiple sequences 
+results[0].success //either true or false 
+results[0].messages //either an array of strings giving any warnings or errors generated during the parsing process
+results[0].parsedSequence //this will be the generalized json format as specified above :)
+//chromatogram data will be here (ab1 only): 
+results[0].parsedSequence.chromatogramData 
 ```
 
 ### snapgeneToJson (.dna files) 
 ```js
-//All of the xxxxToJson parsers work like this:
-const snapgeneToJson = require('bio-parsers').snapgeneToJson;
-//or alternatively (if using the package on the front end and you want to keep memory usage low)
-const snapgeneToJson = require('bio-parsers/parsers/snapgeneToJson');
-
+import { snapgeneToJson } from "bio-parsers"
 //file can be either a browser file  <input type="file" id="input" multiple onchange="snapgeneToJson(this.files[0])">
 // or a node file snapgeneToJson(fs.readFileSync(path.join(__dirname, './testData/ab1/example1.ab1')));
-snapgeneToJson(file, function(result) { 
-  console.info(result)
-},options)
+const results = await snapgeneToJson(file,options)
 ```
 
 ### genbankToJson
 
 ```js
-//All of the xxxxToJson parsers work like this:
-const genbankToJson = require('bio-parsers').genbankToJson;
-//or alternatively (if using the package on the front end and you want to keep memory usage low)
-const genbankToJson = require('bio-parsers/parsers/genbankToJson');
+import { genbankToJson } from "bio-parsers"
 
-genbankToJson(string, function(result) {
-  console.info(result)
-  // [
-  //     {
-  //         "messages": [
-  //             "Import Error: Illegal character(s) detected and removed from sequence. Allowed characters are: atgcyrswkmbvdhn",
-  //             "Invalid feature end:  1384 detected for Homo sapiens and set to 1",
-  //         ],
-  //         "success": true,
-  //         "parsedSequence": {
-  //             "features": [
-  //                 {
-  //                     "notes": {
-  //                         "organism": [
-  //                             "Homo sapiens"
-  //                         ],
-  //                         "db_xref": [
-  //                             "taxon:9606"
-  //                         ],
-  //                         "chromosome": [
-  //                             "17"
-  //                         ],
-  //                         "map": [
-  //                             "17q21"
-  //                         ]
-  //                     },
-  //                     "type": "source",
-  //                     "strand": 1,
-  //                     "name": "Homo sapiens",
-  //                     "start": 0,
-  //                     "end": 1
-  //                 }
-  //             ],
-  //             "name": "NP_003623",
-  //             "sequence": "gagaggggggttatccccccttcgtcagtcgatcgtaacgtatcagcagcgcgcgagattttctggcgcagtcag",
-  //             "circular": true,
-  //             "extraLines": [
-  //                 "DEFINITION  contactin-associated protein 1 precursor [Homo sapiens].",
-  //                 "ACCESSION   NP_003623",
-  //                 "VERSION     NP_003623.1  GI:4505463",
-  //                 "DBSOURCE    REFSEQ: accession NM_003632.2",
-  //                 "KEYWORDS    RefSeq."
-  //             ],
-  //             "type": "DNA",
-  //             "size": 925
-  //         }
-  //     }
-  // ]
-}, options)
+const result = genbankToJson(string, options)
 
+console.info(result)
+// [
+//     {
+//         "messages": [
+//             "Import Error: Illegal character(s) detected and removed from sequence. Allowed characters are: atgcyrswkmbvdhn",
+//             "Invalid feature end:  1384 detected for Homo sapiens and set to 1",
+//         ],
+//         "success": true,
+//         "parsedSequence": {
+//             "features": [
+//                 {
+//                     "notes": {
+//                         "organism": [
+//                             "Homo sapiens"
+//                         ],
+//                         "db_xref": [
+//                             "taxon:9606"
+//                         ],
+//                         "chromosome": [
+//                             "17"
+//                         ],
+//                         "map": [
+//                             "17q21"
+//                         ]
+//                     },
+//                     "type": "source",
+//                     "strand": 1,
+//                     "name": "Homo sapiens",
+//                     "start": 0,
+//                     "end": 1
+//                 }
+//             ],
+//             "name": "NP_003623",
+//             "sequence": "gagaggggggttatccccccttcgtcagtcgatcgtaacgtatcagcagcgcgcgagattttctggcgcagtcag",
+//             "circular": true,
+//             "extraLines": [
+//                 "DEFINITION  contactin-associated protein 1 precursor [Homo sapiens].",
+//                 "ACCESSION   NP_003623",
+//                 "VERSION     NP_003623.1  GI:4505463",
+//                 "DBSOURCE    REFSEQ: accession NM_003632.2",
+//                 "KEYWORDS    RefSeq."
+//             ],
+//             "type": "DNA",
+//             "size": 925
+//         }
+//     }
+// ]
 
-
-//or use it as a promise! 
-const results = await genbankToJson(string, options)
 ```
 
 You can see more examples by looking at the tests.

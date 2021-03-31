@@ -9,31 +9,8 @@ import validateSequenceArray from "./utils/validateSequenceArray";
 import splitStringIntoLines from "./utils/splitStringIntoLines.js";
 
 import createInitialSequence from "./utils/createInitialSequence";
-import addPromiseOption from "./utils/addPromiseOption";
 
-function genbankToJson(string, onFileParsedUnwrapped, options) {
-  const onFileParsed = function(_results, options) {
-    //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
-    const results = validateSequenceArray(
-      flattenSequenceArray(_results, options),
-      options
-    );
-    // default sequence json has primers at the top level separate from features, e.g. parsedSequence: { primers: [ {}, {} ], features: [ {}, {} ] }
-    // if options.primersAsFeatures is set to true, primers are included in features with type set to primer
-    if (!options.primersAsFeatures) {
-      for (let i = 0; i < results.length; i++) {
-        if (results[i].success) {
-          results[i].parsedSequence.primers = results[
-            i
-          ].parsedSequence.features.filter((feat) => feat.type === "primer");
-          results[i].parsedSequence.features = results[
-            i
-          ].parsedSequence.features.filter((feat) => feat.type !== "primer");
-        }
-      }
-    }
-    onFileParsedUnwrapped(results);
-  };
+function genbankToJson(string, options) {
   options = options || {};
   const inclusive1BasedStart = options.inclusive1BasedStart;
   const inclusive1BasedEnd = options.inclusive1BasedEnd;
@@ -226,7 +203,27 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     endSeq();
   }
   //call the callback
-  onFileParsed(resultsArray, options);
+
+  //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
+  const results = validateSequenceArray(
+    flattenSequenceArray(resultsArray, options),
+    options
+  );
+  // default sequence json has primers at the top level separate from features, e.g. parsedSequence: { primers: [ {}, {} ], features: [ {}, {} ] }
+  // if options.primersAsFeatures is set to true, primers are included in features with type set to primer
+  if (!options.primersAsFeatures) {
+    for (let i = 0; i < results.length; i++) {
+      if (results[i].success) {
+        results[i].parsedSequence.primers = results[
+          i
+        ].parsedSequence.features.filter((feat) => feat.type === "primer");
+        results[i].parsedSequence.features = results[
+          i
+        ].parsedSequence.features.filter((feat) => feat.type !== "primer");
+      }
+    }
+  }
+  return results;
 
   function endSeq() {
     //do some post processing clean-up
@@ -637,4 +634,4 @@ function getLengthOfWhiteSpaceBeforeStartOfLetters(string) {
   }
 }
 
-export default addPromiseOption(genbankToJson);
+export default genbankToJson;
