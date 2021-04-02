@@ -122,7 +122,6 @@ describe("anyToJson", function() {
       sbolFilePath: "pBbE0c-RFP.xml",
     };
 
-
     const fastaResult = await anyToJson(
       fs.readFileSync(
         path.join(__dirname, "./testData/", options.fastaFilePath),
@@ -133,7 +132,6 @@ describe("anyToJson", function() {
         isProtein: false,
       }
     );
-
 
     const genbankResult = await anyToJson(
       fs.readFileSync(
@@ -146,7 +144,6 @@ describe("anyToJson", function() {
       }
     );
 
-
     const sbolXMLResult = await anyToJson(
       fs.readFileSync(
         path.join(__dirname, "./testData/", options.sbolFilePath),
@@ -157,7 +154,6 @@ describe("anyToJson", function() {
         isProtein: false,
       }
     );
-
 
     //fasta to genbank check
     fastaResult[0].parsedSequence.sequence.should.equal(
@@ -196,7 +192,8 @@ describe("anyToJson", function() {
       fs.readFileSync(
         path.join(__dirname, "./testData/gff/example.gff3"),
         "utf8"
-      )
+      ),
+      { fileName: "./testData/gff/example.gff3" }
     );
 
     result[0].parsedSequence.name.should.equal("P1:B01");

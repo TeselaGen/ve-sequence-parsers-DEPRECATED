@@ -34,7 +34,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
       return snapgeneToJson(fileContentStringOrFileObj, options);
     } else {
       // we want to get the string from the file obj
-      fileContentString = await getFileString(
+      fileContentString = await getUtf8StringFromFile(
         fileContentStringOrFileObj,
         options
       );
@@ -49,26 +49,18 @@ async function anyToJson(fileContentStringOrFileObj, options) {
     return genbankToJson(fileContentString, options);
   } else if (/^(gp)$/.test(ext)) {
     // PROTEIN GENBANK
-    return genbankToJson(fileContentString, options, true);
+    return genbankToJson(fileContentString, { ...options, isProtein: true });
   } else if (/^(xml|rdf)$/.test(ext)) {
     // XML/RDF
-    return xmlParser(fileContentString, options);
+    return xmlParser(fileContentStringOrFileObj, options);
   } else if (/^(gff|gff3)$/.test(ext)) {
     // GFF
-    return gffToJson(fileContentString, options);
+    return gffToJson(fileContentStringOrFileObj, options);
   } else {
     // console.warn(
     //   "TNR: No filename passed to anyToJson so we're going through the list of parsers. Make sure you're passing the filename when using anyToJson!"
     // );
     let parsersToTry = [
-      {
-        fn: gffToJson,
-        name: "GFF Parser",
-      },
-      {
-        fn: xmlParser,
-        name: "XML Parser",
-      },
       {
         fn: genbankToJson,
         name: "Genbank Parser",
@@ -89,16 +81,6 @@ async function anyToJson(fileContentStringOrFileObj, options) {
     } else if (firstChar === "L") {
       parsersToTry = parsersToTry.sort((a, b) => {
         if (a.name === "Genbank Parser") return -1;
-        return 1;
-      });
-    } else if (firstChar === "#") {
-      parsersToTry = parsersToTry.sort((a, b) => {
-        if (a.name === "GFF Parser") return -1;
-        return 1;
-      });
-    } else if (firstChar === "<") {
-      parsersToTry = parsersToTry.sort((a, b) => {
-        if (a.name === "XML Parser") return -1;
         return 1;
       });
     }
@@ -135,11 +117,15 @@ async function anyToJson(fileContentStringOrFileObj, options) {
 
 export default anyToJson;
 
-function getFileString(file, { emulateBrowser } = {}) {
-  if (typeof window === "undefined" && !emulateBrowser) {
+function getUtf8StringFromFile(file, { emulateBrowser } = {}) {
+  if (typeof process === "object" && !emulateBrowser) {
     //emulate browser is only used for testing purposes
     //we're in a node context
-    return file;
+    return Buffer.isBuffer(file)
+      ? file.toString("utf-8")
+      : Buffer.isBuffer(file.buffer)
+      ? file.buffer.toString("utf-8")
+      : file;
   }
   let reader = new window.FileReader();
   reader.readAsText(file, "UTF-8");

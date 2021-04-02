@@ -10,10 +10,15 @@ import splitStringIntoLines from "./utils/splitStringIntoLines.js";
 
 import createInitialSequence from "./utils/createInitialSequence";
 
-function genbankToJson(string, options) {
-  options = options || {};
-  const inclusive1BasedStart = options.inclusive1BasedStart;
-  const inclusive1BasedEnd = options.inclusive1BasedEnd;
+function genbankToJson(string, options = {}) {
+  const {
+    inclusive1BasedStart,
+    inclusive1BasedEnd,
+    //these are also valid options:
+    // primersAsFeatures,
+    // sequenceTypeFromLocus,
+    // isProtein,
+  } = options;
 
   let resultsArray = [];
   let result;
