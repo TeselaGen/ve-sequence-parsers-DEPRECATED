@@ -18,6 +18,7 @@ async function snapgeneToJson(fileObj, options = {}) {
     const arrayBuffer = await getArrayBufferFromFile(fileObj);
 
     let offset = 0;
+    // eslint-disable-next-line no-inner-declarations
     function read(size, fmt) {
       const buffer = Buffer.from(arrayBuffer.slice(offset, size + offset));
       offset += size;
@@ -29,7 +30,7 @@ async function snapgeneToJson(fileObj, options = {}) {
         return buffer;
       }
     }
-
+    // eslint-disable-next-line no-inner-declarations
     async function unpack(size, mode) {
       const buffer = await read(size);
       const unpacked = await bufferpack.unpack(">" + mode, buffer);

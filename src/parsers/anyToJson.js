@@ -29,7 +29,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
       //we will always want to pass the file obj and not the string to ab1
       return ab1ToJson(fileContentStringOrFileObj, options);
     } else if (/^(dna)$/.test(ext)) {
-      // snapgene file
+      // snapgene file (always requires that the full filename be passed in to anyToJson otherwise it won't parse properly)
       //we will always want to pass the file obj and not the string to the snapgene parser because it expects a binary file
       return snapgeneToJson(fileContentStringOrFileObj, options);
     } else {

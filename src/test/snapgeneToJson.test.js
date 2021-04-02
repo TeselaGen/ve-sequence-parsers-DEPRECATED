@@ -12,6 +12,15 @@ chai.use(chaiSubset);
 chai.should();
 
 describe("snapgene file parser", function() {
+  it(`an invalid file should return an unsuccessful response`, async () => {
+    const results = await snapgeneToJson(
+      { zoink: "berg" },
+      {
+        fileName: "GFPuv_025_fwdfeature_linear.dna",
+      }
+    );
+    results[0].success.should.equal(false);
+  });
   it("linear dna w/feature on forward strand", async function() {
     const fileObj = fs.readFileSync(
       path.join(__dirname, "./testData/dna/GFPuv_025_fwdfeature_linear.dna")
