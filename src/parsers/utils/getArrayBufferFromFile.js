@@ -1,5 +1,7 @@
+import isBrowser from "./isBrowser";
+
 export default function getArrayBufferFromFile(file) {
-  if (typeof process === 'object') { //node environment
+  if (!isBrowser) { //node environment
     return toArrayBuffer(Buffer.isBuffer(file) ? file : file.buffer || file);
   }
 

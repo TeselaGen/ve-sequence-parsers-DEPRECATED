@@ -5,6 +5,7 @@ import extractFileExtension from "./utils/extractFileExtension.js";
 import snapgeneToJson from "./snapgeneToJson";
 import ab1ToJson from "./ab1ToJson";
 import gffToJson from "./gffToJson";
+import isBrowser from "./utils/isBrowser";
 
 /**
  * takes in file content string and its file name and determines what parser it needs to be sent to.
@@ -118,7 +119,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
 export default anyToJson;
 
 function getUtf8StringFromFile(file, { emulateBrowser } = {}) {
-  if (typeof process === "object" && !emulateBrowser) {
+  if (!isBrowser && !emulateBrowser) {
     //emulate browser is only used for testing purposes
     //we're in a node context
     return Buffer.isBuffer(file)
