@@ -410,7 +410,7 @@ ORIGIN
     });
   });
 
-  it("parses a gb with features of type primer, outputs json w/primers at top level by default", function() {
+  it("parses a gb with features of type primer_bind, outputs json w/primers at top level by default", function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/testing_primers.gb"),
       "utf8"
@@ -441,7 +441,7 @@ ORIGIN
     result[0].parsedSequence.primers.should.containSubset([
       {
         notes: {},
-        type: "primer",
+        type: "primer_bind",
         strand: 1,
         name: "primer1",
         start: 5,
@@ -449,7 +449,7 @@ ORIGIN
       },
       {
         notes: {},
-        type: "primer",
+        type: "primer_bind",
         strand: 1,
         name: "primer2",
         start: 17,
@@ -462,7 +462,7 @@ ORIGIN
     });
   });
 
-  it("parses a gb with features of type primer, outputs json w/primers as features of type primer because primersAsFeatures = true", function() {
+  it("parses a gb with features of type primer_bind, outputs json w/primers as features of type primer_bind because primersAsFeatures = true", function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/testing_primers.gb"),
       "utf8"
@@ -483,7 +483,7 @@ ORIGIN
       },
       {
         notes: {},
-        type: "primer",
+        type: "primer_bind",
         strand: 1,
         name: "primer1",
         start: 5,
@@ -499,7 +499,7 @@ ORIGIN
       },
       {
         notes: {},
-        type: "primer",
+        type: "primer_bind",
         strand: 1,
         name: "primer2",
         start: 17,
@@ -512,7 +512,7 @@ ORIGIN
     });
   });
 
-  it("parses a multi-seq gb with features of type primer, outputs json w/primers at top level by default", function() {
+  it("parses a multi-seq gb with features of type primer_bind, outputs json w/primers at top level by default", function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/testing_primers_multiseq.gb"),
       "utf8"
@@ -530,7 +530,7 @@ ORIGIN
     });
   });
 
-  it("parses a multi-seq gb with features of type primer, outputs json w/primers as features of type primer because primersAsFeatures = true",  function() {
+  it("parses a multi-seq gb with features of type primer_bind, outputs json w/primers as features of type primer_bind because primersAsFeatures = true",  function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/testing_primers_multiseq.gb"),
       "utf8"

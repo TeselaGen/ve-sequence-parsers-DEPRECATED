@@ -209,6 +209,13 @@ export default function validateSequence(sequence, options = {}) {
     }
     let invalidFeatureType;
     if (
+      feature.type &&
+      typeof feature.type === "string" &&
+      feature.type.toLowerCase() === "primer"
+    ) {
+      feature.type = "primer_bind";
+    }
+    if (
       !feature.type ||
       typeof feature.type !== "string" ||
       !FeatureTypes.some(function(featureType) {

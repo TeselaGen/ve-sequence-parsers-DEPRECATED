@@ -411,7 +411,7 @@ describe("genbank exporter/parser conversion", function() {
 
     result[0].parsedSequence.primers.should.containSubset([
       {
-        type: "primer",
+        type: "primer_bind",
         strand: 1,
         name: "primer_to_export",
         start: 5,

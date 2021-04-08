@@ -50,7 +50,7 @@
     "nwb": "^0.23.0",
     "prettier": "^1.16.4",
     "ve-range-utils": "^2.5.9",
-    "ve-sequence-utils": "5.0.0"
+    "ve-sequence-utils": "5.1.0"
   },
   "peerDependencies": {
     "ve-range-utils": "*",

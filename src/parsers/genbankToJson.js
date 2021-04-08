@@ -216,18 +216,27 @@ function genbankToJson(string, options = {}) {
   );
   // default sequence json has primers at the top level separate from features, e.g. parsedSequence: { primers: [ {}, {} ], features: [ {}, {} ] }
   // if options.primersAsFeatures is set to true, primers are included in features with type set to primer
-  if (!options.primersAsFeatures) {
-    for (let i = 0; i < results.length; i++) {
-      if (results[i].success) {
-        results[i].parsedSequence.primers = results[
-          i
-        ].parsedSequence.features.filter((feat) => feat.type === "primer");
-        results[i].parsedSequence.features = results[
-          i
-        ].parsedSequence.features.filter((feat) => feat.type !== "primer");
+
+  results.forEach((result) => {
+    if (result.success) {
+      const sequence = result.parsedSequence;
+      sequence.features.forEach((feat) => {
+        if (feat.type === "primer") {
+          feat.type = "primer_bind";
+        }
+      });
+
+      if (!options.primersAsFeatures) {
+        sequence.primers = sequence.features.filter(
+          (feat) => feat.type === "primer_bind"
+        );
+        sequence.features = sequence.features.filter(
+          (feat) => feat.type !== "primer_bind"
+        );
       }
     }
-  }
+  });
+
   return results;
 
   function endSeq() {
