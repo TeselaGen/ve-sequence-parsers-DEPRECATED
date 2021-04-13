@@ -407,6 +407,7 @@ describe("genbank exporter/parser conversion", function() {
       },
       features: {},
     });
+    exportedGenbankString.should.include("primer_bind");
     const result = parseGenbank(exportedGenbankString);
 
     result[0].parsedSequence.primers.should.containSubset([

@@ -229,7 +229,9 @@ function featureNoteInDataToGenbankString(name, value) {
 
 function featureToGenbankString(feat, options) {
   const lines = [];
-
+  if (feat.type === "primer") {
+    feat.type = "primer_bind";
+  }
   const line =
     "     " +
     StringUtil.rpad(feat.type || "misc_feature", " ", options.featurePadLength);
