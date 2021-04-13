@@ -29,7 +29,8 @@ describe("genbank exporter/parser conversion", function() {
 
     assert(string.indexOf(proteinSequence) !== -1);
     assert(string.indexOf("10 aa            linear") !== -1);
-    assert(string.indexOf("misc_feature       2..10") !== -1);
+    console.log(`string:`,string)
+    assert(string.indexOf("misc_feature    2..10") !== -1);
     const result = parseGenbank(string);
 
     result[0].parsedSequence.proteinSequence.should.equal(proteinSequence);

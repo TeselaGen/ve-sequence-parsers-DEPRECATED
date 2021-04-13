@@ -102,9 +102,6 @@ export default function(_serSeq, options) {
 
     serSeq.features = map(serSeq.features).concat(
       flatMap(pragmasAndTypes, ({ pragma, type }) => {
-        if (type.length > longestFeatureTypeLength)
-          longestFeatureTypeLength = type.length;
-
         return flatMap(serSeq[type], (ann) => {
           if (!isObject(ann)) {
             return [];
@@ -119,6 +116,11 @@ export default function(_serSeq, options) {
         });
       })
     );
+    serSeq.features.forEach(({ type }) => {
+      if (type && type.length > longestFeatureTypeLength) {
+        longestFeatureTypeLength = type.length;
+      }
+    });
 
     let printedFeatureHeader;
     each(serSeq.features, function(feat, index) {

@@ -1,5 +1,5 @@
 export default [
-  { //primers don't need a pragma because they already have a feature type of primer
+  { //primers don't need a pragma because they already have a feature type of primer_bind
     type: "primers"
   },
   {
