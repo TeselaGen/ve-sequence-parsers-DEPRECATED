@@ -676,21 +676,20 @@ ORIGIN
     });
   });
 
-  it("will keep U base pairs in Oligo sequences", () => {
+  it("will convert U base pairs to T", () => {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/genbankWithU.gb"),
       "utf8"
     );
     const res = genbankToJson(
       string,
-
-      { isOligo: true }
     );
 
     res.should.be.an("array");
     res[0].success.should.be.true;
     res[0].parsedSequence.features.length.should.equal(1);
-    expect(res[0].parsedSequence.sequence).toContain("u");
+    expect(res[0].parsedSequence.sequence).toContain("t");
+    expect(res[0].parsedSequence.sequence).not.toContain("u");
   });
 });
 // const string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");

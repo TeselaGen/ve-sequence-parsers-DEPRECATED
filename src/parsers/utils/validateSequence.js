@@ -8,7 +8,6 @@ import {
 } from "ve-sequence-utils";
 import { upperFirst } from "lodash";
 import pragmasAndTypes from "./pragmasAndTypes.js";
-import parseUracilFeatures from "./parseUracilFeatures.js";
 
 //validation checking
 /**
@@ -22,7 +21,6 @@ import parseUracilFeatures from "./parseUracilFeatures.js";
 export default function validateSequence(sequence, options = {}) {
   let {
     isProtein,
-    isOligo,
     guessIfProtein,
     guessIfProteinOptions,
     reformatSeqName,
@@ -88,17 +86,13 @@ export default function validateSequence(sequence, options = {}) {
     }
     sequence.proteinSize = sequence.proteinSequence.length;
   } else {
-    if (isOligo) {
-      sequence.type = "DNA";
+    //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
+    const temp = sequence.sequence;
+    sequence.sequence = sequence.sequence.replace(/u/gi, "t");
+    if (temp !== sequence.sequence) {
+      sequence.type = "RNA";
     } else {
-      //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
-      const newSeq = parseUracilFeatures(sequence.sequence, sequence.features);
-      if (newSeq !== sequence.sequence) {
-        sequence.type = "RNA";
-        sequence.sequence = newSeq;
-      } else {
-        sequence.type = "DNA";
-      }
+      sequence.type = "DNA";
     }
 
     validChars = filterSequenceString(sequence.sequence, additionalValidChars);

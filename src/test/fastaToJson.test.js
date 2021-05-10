@@ -148,17 +148,4 @@ gtagagtagagagagg
     );
     result[0].parsedSequence.circular.should.equal(true)
   });
-
-  it("converts u bps to t and adds custom feature", async function() {
-    const result = await fastaToJson(
-      `>mySeq1
-gtaguagtaguagagagg
-      `
-    );
-    result[0].parsedSequence.features.length.should.equal(2)
-        const featureOne = result[0].parsedSequence.features.some(f => f.start === 4 && f.end === 4 && f.name === "tg_uracil" && f.type === "misc_feature")
-        const featureTwo = result[0].parsedSequence.features.some(f => f.start === 10 && f.end === 10 && f.name === "tg_uracil" && f.type === "misc_feature")
-        expect(featureOne).toBe(true)
-        expect(featureTwo).toBe(true)
-  })
 });
