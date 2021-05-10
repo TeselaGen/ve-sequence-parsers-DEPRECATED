@@ -1,8 +1,17 @@
-import jsonToFasta from '../parsers/jsonToFasta';
-import chai from 'chai';
+import jsonToFasta from "../parsers/jsonToFasta";
+import chai from "chai";
 
 chai.should();
 describe("fasta exporter/parser conversion", function() {
+  it(`should export a protein sequence by default if the sequence isProtein`, () => {
+    const string = jsonToFasta({
+      sequence: "augaugcayyunmngyunuuy",
+      proteinSequence: "MMHLRLF",
+      isProtein: true,
+    });
+    string.should.equal(`>Untitled Sequence||7|linear
+MMHLRLF`);
+  });
   it("should correctly make a fasta file", function() {
     // const breakingJSON = require('./testData/json/breakingJSON_stringified')
     const breakingJSON = require("./testData/json/1.json");
