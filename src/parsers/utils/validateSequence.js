@@ -21,6 +21,7 @@ import pragmasAndTypes from "./pragmasAndTypes.js";
 export default function validateSequence(sequence, options = {}) {
   let {
     isProtein,
+    isOligo,
     guessIfProtein,
     guessIfProteinOptions,
     reformatSeqName,
@@ -88,7 +89,11 @@ export default function validateSequence(sequence, options = {}) {
   } else {
     //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
     const temp = sequence.sequence;
-    sequence.sequence = sequence.sequence.replace(/u/gi, "t");
+    if (!isOligo) {
+      sequence.sequence = sequence.sequence.replace(/u/gi, (u) =>
+        u === "U" ? "T" : "t"
+      );
+    }
     if (temp !== sequence.sequence) {
       sequence.type = "RNA";
     } else {

@@ -13,7 +13,7 @@ chai.use(require("chai-things"));
 chai.should();
 
 describe("genbankToJson tests", function() {
-  it(`correctly handles a multi-line LOCUS and parses the sequence as circular`,  () => {
+  it(`correctly handles a multi-line LOCUS and parses the sequence as circular`, () => {
     const string = `LOCUS       Tt2-PstI-SphI-rev(dna)        7628 bp    DNA     circular
     04-FEB-2021
 DEFINITION  [Heavy]
@@ -51,7 +51,7 @@ ORIGIN
     result[0].parsedSequence.type.should.equal("DNA");
     // result[0].parsedSequence.isProtein.should.be.
   });
-  it(`parses out the DIVISION property correctly https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html#GenBankDivisionB`,  () => {
+  it(`parses out the DIVISION property correctly https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html#GenBankDivisionB`, () => {
     const string = `LOCUS       ProteinSeq          10 bp    DNA  linear  PLN  04-MAR-2019
 ORIGIN
     1 gtagaggccg
@@ -67,7 +67,7 @@ ORIGIN
     const gbString = jsonToGenbank(result[0].parsedSequence);
     assert(gbString.includes(" PLN "));
   });
-  it(`does not parse a dna file with the name ProteinSeq into a protein `,  () => {
+  it(`does not parse a dna file with the name ProteinSeq into a protein `, () => {
     const string = `LOCUS       ProteinSeq          10 bp    DNA  linear    04-MAR-2019
 ORIGIN
     1 gtagaggccg
@@ -79,7 +79,7 @@ ORIGIN
     result[0].parsedSequence.sequence.should.equal("gtagaggccg");
     result[0].parsedSequence.size.should.equal(10);
   });
-  it(`parses a protein genbank file into a protein sequence json by default `,  () => {
+  it(`parses a protein genbank file into a protein sequence json by default `, () => {
     const string = `LOCUS       Untitled_Sequence          10 aa  linear    04-MAR-2019
 ORIGIN
     1 MTCAGRRAYL
@@ -530,7 +530,7 @@ ORIGIN
     });
   });
 
-  it("parses a multi-seq gb with features of type primer_bind, outputs json w/primers as features of type primer_bind because primersAsFeatures = true",  function() {
+  it("parses a multi-seq gb with features of type primer_bind, outputs json w/primers as features of type primer_bind because primersAsFeatures = true", function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/testing_primers_multiseq.gb"),
       "utf8"
@@ -548,7 +548,7 @@ ORIGIN
     });
   });
 
-  it("parses pj5_00001 aka testGenbankFile.gb correctly",  function() {
+  it("parses pj5_00001 aka testGenbankFile.gb correctly", function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/testGenbankFile.gb"),
       "utf8"
@@ -573,7 +573,7 @@ ORIGIN
     });
     result[0].parsedSequence.sequence.length.should.equal(5299);
   });
-  it("parses a .gb file where the feature name is a number",  function() {
+  it("parses a .gb file where the feature name is a number", function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/featNameIsNumber.gb"),
       "utf8"
@@ -583,7 +583,7 @@ ORIGIN
     result.should.be.an("array");
     result[0].success.should.be.true;
   });
-  it('takes in a snapgene exported sequence and sets its name correctly (instead of "Export" it will use the filename)',  function() {
+  it('takes in a snapgene exported sequence and sets its name correctly (instead of "Export" it will use the filename)', function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/CCR5_multifrag_insert1.gb"),
       "utf8"
@@ -596,7 +596,7 @@ ORIGIN
     result[0].success.should.be.true;
     result[0].parsedSequence.name.should.equal("CCR5_multifrag_insert1");
   });
-  it("if splitLocations=true, it parses a .gb file with joined features (aka a single feature with multiple locations) and splits them into multiple individaul features",  function() {
+  it("if splitLocations=true, it parses a .gb file with joined features (aka a single feature with multiple locations) and splits them into multiple individaul features", function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/RTO4_16460_joined_feature.gb"),
       "utf8"
@@ -606,7 +606,7 @@ ORIGIN
     result[0].success.should.be.true;
     result[0].parsedSequence.features.length.should.equal(12);
   });
-  it("parses a .gb file with tags on parts",  function() {
+  it("parses a .gb file with tags on parts", function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/genbank/gbFileWithTagsOnParts.gb"),
       "utf8"
@@ -681,15 +681,27 @@ ORIGIN
       path.join(__dirname, "./testData/genbank/genbankWithU.gb"),
       "utf8"
     );
-    const res = genbankToJson(
-      string,
-    );
+    const res = genbankToJson(string);
 
     res.should.be.an("array");
     res[0].success.should.be.true;
     res[0].parsedSequence.features.length.should.equal(1);
     expect(res[0].parsedSequence.sequence).toContain("t");
     expect(res[0].parsedSequence.sequence).not.toContain("u");
+  });
+
+  it("will keep U base pairs in Oligo sequences", () => {
+    const string = fs.readFileSync(
+      path.join(__dirname, "./testData/genbank/genbankWithU.gb"),
+      "utf8"
+    );
+    const res = genbankToJson(string, { isOligo: true });
+
+    res.should.be.an("array");
+    res[0].success.should.be.true;
+    res[0].parsedSequence.features.length.should.equal(1);
+    expect(res[0].parsedSequence.sequence).toContain("u");
+    expect(res[0].parsedSequence.sequence).toContain("t");
   });
 });
 // const string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
