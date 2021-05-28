@@ -125,11 +125,20 @@ function genbankToJson(string, options = {}) {
           endSeq();
           break;
         case genbankAnnotationKey.DEFINITION_TAG:
+          debugger;
           line = line.replace(/DEFINITION/, "");
           line = line.trim();
           if (result.parsedSequence) {
-            result.parsedSequence.definition = line;
-            result.parsedSequence.description = line;
+            if (result.parsedSequence.definition) {
+              result.parsedSequence.definition += " " + line;
+            } else {
+              result.parsedSequence.definition = line;
+            }
+            if (result.parsedSequence.description) {
+              result.parsedSequence.description += " " + line;
+            } else {
+              result.parsedSequence.description = line;
+            }
           } else {
             throw new Error(
               "no sequence yet created upon which to extract an extra line!"

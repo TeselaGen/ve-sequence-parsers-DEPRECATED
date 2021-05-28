@@ -13,7 +13,44 @@ chai.use(require("chai-things"));
 chai.should();
 
 describe("genbankToJson tests", function() {
-  it(`correctly handles a multi-line LOCUS and parses the sequence as circular`, () => {
+  it(`correctly handles a multi-line DEFINITION converting it to description`,  () => {
+    const string = `LOCUS       Tt2-PstI-SphI-rev(dna)        7628 bp    DNA     circular
+    04-FEB-2021
+DEFINITION  [Heavy] lalalal 
+            more description here
+            and still more
+ACCESSION   Tt2-PstI-SphI-rev(dna)
+VERSION     Tt2-PstI-SphI-rev(dna).0
+KEYWORDS    .
+SOURCE      Homo sapiens
+ORGANISM  Homo sapiens
+    .
+COMMENT     Chain:Heavy
+    Numbering:Kabat
+    AnnotationCategory:VREGION
+    Plasmid: pAETEST
+    ClonedAnnotationCategory:VREGION
+FEATURES             Location/Qualifiers
+source          1..76
+             /chain_orf="1"
+             /chain_strand="+"
+             /inference="Antibody-Extractor"
+             /numbering="Kabat"
+             /plasmid="pAETEST"
+             /lab_host="Escherichia coli"
+             /mol_type="other DNA"
+             /organism="Homo sapiens"
+             /db_xref="taxon:9606"
+ORIGIN
+1 tcgcgcgttt cggtgatgac ggtgaaaacc tctgacacat gcagctcccg gagacggtca
+61 cagcttgtct gtaagcggat gccgggagca gacaagcccg tcagggcgcg tcagcgggtg
+121 ttggcgggtg tcggggctgg cttaactatg cggcatcaga gcagattgta ctgagagtgc
+//
+`;
+    const result = genbankToJson(string);
+    result[0].parsedSequence.description.should.equal(`[Heavy] lalalal more description here and still more`);
+  });
+  it(`correctly handles a multi-line LOCUS and parses the sequence as circular`,  () => {
     const string = `LOCUS       Tt2-PstI-SphI-rev(dna)        7628 bp    DNA     circular
     04-FEB-2021
 DEFINITION  [Heavy]
