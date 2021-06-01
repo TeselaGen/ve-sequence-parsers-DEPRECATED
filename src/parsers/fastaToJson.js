@@ -10,7 +10,6 @@ import validateSequenceArray from "./utils/validateSequenceArray";
  */
 
 function fastaToJson(fileString, options) {
-  console.log(`options:`,JSON.stringify(options,null,4))
   let resultArray = [];
   let result = null;
   try {
