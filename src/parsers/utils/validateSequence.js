@@ -164,15 +164,14 @@ export default function validateSequence(sequence, options = {}) {
       !areNonNegativeIntegers([feature.end]) ||
       feature.end > sequence.size - (inclusive1BasedEnd ? 0 : 1)
     ) {
+      feature.end = Math.max(sequence.size - 1, inclusive1BasedEnd ? 0 : 1);
       response.messages.push(
         "Invalid feature end:  " +
           feature.end +
           " detected for " +
           feature.name +
-          " and set to 1"
-      ); //setting it to 0 internally, but users will see it as 1
-      feature.end = Math.max(sequence.size - 1, inclusive1BasedEnd ? 0 : 1);
-      // feature.end = 0;
+          " and set to " + (feature.end + 1)
+      );
     }
 
     if (
