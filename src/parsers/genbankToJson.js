@@ -125,7 +125,6 @@ function genbankToJson(string, options = {}) {
           endSeq();
           break;
         case genbankAnnotationKey.DEFINITION_TAG:
-          debugger;
           line = line.replace(/DEFINITION/, "");
           line = line.trim();
           if (result.parsedSequence) {
@@ -401,9 +400,11 @@ function genbankToJson(string, options = {}) {
         //the last line was a note
         if (currentFeatureNote) {
           //append to the currentFeatureNote
+          // only trim file formatting spaces (i.e. the left ones)
+          // spaces on the right are necessary (e.g. spacing between words, etc.)
           currentFeatureNote[
             currentFeatureNote.length - 1
-          ] += line.trim().replace(/"/g, "");
+          ] += line.trimLeft().replace(/"/g, "");
         }
         lastLineWasLocation = false;
       }
@@ -498,7 +499,9 @@ function genbankToJson(string, options = {}) {
   function parseFeatureNote(line) {
     let newLine, lineArr;
 
-    newLine = line.trim();
+    // only trim file formatting spaces (i.e. the left ones)
+    // spaces on the right are necessary (e.g. spacing between words, etc.)
+    newLine = line.trimLeft();
     newLine = newLine.replace(/^\/|"$/g, "");
     lineArr = newLine.split(/="|=/);
 
