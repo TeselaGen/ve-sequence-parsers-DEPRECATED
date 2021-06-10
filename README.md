@@ -62,27 +62,27 @@ const generalizedJsonFormat = {
       "gTrace": [], //same as cTrace but for g
       "cTrace": [0,0,0,1,3,5,11,24,56,68,54,30,21,3,1,4,1,0,0, ...etc], //heights of the curve spaced 1 per x position (aka if the cTrace.length === 1000, then the max basePos can be is 1000)
       "basePos": [33, 46, 55, ...etc], //x position of the bases (can be unevenly spaced)
-      "baseCalls": ["A","T", ...etc],
+      "baseCalls": ["A", "T", ...etc],
       "qualNums": [],
     },
-    "features" : [
+    "features": [
         {
-            "name" : "anonymous feature",
-            "type" : "misc_feature",
-            "id" : "5590c1978979df000a4f02c7", //Must be a unique id. If no id is provided, we'll autogenerate one for you
-            "start" : 1,
-            "end" : 3,
-            "strand" : 1,
-            "notes" : {},
+            "name": "anonymous feature",
+            "type": "misc_feature",
+            "id": "5590c1978979df000a4f02c7", //Must be a unique id. If no id is provided, we'll autogenerate one for you
+            "start": 1,
+            "end": 3,
+            "strand": 1,
+            "notes": {},
         },
         {
-            "name" : "coding region 1",
-            "type" : "CDS",
-            "id" : "5590c1d88979df000a4f02f5",
-            "start" : 12,
-            "end" : 9,
-            "strand" : -1,
-            "notes" : {},
+            "name": "coding region 1",
+            "type": "CDS",
+            "id": "5590c1d88979df000a4f02f5",
+            "start": 12,
+            "end": 9,
+            "strand": -1,
+            "notes": {},
         }
     ],
 }
