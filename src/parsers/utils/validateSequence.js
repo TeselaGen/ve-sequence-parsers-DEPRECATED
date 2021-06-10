@@ -4,7 +4,7 @@ import NameUtils from "./NameUtils.js";
 import {
   filterAminoAcidSequenceString,
   filterSequenceString,
-  guessIfSequenceIsDnaAndNotProtein
+  guessIfSequenceIsDnaAndNotProtein,
 } from "ve-sequence-utils";
 import { upperFirst } from "lodash";
 import pragmasAndTypes from "./pragmasAndTypes.js";
@@ -21,16 +21,17 @@ import pragmasAndTypes from "./pragmasAndTypes.js";
 export default function validateSequence(sequence, options = {}) {
   let {
     isProtein,
+    isOligo,
     guessIfProtein,
     guessIfProteinOptions,
     reformatSeqName,
     inclusive1BasedStart,
     inclusive1BasedEnd,
-    additionalValidChars
+    additionalValidChars,
   } = options;
   const response = {
     validatedAndCleanedSequence: {},
-    messages: []
+    messages: [],
   };
   if (!sequence || typeof sequence !== "object") {
     throw new Error("Invalid sequence");
@@ -87,11 +88,14 @@ export default function validateSequence(sequence, options = {}) {
     sequence.proteinSize = sequence.proteinSequence.length;
   } else {
     //todo: this logic won't catch every case of RNA, so we should probably handle RNA conversion at another level..
-    let newSeq = sequence.sequence.replace(/u/g, "t");
-    newSeq = newSeq.replace(/U/g, "T");
-    if (newSeq !== sequence.sequence) {
+    const temp = sequence.sequence;
+    if (!isOligo) {
+      sequence.sequence = sequence.sequence.replace(/u/gi, (u) =>
+        u === "U" ? "T" : "t"
+      );
+    }
+    if (temp !== sequence.sequence) {
       sequence.type = "RNA";
-      sequence.sequence = newSeq;
     } else {
       sequence.type = "DNA";
     }
@@ -160,15 +164,14 @@ export default function validateSequence(sequence, options = {}) {
       !areNonNegativeIntegers([feature.end]) ||
       feature.end > sequence.size - (inclusive1BasedEnd ? 0 : 1)
     ) {
+      feature.end = Math.max(sequence.size - 1, inclusive1BasedEnd ? 0 : 1);
       response.messages.push(
         "Invalid feature end:  " +
           feature.end +
           " detected for " +
           feature.name +
-          " and set to 1"
-      ); //setting it to 0 internally, but users will see it as 1
-      feature.end = Math.max(sequence.size - 1, inclusive1BasedEnd ? 0 : 1);
-      // feature.end = 0;
+          " and set to " + (feature.end + 1)
+      );
     }
 
     if (
@@ -203,6 +206,13 @@ export default function validateSequence(sequence, options = {}) {
       feature.strand = 1;
     }
     let invalidFeatureType;
+    if (
+      feature.type &&
+      typeof feature.type === "string" &&
+      feature.type.toLowerCase() === "primer"
+    ) {
+      feature.type = "primer_bind";
+    }
     if (
       !feature.type ||
       typeof feature.type !== "string" ||

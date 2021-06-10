@@ -2,7 +2,7 @@ LOCUS       testing_primers          27 bp    DNA     linear    25-JUL-2019
       FEATURES             Location/Qualifiers
            misc_feature    2..4
                            /label="feature1"
-           primer          6..10
+           primer_bind     6..10
                            /label="primer1"
            misc_feature    12..16
                            /label="feature2"

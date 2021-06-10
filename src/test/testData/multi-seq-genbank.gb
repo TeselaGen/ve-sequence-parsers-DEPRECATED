@@ -4,7 +4,13 @@ ORIGIN
        61 GCCCGCGTGG ACGCTCTCGC CTGAGCGCCG CGGACTAGCC CGGGTGGCC
 //
 LOCUS       sequence2                171 bp                                   
-ORIGIN      
+FEATURES             Location/Qualifiers
+     gene            2812..915
+                     /label=RFP cassette
+                     /note="GENE [pBbE0k-RFP]"
+                     /note="GENE GENE [pBbE0k-RFP]"
+                     /gene="RFP cassette"  
+ORIGIN    
         1 CAGTCCGGCA GCGCCGGGGT TAAGCGGCCC AAGTAAACGT AGCGCAGCGA TCGGCGCCGG
        61 AGATTCGCGA ACCCGACACT CCGCGCCGCC CGCCGGCCAG GACCCGCGGC GCGATCGCGG
       121 CGCCGCGCTA CAGCCAGCCT CACTGGCGCG CGGGCGAGCG CACGGGCGCT C

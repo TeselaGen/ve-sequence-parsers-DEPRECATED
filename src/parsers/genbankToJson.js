@@ -9,32 +9,16 @@ import validateSequenceArray from "./utils/validateSequenceArray";
 import splitStringIntoLines from "./utils/splitStringIntoLines.js";
 
 import createInitialSequence from "./utils/createInitialSequence";
-import addPromiseOption from "./utils/addPromiseOption";
 
-function genbankToJson(string, onFileParsedUnwrapped, options) {
-  const onFileParsed = function(sequences, options) {
-    //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
-    const sequenceData = validateSequenceArray(
-      flattenSequenceArray(sequences, options),
-      options
-    );
-    // default sequence json has primers at the top level separate from features, e.g. parsedSequence: { primers: [ {}, {} ], features: [ {}, {} ] }
-    // if options.primersAsFeatures is set to true, primers are included in features with type set to primer
-    if (!options.primersAsFeatures) {
-      for (let i = 0; i < sequenceData.length; i++) {
-        sequenceData[i].parsedSequence.primers = sequenceData[
-          i
-        ].parsedSequence.features.filter(feat => feat.type === "primer");
-        sequenceData[i].parsedSequence.features = sequenceData[
-          i
-        ].parsedSequence.features.filter(feat => feat.type !== "primer");
-      }
-    }
-    onFileParsedUnwrapped(sequenceData);
-  };
-  options = options || {};
-  const inclusive1BasedStart = options.inclusive1BasedStart;
-  const inclusive1BasedEnd = options.inclusive1BasedEnd;
+function genbankToJson(string, options = {}) {
+  const {
+    inclusive1BasedStart,
+    inclusive1BasedEnd,
+    //these are also valid options:
+    // primersAsFeatures,
+    // sequenceTypeFromLocus,
+    // isProtein,
+  } = options;
 
   let resultsArray = [];
   let result;
@@ -61,9 +45,9 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     BASE_COUNT_TAG: "BASE COUNT",
     //CONTIG_TAG: "CONTIG"
     ORIGIN_TAG: "ORIGIN",
-    END_SEQUENCE_TAG: "//"
+    END_SEQUENCE_TAG: "//",
   };
-
+  let hasFoundLocus = false;
   let featureLocationIndentation;
   try {
     const lines = splitStringIntoLines(string);
@@ -72,7 +56,6 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     if (lines === null) {
       addMessage("Import Error: Sequence file is empty");
     }
-    let hasFoundLocus = false;
 
     lines.some(function(line) {
       if (line === null) {
@@ -115,8 +98,12 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
 
       switch (LINETYPE) {
         case genbankAnnotationKey.LOCUS_TAG:
-          hasFoundLocus = true;
-          parseLocus(line, key, val);
+          if (hasFoundLocus) {
+            //here we concatenate the locus lines together
+            line = hasFoundLocus + line;
+          }
+          parseLocus(line);
+          hasFoundLocus = line;
           break;
         case genbankAnnotationKey.FEATURES_TAG:
           //If no location is specified, exclude feature and return messages
@@ -141,8 +128,16 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
           line = line.replace(/DEFINITION/, "");
           line = line.trim();
           if (result.parsedSequence) {
-            result.parsedSequence.definition = line;
-            result.parsedSequence.description = line;
+            if (result.parsedSequence.definition) {
+              result.parsedSequence.definition += " " + line;
+            } else {
+              result.parsedSequence.definition = line;
+            }
+            if (result.parsedSequence.description) {
+              result.parsedSequence.description += " " + line;
+            } else {
+              result.parsedSequence.description = line;
+            }
           } else {
             throw new Error(
               "no sequence yet created upon which to extract an extra line!"
@@ -207,24 +202,57 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     console.error("Error trying to parse file as .gb:", e);
     result = {
       success: false,
-      messages: ["Import Error: Invalid File"]
+      messages: ["Import Error: Invalid File"],
     };
   }
 
   //catch the case where we've successfully started a sequence and parsed it, but endSeq isn't called correctly
-  if (result.success && resultsArray[resultsArray.length - 1] !== result) {
+  if (
+    !result ||
+    (result.success && resultsArray[resultsArray.length - 1] !== result)
+  ) {
     //current result isn't in resultsArray yet
     //so we call endSeq here
     endSeq();
   }
   //call the callback
-  onFileParsed(resultsArray, options);
+
+  //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
+  const results = validateSequenceArray(
+    flattenSequenceArray(resultsArray, options),
+    options
+  );
+  // default sequence json has primers at the top level separate from features, e.g. parsedSequence: { primers: [ {}, {} ], features: [ {}, {} ] }
+  // if options.primersAsFeatures is set to true, primers are included in features with type set to primer
+
+  results.forEach((result) => {
+    if (result.success) {
+      const sequence = result.parsedSequence;
+      sequence.features.forEach((feat) => {
+        if (feat.type === "primer") {
+          feat.type = "primer_bind";
+        }
+      });
+
+      if (!options.primersAsFeatures) {
+        sequence.primers = sequence.features.filter(
+          (feat) => feat.type === "primer_bind"
+        );
+        sequence.features = sequence.features.filter(
+          (feat) => feat.type !== "primer_bind"
+        );
+      }
+    }
+  });
+
+  return results;
 
   function endSeq() {
     //do some post processing clean-up
+    hasFoundLocus = false;
     postProcessCurSeq();
     //push the result into the resultsArray
-    resultsArray.push(result);
+    resultsArray.push(result || { success: false });
   }
 
   function getCurrentFeature() {
@@ -240,7 +268,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   }
 
   function postProcessCurSeq() {
-    if (result.parsedSequence && result.parsedSequence.features) {
+    if (result && result.parsedSequence && result.parsedSequence.features) {
       for (let i = 0; i < result.parsedSequence.features.length; i++) {
         result.parsedSequence.features[i] = postProcessGenbankFeature(
           result.parsedSequence.features[i]
@@ -260,6 +288,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     result = createInitialSequence(options);
     let locusName;
     let linear;
+
     let gbDivision;
     let date;
     const lineArr = line.split(/[\s]+/g);
@@ -284,21 +313,32 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
     // Date and Div
     // Date is in format:1-APR-2012
     for (let j = 1; j < lineArr.length; j++) {
-      if (lineArr[j].match(/-[A-Z]{3}-/g)) {
-        date = lineArr[j];
+      const item = lineArr[j];
+      if (item.match(/-[A-Z]{3}-/g)) {
+        date = item;
       }
-      if (j === 3 && lineArr[j].match(/aa/i)) {
+      // isProtein
+      if (j === 3 && item.match(/aa/i)) {
+        options.sequenceTypeFromLocus = item;
         options.isProtein = true;
       }
-    }
 
-    // Division
-    for (let i = 1; i < lineArr.length; i++) {
       if (
-        typeof lineArr[i] === "string" &&
-        gbDivisions[lineArr[i].toUpperCase()]
+        j === 4 &&
+        (item.match(/ds-dna/i) || item.match(/ss-dna/i) || item.match(/dna/i))
       ) {
-        gbDivision = lineArr[i].toUpperCase();
+        if (options.isProtein === undefined) {
+          options.isProtein = false;
+        }
+        options.sequenceTypeFromLocus = item;
+      }
+
+      // Division
+      if (
+        typeof lineArr[j] === "string" &&
+        gbDivisions[lineArr[j].toUpperCase()]
+      ) {
+        gbDivision = lineArr[j].toUpperCase();
       }
     }
 
@@ -310,6 +350,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       result.parsedSequence.name = locusName;
     }
     result.parsedSequence.gbDivision = gbDivision;
+    result.parsedSequence.sequenceTypeFromLocus = options.sequenceTypeFromLocus;
     result.parsedSequence.date = date;
     result.parsedSequence.circular = !linear;
   }
@@ -359,9 +400,11 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
         //the last line was a note
         if (currentFeatureNote) {
           //append to the currentFeatureNote
+          // only trim file formatting spaces (i.e. the left ones)
+          // spaces on the right are necessary (e.g. spacing between words, etc.)
           currentFeatureNote[
             currentFeatureNote.length - 1
-          ] += line.trim().replace(/"/g, "");
+          ] += line.trimLeft().replace(/"/g, "");
         }
         lastLineWasLocation = false;
       }
@@ -399,7 +442,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   function newFeature() {
     result.parsedSequence.features.push({
       locations: [],
-      notes: {}
+      notes: {},
     });
   }
 
@@ -442,7 +485,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       }
       const location = {
         start: start,
-        end: end
+        end: end,
       };
       let feat = getCurrentFeature();
       feat.locations.push(
@@ -456,11 +499,13 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
   function parseFeatureNote(line) {
     let newLine, lineArr;
 
-    newLine = line.trim();
+    // only trim file formatting spaces (i.e. the left ones)
+    // spaces on the right are necessary (e.g. spacing between words, etc.)
+    newLine = line.trimLeft();
     newLine = newLine.replace(/^\/|"$/g, "");
     lineArr = newLine.split(/="|=/);
 
-    let val = lineArr.slice(1).join('=')
+    let val = lineArr.slice(1).join("=");
 
     if (val) {
       val = val.replace(/\\/g, " ");
@@ -504,7 +549,7 @@ function genbankToJson(string, onFileParsedUnwrapped, options) {
       return line;
     } else {
       arr = line.split(/=/);
-      return arr.slice(1).join('')
+      return arr.slice(1).join("");
     }
   }
 
@@ -615,4 +660,4 @@ function getLengthOfWhiteSpaceBeforeStartOfLetters(string) {
   }
 }
 
-export default addPromiseOption(genbankToJson);
+export default genbankToJson;

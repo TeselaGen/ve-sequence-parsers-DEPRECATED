@@ -1,46 +1,52 @@
-import sbolXmlToJson from '../parsers/sbolXmlToJson';
-import path from 'path';
-import fs from 'fs';
-import chai from 'chai';
-chai.use(require('chai-things'));
+import sbolXmlToJson from "../parsers/sbolXmlToJson";
+import path from "path";
+import fs from "fs";
+import chai from "chai";
+chai.use(require("chai-things"));
 chai.should();
 
-describe('sbolXmlToJson', function() {
-    it('should parse an sbol xml file to our json representation correctly', function(done) {
-        // var string = fs.readFileSync(path.join(__dirname, '../ext_tests/data/sequences/pBbE0c-RFP.xml'), "utf8");
-        const string = fs.readFileSync(path.join(__dirname, './testData/pBbE0c-RFP.xml'), "utf8");
-        sbolXmlToJson(string, function(result) {
-            result[0].parsedSequence.name.should.equal('pBbE0c-RFP');
-            result[0].parsedSequence.circular.should.equal(false);
-            result[0].parsedSequence.extraLines.length.should.equal(0);
-            result[0].parsedSequence.features.length.should.equal(4);
-            result[0].parsedSequence.features.should.include.something.that.deep.equals({
-                notes: {
-                    'ns2:about': ['public-registry.jbei.org/entry/dc#18302dcf-fae9-40c8-a37a-f0e45dd77a64',
-                        'public-registry.jbei.org/entry/sa#ae7eb7e3-be41-4a14-a50d-818de29f9378'
-                    ],
-                    'ns2:resource': ['http://purl.obolibrary.org/obo/SO_0000296']
-                },
-                name: "colE1 origin",
-                start: 1201,
-                end: 1883,
-                strand: 1,
-                type: "misc_feature"
-            });
-            result[0].parsedSequence.sequence.length.should.equal(2815);
-            done();
-        });
+describe("sbolXmlToJson", function() {
+  it("should parse an sbol xml file to our json representation correctly", function() {
+    // var string = fs.readFileSync(path.join(__dirname, '../ext_tests/data/sequences/pBbE0c-RFP.xml'), "utf8");
+    const string = fs.readFileSync(
+      path.join(__dirname, "./testData/pBbE0c-RFP.xml"),
+      "utf8"
+    );
+    sbolXmlToJson(string, function(result) {
+      result[0].parsedSequence.name.should.equal("pBbE0c-RFP");
+      result[0].parsedSequence.circular.should.equal(false);
+      result[0].parsedSequence.extraLines.length.should.equal(0);
+      result[0].parsedSequence.features.length.should.equal(4);
+      result[0].parsedSequence.features.should.include.something.that.deep.equals(
+        {
+          notes: {
+            "ns2:about": [
+              "public-registry.jbei.org/entry/dc#18302dcf-fae9-40c8-a37a-f0e45dd77a64",
+              "public-registry.jbei.org/entry/sa#ae7eb7e3-be41-4a14-a50d-818de29f9378",
+            ],
+            "ns2:resource": ["http://purl.obolibrary.org/obo/SO_0000296"],
+          },
+          name: "colE1 origin",
+          start: 1201,
+          end: 1883,
+          strand: 1,
+          type: "misc_feature",
+        }
+      );
+      result[0].parsedSequence.sequence.length.should.equal(2815);
     });
-    it('should return an error (not throw an error) when trying to parse a genbank string', function(done) {
-      const string = fs.readFileSync(path.join(__dirname, './testData/genbank/genbankThatBrokeSbolImport.gb'), "utf8");
-      sbolXmlToJson(string, function(results) {
-          results[0].success.should.equal(false)
-          done();
-      });
-    })
+  });
+  it("should return an error (not throw an error) when trying to parse a genbank string", async function() {
+    const string = fs.readFileSync(
+      path.join(__dirname, "./testData/genbank/genbankThatBrokeSbolImport.gb"),
+      "utf8"
+    );
+    const results = await sbolXmlToJson(string);
+    results[0].success.should.equal(false);
+  });
 });
-// describe('test of sbol from SBOL site', function (done) {
-//     it('tests the parsing of toggle switches', function (done) {
+// describe('test of sbol from SBOL site', function () {
+//     it('tests the parsing of toggle switches', function () {
 //         var string = fs.readFileSync(path.join(__dirname, './testData/Sbol Website/pIKE_pTAK_toggle_switches.xml'), "utf8");
 //         (string, function(result){
 //         });

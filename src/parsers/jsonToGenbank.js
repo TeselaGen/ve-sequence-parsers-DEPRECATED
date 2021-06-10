@@ -48,7 +48,7 @@ const StringUtil = {
     let str = line;
     while (str.length < length) str = str + padString;
     return str;
-  }
+  },
 };
 
 function cutUpArray(val, start, end) {
@@ -98,22 +98,29 @@ export default function(_serSeq, options) {
       lines.push("COMMENT             library: " + serSeq.library);
     }
 
+    let longestFeatureTypeLength = 15;
+
     serSeq.features = map(serSeq.features).concat(
       flatMap(pragmasAndTypes, ({ pragma, type }) => {
-        return flatMap(serSeq[type], ann => {
+        return flatMap(serSeq[type], (ann) => {
           if (!isObject(ann)) {
             return [];
           }
           ann.notes = pragma
             ? {
                 ...ann.notes,
-                pragma: [pragma]
+                pragma: [pragma],
               }
             : ann.notes;
           return ann;
         });
       })
     );
+    serSeq.features.forEach(({ type }) => {
+      if (type && type.length > longestFeatureTypeLength) {
+        longestFeatureTypeLength = type.length;
+      }
+    });
 
     let printedFeatureHeader;
     each(serSeq.features, function(feat, index) {
@@ -121,7 +128,12 @@ export default function(_serSeq, options) {
         printedFeatureHeader = true;
         lines.push("FEATURES             Location/Qualifiers");
       }
-      lines.push(featureToGenbankString(feat, options));
+      lines.push(
+        featureToGenbankString(feat, {
+          ...options,
+          featurePadLength: longestFeatureTypeLength + 1,
+        })
+      );
     });
 
     lines.push("ORIGIN      ");
@@ -219,8 +231,12 @@ function featureNoteInDataToGenbankString(name, value) {
 
 function featureToGenbankString(feat, options) {
   const lines = [];
-
-  const line = "     " + StringUtil.rpad(feat.type || "misc_feature", " ", 16);
+  if (feat.type === "primer") {
+    feat.type = "primer_bind";
+  }
+  const line =
+    "     " +
+    StringUtil.rpad(feat.type || "misc_feature", " ", options.featurePadLength);
   let locStr = "";
 
   //for(var i=0;i<feat.locations.length;i++) {
