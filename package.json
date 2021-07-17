@@ -47,7 +47,7 @@
     "in-publish": "^2.0.0",
     "jest": "^24.1.0",
     "lint-staged": "^4.0.4",
-    "nwb": "^0.23.0",
+    "nwb": "^0.25.2",
     "prettier": "^1.16.4",
     "ve-range-utils": "^2.5.9",
     "ve-sequence-utils": "5.1.0"
