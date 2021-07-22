@@ -28,6 +28,7 @@ export default function validateSequence(sequence, options = {}) {
     inclusive1BasedStart,
     inclusive1BasedEnd,
     additionalValidChars,
+    allowOverflowAnnotations,
   } = options;
   const response = {
     validatedAndCleanedSequence: {},
@@ -148,8 +149,9 @@ export default function validateSequence(sequence, options = {}) {
       feature.name = "Untitled Feature";
     }
     if (
-      !areNonNegativeIntegers([feature.start]) ||
-      feature.start > sequence.size - (inclusive1BasedStart ? 0 : 1)
+      !allowOverflowAnnotations &&
+      (!areNonNegativeIntegers([feature.start]) ||
+        feature.start > sequence.size - (inclusive1BasedStart ? 0 : 1))
     ) {
       response.messages.push(
         "Invalid feature start: " +
@@ -161,8 +163,9 @@ export default function validateSequence(sequence, options = {}) {
       feature.start = 0;
     }
     if (
-      !areNonNegativeIntegers([feature.end]) ||
-      feature.end > sequence.size - (inclusive1BasedEnd ? 0 : 1)
+      !allowOverflowAnnotations &&
+      (!areNonNegativeIntegers([feature.end]) ||
+        feature.end > sequence.size - (inclusive1BasedEnd ? 0 : 1))
     ) {
       feature.end = Math.max(sequence.size - 1, inclusive1BasedEnd ? 0 : 1);
       response.messages.push(
@@ -170,7 +173,8 @@ export default function validateSequence(sequence, options = {}) {
           feature.end +
           " detected for " +
           feature.name +
-          " and set to " + (feature.end + 1)
+          " and set to " +
+          (feature.end + 1)
       );
     }
 

@@ -90,6 +90,47 @@ ORIGIN
     result[0].parsedSequence.type.should.equal("DNA");
     // result[0].parsedSequence.isProtein.should.be.
   });
+  it(`allows for overflow features if an allowOverflowAnnotations flag is passed`, () => {
+    const string = `LOCUS       Tt2-PstI-SphI-rev(dna)        7628 bp    DNA     circular
+    04-FEB-2021
+DEFINITION  [Heavy]
+ACCESSION   Tt2-PstI-SphI-rev(dna)
+VERSION     Tt2-PstI-SphI-rev(dna).0
+KEYWORDS    .
+SOURCE      Homo sapiens
+ORGANISM  Homo sapiens
+    .
+COMMENT     Chain:Heavy
+    Numbering:Kabat
+    AnnotationCategory:VREGION
+    Plasmid: pAETEST
+    ClonedAnnotationCategory:VREGION
+FEATURES             Location/Qualifiers
+  source          1..76
+              /chain_orf="1"
+              /chain_strand="+"
+              /inference="Antibody-Extractor"
+              /numbering="Kabat"
+              /plasmid="pAETEST"
+              /lab_host="Escherichia coli"
+              /mol_type="other DNA"
+              /organism="Homo sapiens"
+              /db_xref="taxon:9606"
+//
+`;
+    const result = genbankToJson(string, {allowOverflowAnnotations: true});
+    result[0].parsedSequence.name.should.equal("Tt2-PstI-SphI-rev(dna)");
+    result[0].parsedSequence.circular.should.equal(true);
+    result[0].parsedSequence.type.should.equal("DNA");
+    result[0].parsedSequence.size.should.equal(0);
+    result[0].parsedSequence.features[0].name.should.equal("Homo sapiens")
+    result[0].parsedSequence.features[0].start.should.equal(0)
+    result[0].parsedSequence.features[0].end.should.equal(75)
+    console.log(`parsedSequence.features:`,JSON.stringify(result[0].parsedSequence.features,null,4))
+
+
+    // result[0].parsedSequence.isProtein.should.be.
+  });
   it(`parses out the DIVISION property correctly https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html#GenBankDivisionB`, () => {
     const string = `LOCUS       ProteinSeq          10 bp    DNA  linear  PLN  04-MAR-2019
 ORIGIN
