@@ -286,8 +286,18 @@ function featureToGenbankString(feat, options) {
   lines.push(
     featureNoteInDataToGenbankString("label", feat.name || "Untitled Feature")
   );
-
+  
+  if (feat.overlapsSelf) {
+    if (!feat.notes) {
+      feat.notes = {};
+    }
+    if (!feat.notes.pragma) {
+      feat.notes.pragma = [];
+    }
+    feat.notes.pragma.push("overlapsSelf");
+  }
   let notes = feat.notes;
+
   if (notes) {
     try {
       if (typeof notes === "string") {

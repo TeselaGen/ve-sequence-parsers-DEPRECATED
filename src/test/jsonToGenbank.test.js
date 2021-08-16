@@ -29,7 +29,7 @@ describe("genbank exporter/parser conversion", function() {
 
     assert(string.indexOf(proteinSequence) !== -1);
     assert(string.indexOf("10 aa            linear") !== -1);
-    console.log(`string:`,string)
+    console.log(`string:`, string);
     assert(string.indexOf("misc_feature    2..10") !== -1);
     const result = parseGenbank(string);
 
@@ -106,6 +106,35 @@ describe("genbank exporter/parser conversion", function() {
 
     result[0].parsedSequence.features[0].start.should.equal(2);
     result[0].parsedSequence.features[1].start.should.equal(3);
+  });
+  it(`should add a pragma="overlapsSelf" flag to parts/features where overlapsSelf=true`, function() {
+    // const breakingJSON = require('./testData/json/breakingJSON_stringified')
+    const string = jsonToGenbank({
+      sequence: "agagagagagag",
+      features: [
+        {
+          id: "feat1",
+          name: "overlapdog",
+          type: "CDS",
+          overlapsSelf: true,
+          start: 2,
+          end: 6,
+        },
+      ],
+      parts: [
+        {
+          id: "part1",
+          name: "overlapper",
+          overlapsSelf: true,
+          start: 2,
+          end: 6,
+        },
+      ],
+    });
+
+    const result = parseGenbank(string);
+    result[0].parsedSequence.features[0].overlapsSelf.should.equal(true);
+    result[0].parsedSequence.parts[0].overlapsSelf.should.equal(true);
   });
   it("should parse notes that come in as a JSON stringified object correctly", function() {
     // const breakingJSON = require('./testData/json/breakingJSON_stringified')

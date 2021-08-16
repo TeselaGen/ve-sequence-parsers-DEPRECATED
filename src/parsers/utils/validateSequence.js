@@ -6,7 +6,7 @@ import {
   filterSequenceString,
   guessIfSequenceIsDnaAndNotProtein,
 } from "ve-sequence-utils";
-import { upperFirst } from "lodash";
+import { filter, some, upperFirst } from "lodash";
 import pragmasAndTypes from "./pragmasAndTypes.js";
 
 //validation checking
@@ -268,12 +268,23 @@ export default function validateSequence(sequence, options = {}) {
       feature.labelColor = feature.notes.labelColor[0] || feature.labelColor;
       delete feature.notes.labelColor;
     }
+console.log(`feature.notes.pragma:`,feature.notes.pragma)
+    if (
+      feature.notes.pragma &&
+      some(feature.notes.pragma, (p) => p === "overlapsSelf")
+    ) {
 
+      feature.overlapsSelf = true;
+      feature.notes.pragma = filter(
+        feature.notes.pragma,
+        (p) => p !== "overlapsSelf"
+      );
+    }
     for (const { pragma, type } of pragmasAndTypes) {
       if (
         options[`accept${upperFirst(type)}`] !== false && //acceptParts, acceptWarnings,
         feature.notes.pragma &&
-        feature.notes.pragma[0] === pragma
+        some(feature.notes.pragma, (p) => p === pragma)
       ) {
         if (!sequence[type]) {
           sequence[type] = []; //initialize an empty array if necessary
