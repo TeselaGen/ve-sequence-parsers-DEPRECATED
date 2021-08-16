@@ -268,7 +268,6 @@ export default function validateSequence(sequence, options = {}) {
       feature.labelColor = feature.notes.labelColor[0] || feature.labelColor;
       delete feature.notes.labelColor;
     }
-console.log(`feature.notes.pragma:`,feature.notes.pragma)
     if (
       feature.notes.pragma &&
       some(feature.notes.pragma, (p) => p === "overlapsSelf")
