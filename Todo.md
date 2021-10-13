@@ -1,1 +1,0 @@
- - Allow for color to be parsed in from genbanks!
