@@ -163,6 +163,12 @@ function abConverter(inputArrayBuffer) {
     traceData.basePos = this.getDataTag(tagDict.peakLocations);
     traceData.baseCalls = this.getDataTag(tagDict.baseCalls2);
     traceData.qualNums = this.getDataTag(tagDict.qualNums);
+    if (traceData.qualNums ) { 
+      //tnr if we're only getting 1's and 0's as qualNums, that means that there weren't actual qual nums attached to the file
+      if (!traceData.qualNums.filter(q => (q!==1 && q!==0)).length)  {
+        delete traceData.qualNums
+      }
+    }
 
     return traceData;
   };
