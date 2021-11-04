@@ -22,33 +22,6 @@ function abConverter(inputArrayBuffer) {
   const numElements = inputArrayBuffer.getInt32(18);
   const lastEntry = dirLocation + numElements * 28;
 
-  this.getFileID = () => {
-    let output = "";
-    for (let offset = 0; offset < 4; offset++) {
-      output += String.fromCharCode(inputArrayBuffer.getInt8(offset));
-    }
-    return output;
-  };
-
-  this.getFileVersion = () => inputArrayBuffer.getInt16(4);
-
-  this.getDirectoryStruct = () => {
-    const br = "<br>";
-    // const indent = "  ";
-    let output = br;
-    let name = "";
-    for (let offset = 6; offset < 10; offset++) {
-      name += String.fromCharCode(inputArrayBuffer.getInt8(offset));
-    }
-    output += `- tag name: ${name}${br}`;
-    output += `- tag number: ${inputArrayBuffer.getInt32(10)}${br}`;
-    output += `- element type: ${inputArrayBuffer.getInt16(14)}${br}`;
-    output += `- element size: ${inputArrayBuffer.getInt16(16)}${br}`;
-    output += `- num elements: ${inputArrayBuffer.getInt32(18)}${br}`;
-    output += `- data size: ${inputArrayBuffer.getInt32(22)}${br}`;
-    output += `- data offset: ${inputArrayBuffer.getInt32(26)}${br}`;
-    return output;
-  };
 
   this.getNumber = (inOffset, numEntries) => {
     const retArray = [];
@@ -76,58 +49,6 @@ function abConverter(inputArrayBuffer) {
     return retArray;
   };
 
-  this.getByte = (inOffset, counter) =>
-    inputArrayBuffer.getUint8(inOffset + counter);
-
-  this.getWord = (inOffset, numEntries) => {
-    let retVal = "";
-    for (let counter = 0; counter < numEntries; counter += 2) {
-      retVal += inputArrayBuffer.getUint16(inOffset + counter);
-    }
-    return retVal;
-  };
-
-  this.getLong = (inOffset, counter) => inputArrayBuffer.getInt32(inOffset);
-
-  this.getFloat = (inOffset, counter) => inputArrayBuffer.getFloat32(inOffset);
-
-  this.getDouble = (inOffset, counter) => inputArrayBuffer.getFloat64(inOffset);
-
-  this.getDate = (inOffset, counter) => {
-    let date = "";
-    date += inputArrayBuffer.getInt16(inOffset);
-    date += inputArrayBuffer.getUint8(inOffset + 2);
-    date += inputArrayBuffer.getUint8(inOffset + 3);
-    return date;
-  };
-
-  this.getTime = (inOffset, counter) => {
-    let time = "";
-    time += inputArrayBuffer.getUint8(inOffset);
-    time += inputArrayBuffer.getUint8(inOffset + 1);
-    time += inputArrayBuffer.getUint8(inOffset + 2);
-    time += inputArrayBuffer.getUint8(inOffset + 3);
-    return time;
-  };
-
-  // this.getPString = (inOffset, counter) => {
-  //   let outString = "";
-  //   for (let count = 1; count < inputArrayBuffer.getInt8(inOffset); count++) {
-  //     outString += inputArrayBuffer.getInt8(inOffset + count);
-  //   }
-  // };
-
-  // this.getCString = (inOffset, counter) => {
-  //   let outString = "";
-  //   let offset = inOffset;
-  //   let currentByte = inputArrayBuffer.getInt8(offset);
-  //   while (currentByte != 0) {
-  //     outString += String.fromCharCode(currentByte);
-  //     offset++;
-  //     currentByte = inputArrayBuffer.getInt8(offset);
-  //   }
-  //   return outString;
-  // };
 
   this.getTagName = (inOffset) => {
     let name = "";
@@ -169,8 +90,7 @@ function abConverter(inputArrayBuffer) {
         delete traceData.qualNums
       }
     }
-
-    return traceData;
+    return convertBasePosTraceToPerBpTrace(traceData);
   };
 
   this.getFirstEntry = () => {
@@ -198,3 +118,56 @@ const tagDict = {
   colorDataG: { tagName: "DATA", tagNum: 9, typeToReturn: "getShort" },
   colorDataC: { tagName: "DATA", tagNum: 12, typeToReturn: "getShort" },
 };
+
+
+const correctionAmount = 3
+// tnr: this function takes in chromData which has 4 traces and a basePos (which describes where in the trace the base call lands)
+// It "normalizes" that data into a baseTraces array so that each base has its own set of that data (having a per-base trace makes insertion/deletion/copy/paste actions all easier)
+function convertBasePosTraceToPerBpTrace(chromData) {
+  const { basePos, aTrace } = chromData;
+  const traceLength = aTrace.length;
+  let startPos = 0;
+  let nextBasePos = basePos[1];
+  let endPos;
+  function setEndPos() {
+    if (nextBasePos) {
+      endPos = startPos + Math.ceil((nextBasePos - startPos) / 2);
+    } else {
+      endPos = traceLength;
+    }
+  }
+  setEndPos();
+  const baseTraces = [];
+  for (let i = 0; i < basePos.length; i++) {
+    const tracesForType = {
+      aTrace: [],
+      tTrace: [],
+      gTrace: [],
+      cTrace: []
+    };
+    baseTraces[i] = tracesForType;
+    [
+      "aTrace",
+      "tTrace",
+      "gTrace",
+      "cTrace"
+      // eslint-disable-next-line no-loop-func
+    ].forEach((type) => {
+      const traceForType = tracesForType[type];
+      const traceData = chromData[type];
+      for (let j = startPos; j < endPos + correctionAmount; j++) {
+        traceForType.push(traceData[j] || 0);
+      }
+    });
+    if (i !== basePos.length-1) {
+      startPos = endPos+correctionAmount;
+      nextBasePos = basePos[i + 2];
+      setEndPos();
+    }
+  }
+
+  return {
+    baseTraces,
+    ...chromData
+  };
+}

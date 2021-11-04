@@ -1,6 +1,6 @@
 /**
- * testing file for the FASTA parser, which should be able to handle multiple sequences in the same file, comments, and any other sort of vaild FASTA format
- * @author Joshua P Nixon
+ * test file for the ab1ToJson parser
+ * @author Thomas Rich @tnrich
  */
 import ab1ToJson from "../parsers/ab1ToJson";
 
@@ -20,6 +20,7 @@ describe("ab1 parser", function() {
     const res = await ab1ToJson(fileObj, { fileName: "example1.ab1" });
 
     res[0].parsedSequence.name.should.equal("example1");
+    
     res[0].parsedSequence.chromatogramData.should.deep.equal(
       example1OutputChromatogram
     );
