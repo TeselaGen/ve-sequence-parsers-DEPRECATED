@@ -171,3 +171,7 @@ function convertBasePosTraceToPerBpTrace(chromData) {
     ...chromData
   };
 }
+
+export {
+  convertBasePosTraceToPerBpTrace
+}

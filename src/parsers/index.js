@@ -3,7 +3,7 @@ export { default as fastaToJson } from "./fastaToJson";
 export { default as genbankToJson } from "./genbankToJson";
 export { default as sbolXmlToJson } from "./sbolXmlToJson";
 export { default as jsonToGenbank } from "./jsonToGenbank";
-export { default as ab1ToJson } from "./ab1ToJson";
+export { default as ab1ToJson, convertBasePosTraceToPerBpTrace } from "./ab1ToJson";
 export { default as jsonToFasta } from "./jsonToFasta";
 export { default as snapgeneToJson } from "./snapgeneToJson";
 export { default as jsonToBed } from "./jsonToBed";
