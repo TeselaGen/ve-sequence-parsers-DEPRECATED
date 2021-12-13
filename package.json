@@ -73,7 +73,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TeselaGen/sequence-parsers.git"
+    "url": "git+https://github.com/TeselaGen/ve-sequence-parsers.git"
   },
   "keywords": [
     "genbank",
@@ -89,7 +89,7 @@
     "teselagen"
   ],
   "bugs": {
-    "url": "https://github.com/TeselaGen/sequence-parsers/issues"
+    "url": "https://github.com/TeselaGen/ve-sequence-parsers/issues"
   },
-  "homepage": "https://github.com/TeselaGen/sequence-parsers#readme"
+  "homepage": "https://github.com/TeselaGen/ve-sequence-parsers#readme"
 }
