@@ -40,6 +40,12 @@ describe("genbank exporter/parser conversion", function() {
     result[0].parsedSequence.features[0].start.should.equal(3);
     result[0].parsedSequence.features[0].end.should.equal(29);
   });
+  it.only(`should have a space at the 68 position in the genbank locus `, () => {
+    const string = jsonToGenbank({
+      sequence: "agagagagagag",
+    });
+    assert(string.indexOf("SYN ") === 65);
+  });
   it(`should convert the .description field into a //DEFINITION block in
   the genbank and then have it be parsed back out as a .description again`, () => {
     const description = "Hey I am a test description";

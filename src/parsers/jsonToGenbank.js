@@ -204,9 +204,7 @@ function createGenbankLocus(serSeq, options) {
   }
 
   line += " "; //col 64
-  if (serSeq.gbDivision) {
-    line += StringUtil.rpad(serSeq.gbDivision || "SYN", " ", 10);
-  }
+  line += StringUtil.rpad(serSeq.gbDivision || "SYN", " ", 1);
   // }
   line += " "; // col 68
   // DOES NOT PARSE DATE USEFULLY ORIGINALLY!
@@ -286,7 +284,7 @@ function featureToGenbankString(feat, options) {
   lines.push(
     featureNoteInDataToGenbankString("label", feat.name || "Untitled Feature")
   );
-  
+
   if (feat.overlapsSelf) {
     if (!feat.notes) {
       feat.notes = {};
