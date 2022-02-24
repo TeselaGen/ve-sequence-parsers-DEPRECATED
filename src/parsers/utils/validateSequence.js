@@ -272,13 +272,41 @@ export default function validateSequence(sequence, options = {}) {
       feature.notes.pragma &&
       some(feature.notes.pragma, (p) => p === "overlapsSelf")
     ) {
-
       feature.overlapsSelf = true;
       feature.notes.pragma = filter(
         feature.notes.pragma,
         (p) => p !== "overlapsSelf"
       );
     }
+    feature.notes.note &&
+      some(feature.notes.note, (n) => {
+        if (n && n.toLowerCase().includes("sequence:")) {
+          //remove it after we're parsed it out
+          feature.notes.note = filter(
+            feature.notes.note,
+            (p) => n && !n.toLowerCase().includes("sequence:")
+          );
+          if (feature.notes.note.length === 0) {
+            delete feature.notes.note;
+          }
+          const match = n.match(/sequence:[ \r\n.]*[a-zA-Z]*/i);
+          if (match && match[0])
+            feature.bases = match[0]
+              .replace(/\s/g, "")
+              .replace("sequence:", "");
+
+          return true;
+        }
+      });
+
+    feature.notes.primerBindsOn &&
+      some(feature.notes.primerBindsOn, (n) => {
+        if (n) {
+          feature.primerBindsOn = n;
+          delete feature.notes.primerBindsOn;
+        }
+      });
+
     for (const { pragma, type } of pragmasAndTypes) {
       if (
         options[`accept${upperFirst(type)}`] !== false && //acceptParts, acceptWarnings,

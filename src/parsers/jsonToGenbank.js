@@ -106,6 +106,9 @@ export default function(_serSeq, options) {
           if (!isObject(ann)) {
             return [];
           }
+          if (type === "primers") {
+            ann.type = "primer_bind";
+          }
           ann.notes = pragma
             ? {
                 ...ann.notes,
@@ -285,14 +288,14 @@ function featureToGenbankString(feat, options) {
     featureNoteInDataToGenbankString("label", feat.name || "Untitled Feature")
   );
 
+  if (feat.bases && feat.bases.length && feat.type === "primer_bind") {
+    addToNotes(feat, "note", `sequence: ${feat.bases}`);
+  }
+  if (feat.primerBindsOn && feat.type === "primer_bind") {
+    addToNotes(feat, "primerBindsOn", feat.primerBindsOn);
+  }
   if (feat.overlapsSelf) {
-    if (!feat.notes) {
-      feat.notes = {};
-    }
-    if (!feat.notes.pragma) {
-      feat.notes.pragma = [];
-    }
-    feat.notes.pragma.push("overlapsSelf");
+    addToNotes(feat, "pragma", "overlapsSelf");
   }
   let notes = feat.notes;
 
@@ -345,4 +348,14 @@ function getProteinStart(val, isProtein) {
 function getProteinEnd(val, isProtein) {
   if (!isProtein) return val;
   return Math.floor(val / 3);
+}
+
+function addToNotes(ann, key, val) {
+  if (!ann.notes) {
+    ann.notes = {};
+  }
+  if (!ann.notes[key]) {
+    ann.notes[key] = [];
+  }
+  ann.notes[key].push(val);
 }

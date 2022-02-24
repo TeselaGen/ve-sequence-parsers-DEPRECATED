@@ -40,7 +40,7 @@ describe("genbank exporter/parser conversion", function() {
     result[0].parsedSequence.features[0].start.should.equal(3);
     result[0].parsedSequence.features[0].end.should.equal(29);
   });
-  it.only(`should have a space at the 68 position in the genbank locus `, () => {
+  it(`should have a space at the 68 position in the genbank locus `, () => {
     const string = jsonToGenbank({
       sequence: "agagagagagag",
     });
@@ -57,6 +57,32 @@ describe("genbank exporter/parser conversion", function() {
     const result = parseGenbank(string);
 
     result[0].parsedSequence.description.should.equal(description);
+  });
+  it(`should by convert "sequenceData.primers" into genbank features of type primer_bind with additional primer info of primerBindsOn and bases`, function() {
+    const string = jsonToGenbank({
+      sequence: "agagagagagag",
+      primers: [
+        {
+          id: "id1",
+          name: "prima1",
+          start: 2,
+          end: 6,
+          bases: "gTaaCCCC",
+          primerBindsOn: "3prime",
+        },
+      ],
+    });
+    const result = parseGenbank(string);
+    assert(string.includes(`sequence: gTaaCCCC`));
+    assert(string.includes(`/primerBindsOn="3prime"`));
+    result[0].parsedSequence.primers[0].start.should.equal(2);
+    result[0].parsedSequence.primers[0].end.should.equal(6);
+    assert(
+      result[0].parsedSequence.primers[0].notes.primerBindsOn === undefined
+    );
+    assert(result[0].parsedSequence.primers[0].notes.note === undefined);
+    result[0].parsedSequence.primers[0].primerBindsOn.should.equal("3prime");
+    result[0].parsedSequence.primers[0].bases.should.equal("gTaaCCCC");
   });
   it(`
     should by default convert "sequenceData.parts" into genbank features
