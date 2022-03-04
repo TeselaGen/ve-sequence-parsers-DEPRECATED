@@ -5,7 +5,7 @@
   "main": "lib/parsers/index.js",
   "scripts": {
     "build": "nwb build-react-component --copy-files --no-demo",
-    "prepublish": "in-publish && yarn build || not-in-publish",
+    "prepublishOnly": "yarn build",
     "precommit": "npm test",
     "prepush": "npm test",
     "version": "auto-changelog -p && git add CHANGELOG.md",
