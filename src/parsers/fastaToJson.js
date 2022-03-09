@@ -5,7 +5,6 @@ import validateSequenceArray from "./utils/validateSequenceArray";
 /**
  * parses a fasta file that may or may not contain multiple resultArray
  * @param  {[string]} fileString   [string respresentation of file contents]
- * @param  {[function]} onFileParsed [callback for a parsed sequence]
  * @author Joshua P Nixon
  */
 

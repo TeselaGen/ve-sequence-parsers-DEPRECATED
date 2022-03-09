@@ -14,10 +14,6 @@ import searchWholeObjByName from "./utils/searchWholeObjByName";
 // }
 async function sbolXmlToJson(string, options) {
   options = options || {};
-  const onFileParsed = function(sequences) {
-    //before we call the onFileParsed callback, we need to validate the sequence
-    return validateSequenceArray(sequences, options);
-  };
   let response = {
     parsedSequence: null,
     messages: [],
@@ -32,8 +28,10 @@ async function sbolXmlToJson(string, options) {
     );
 
     const sbolJsonMatches = searchWholeObjByName("DnaComponent", result);
+
     if (sbolJsonMatches[0]) {
       const resultArray = [];
+
       for (let i = 0; i < sbolJsonMatches[0].value.length; i++) {
         try {
           response = {
@@ -60,18 +58,22 @@ async function sbolXmlToJson(string, options) {
         }
         resultArray.push(response);
       }
-      return onFileParsed(resultArray);
+      return validateSequenceArray(resultArray, options);
     } else {
-      return onFileParsed({
-        success: false,
-        messages: "XML is not valid Jbei or Sbol format",
-      });
+      return [
+        {
+          success: false,
+          messages: ["XML is not valid Jbei or Sbol format"],
+        },
+      ];
     }
   } catch (e) {
-    return onFileParsed({
-      success: false,
-      messages: "Error parsing XML to JSON",
-    });
+    return [
+      {
+        success: false,
+        messages: ["SBOL-PARSER: Error parsing XML to JSON"],
+      },
+    ];
   }
 }
 // Converts SBOL formats.

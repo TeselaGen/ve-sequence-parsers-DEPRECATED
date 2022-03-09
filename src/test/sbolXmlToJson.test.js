@@ -6,35 +6,44 @@ chai.use(require("chai-things"));
 chai.should();
 
 describe("sbolXmlToJson", function() {
-  it("should parse an sbol xml file to our json representation correctly", function() {
-    // var string = fs.readFileSync(path.join(__dirname, '../ext_tests/data/sequences/pBbE0c-RFP.xml'), "utf8");
+  it("should parse b12 sbol xml file to our json representation correctly", async function() {
+    const string = fs.readFileSync(
+      path.join(__dirname, "./testData/sbol/b12.xml"),
+      "utf8"
+    );
+    const result = await sbolXmlToJson(string);
+    result[0].parsedSequence.name.should.equal("J23119 promoter"); //tnr: I think?
+    // @linediconsine can you fill out more here with what should be coming back from the b12.xml SBOL file ?
+    // We'll want to update this test to include all the attributes we expect to get from that file and 
+    // then update the sbolXmlToJson() function to return the proper response.
+  });
+  it("should parse an sbol xml file to our json representation correctly", async function() {
     const string = fs.readFileSync(
       path.join(__dirname, "./testData/pBbE0c-RFP.xml"),
       "utf8"
     );
-    sbolXmlToJson(string, function(result) {
-      result[0].parsedSequence.name.should.equal("pBbE0c-RFP");
-      result[0].parsedSequence.circular.should.equal(false);
-      result[0].parsedSequence.extraLines.length.should.equal(0);
-      result[0].parsedSequence.features.length.should.equal(4);
-      result[0].parsedSequence.features.should.include.something.that.deep.equals(
-        {
-          notes: {
-            "ns2:about": [
-              "public-registry.jbei.org/entry/dc#18302dcf-fae9-40c8-a37a-f0e45dd77a64",
-              "public-registry.jbei.org/entry/sa#ae7eb7e3-be41-4a14-a50d-818de29f9378",
-            ],
-            "ns2:resource": ["http://purl.obolibrary.org/obo/SO_0000296"],
-          },
-          name: "colE1 origin",
-          start: 1201,
-          end: 1883,
-          strand: 1,
-          type: "misc_feature",
-        }
-      );
-      result[0].parsedSequence.sequence.length.should.equal(2815);
-    });
+    const result = await sbolXmlToJson(string);
+    result[0].parsedSequence.name.should.equal("pBbE0c-RFP");
+    result[0].parsedSequence.circular.should.equal(false);
+    result[0].parsedSequence.extraLines.length.should.equal(0);
+    result[0].parsedSequence.features.length.should.equal(4);
+    result[0].parsedSequence.features.should.include.something.that.deep.equals(
+      {
+        notes: {
+          "ns2:about": [
+            "public-registry.jbei.org/entry/dc#18302dcf-fae9-40c8-a37a-f0e45dd77a64",
+            "public-registry.jbei.org/entry/sa#ae7eb7e3-be41-4a14-a50d-818de29f9378",
+          ],
+          "ns2:resource": ["http://purl.obolibrary.org/obo/SO_0000296"],
+        },
+        name: "colE1 origin",
+        start: 1201,
+        end: 1883,
+        strand: 1,
+        type: "misc_feature",
+      }
+    );
+    result[0].parsedSequence.sequence.length.should.equal(2815);
   });
   it("should return an error (not throw an error) when trying to parse a genbank string", async function() {
     const string = fs.readFileSync(
@@ -43,8 +52,12 @@ describe("sbolXmlToJson", function() {
     );
     const results = await sbolXmlToJson(string);
     results[0].success.should.equal(false);
+    results[0].messages[0].should.equal(
+      "SBOL-PARSER: Error parsing XML to JSON"
+    );
   });
 });
+
 // describe('test of sbol from SBOL site', function () {
 //     it('tests the parsing of toggle switches', function () {
 //         var string = fs.readFileSync(path.join(__dirname, './testData/Sbol Website/pIKE_pTAK_toggle_switches.xml'), "utf8");

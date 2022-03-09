@@ -217,7 +217,7 @@ function genbankToJson(string, options = {}) {
   }
   //call the callback
 
-  //before we call the onFileParsed callback, we need to flatten the sequence, and convert the old sequence data to the new data type
+  //before we return we need to flatten the sequence, and convert the old sequence data to the new data type
   const results = validateSequenceArray(
     flattenSequenceArray(resultsArray, options),
     options
