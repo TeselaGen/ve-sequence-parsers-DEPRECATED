@@ -155,4 +155,21 @@ GGAGAGGUAGAGAGAGG
     );
     expect(result2[0].parsedSequence.sequence[7]).toEqual("T")
   });
+  it("handles parseName  option correctly", async function(){
+    const fastaStr = `>gb|M73307|AGMA13GT
+gtagagtagagagagg
+      `
+
+    // passing parseName as true directly results in old behavior
+    const result = await fastaToJson(fastaStr , {parseName: true})
+    expect(result[0].parsedSequence.name).toEqual('gb')
+
+    // no options passed at all preserves old behavior
+    result.should.include.something.that.deep.equals(await fastaToJson(fastaStr)[0])
+
+    // setting parseName to false means that the name doesn't get modfied at all
+    const result2 = await fastaToJson(fastaStr, {parseName: false})
+    expect(result2[0].parsedSequence.name).toEqual('gb|M73307|AGMA13GT') 
+    
+  });
 });
