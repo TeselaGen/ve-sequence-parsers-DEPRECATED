@@ -71,6 +71,12 @@ function fastaToJson(fileString, options) {
   }
 
   function parseTitle(line) {
+
+    if (options && 'parseName' in options && !options.parseName){
+      result.parsedSequence.name = line.slice(1)
+      return
+    }
+
     const pipeIndex = line.indexOf("|");
     if (pipeIndex > -1) {
       result.parsedSequence.name = line.slice(1, pipeIndex);

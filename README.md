@@ -196,6 +196,8 @@ const options = {
   inclusive1BasedStart: false //by default feature starts are parsed out as 0-based and inclusive 
   inclusive1BasedEnd: false //by default feature ends are parsed out as 0-based and inclusive 
   acceptParts: true //by default features with a feature.notes.pragma[0] === "Teselagen_Part" are added to the sequenceData.parts array. Setting this to false will keep them as features instead
+  // fastaToJson options only
+  parseName: true //by default attempt to parse the name and description of sequence from the comment line. Setting this to false will keep the name unchanged with no description
 }
 ```
 
