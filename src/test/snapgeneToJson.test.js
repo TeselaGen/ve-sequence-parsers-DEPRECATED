@@ -12,6 +12,19 @@ chai.use(chaiSubset);
 chai.should();
 
 describe("snapgene file parser", function() {
+  it(`the description should not include <html><body> text (we should remove it if we see it)`, async () => {
+    const fileObj = fs.readFileSync(
+      path.join(__dirname, "./testData/dna/T7 promoter.dna")
+    );
+
+    const result = await snapgeneToJson(fileObj, {
+      fileName: "T7 promoter.dna",
+    });
+
+    result[0].parsedSequence.description.should.equal(
+      "Promoter for bacteriophage T7 RNA polymerase."
+    );
+  });
   it(`an invalid file should return an unsuccessful response`, async () => {
     const results = await snapgeneToJson(
       { zoink: "berg" },
