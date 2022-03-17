@@ -151,8 +151,8 @@ async function snapgeneToJson(fileObj, options = {}) {
         }
 
         const description = get(b, "Notes.Description[0]");
-        if (description) {
-          data.description = description;
+        if (description && typeof description === 'string') {
+          data.description = description.replace('<html><body>', '').replace('</body></html>', '') //fixes https://github.com/TeselaGen/ve-sequence-parsers/issues/225
         }
       } else {
         // # WE IGNORE THE WHOLE BLOCK
