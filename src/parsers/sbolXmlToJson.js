@@ -27,20 +27,52 @@ async function sbolXmlToJson(string, options) {
       })
     );
 
-    const sbolJsonMatches = searchWholeObjByName("DnaComponent", result);
+    const sbolV1 = searchWholeObjByName("DnaComponent", result);
+    const sbolV2 = searchWholeObjByName("sbol:Sequence", result);
 
-    if (sbolJsonMatches[0]) {
+    if (sbolV1[0]) {
       const resultArray = [];
 
-      for (let i = 0; i < sbolJsonMatches[0].value.length; i++) {
+      for (let i = 0; i < sbolV1[0].value.length; i++) {
         try {
           response = {
             parsedSequence: null,
             messages: [],
             success: true,
           };
-          response.parsedSequence = parseSbolJson(
-            sbolJsonMatches[0].value[i],
+          response.parsedSequence = parseSbolJsonV1(
+            sbolV1[0].value[i],
+            options
+          );
+        } catch (e) {
+          console.error("error:", e);
+          console.error("error.stack: ", e.stack);
+          resultArray.push({
+            success: false,
+            messages: "Error while parsing Sbol format",
+          });
+        }
+        if (response.parsedSequence.features.length > 0) {
+          response.messages.push(
+            "SBOL feature types are stored in feature notes"
+          );
+        }
+        resultArray.push(response);
+      }
+      return validateSequenceArray(resultArray, options);
+    } else if (sbolV2) {
+      //tnr WIP: asking a question here https://github.com/TeselaGen/ve-sequence-parsers/pull/226#issuecomment-1086121133
+      const resultArray = [];
+
+      for (let i = 0; i < sbolV1[0].value.length; i++) {
+        try {
+          response = {
+            parsedSequence: null,
+            messages: [],
+            success: true,
+          };
+          response.parsedSequence = parseSbolJsonV1(
+            sbolV1[0].value[i],
             options
           );
         } catch (e) {
@@ -85,7 +117,7 @@ async function sbolXmlToJson(string, options) {
 //  *
 //  * Check for each level and parse downward from there.
 // tnrtodo: this should be tested with a wider variety of sbol file types!
-function parseSbolJson(sbolJson, options) {
+function parseSbolJsonV1(sbolJson, options) {
   let name;
   if (access(sbolJson, "name[0]")) {
     name = access(sbolJson, "name[0]");
