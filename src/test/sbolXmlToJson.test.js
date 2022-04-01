@@ -11,11 +11,37 @@ describe("sbolXmlToJson", function() {
       path.join(__dirname, "./testData/sbol/b12.xml"),
       "utf8"
     );
+    /*
+        Note: This is my take on how the JSON of how the example file in SBOL 2.3 specification p.132
+        B.1.2 Serializing ComponentDefinition Object should looks like
+
+        {
+          "size": 35,
+          "sequence": "ttgacagctagctcagtcctaggtataatgctagcc",
+          "circular": false,
+          "name": "J23119 promoter",
+          "description": "Constitutive promoter",
+          "features": [
+              {
+                  "name": "BBa_J23119",
+                  "type": "Promoter",
+                  "id": "unique_id",
+                  "start": 1,
+                  "end": 35,
+                  "strand": 1,
+                  "notes": "{\"role\":\"http://identifiers.org/so/SO:0000167",\"role\":\"resource="http://identifiers.org/so/SO:0000613"}",
+
+              },
+          ],
+      }
+     */
     const result = await sbolXmlToJson(string);
-    result[0].parsedSequence.name.should.equal("J23119 promoter"); //tnr: I think?
-    // @linediconsine can you fill out more here with what should be coming back from the b12.xml SBOL file ?
-    // We'll want to update this test to include all the attributes we expect to get from that file and 
-    // then update the sbolXmlToJson() function to return the proper response.
+    result[0].parsedSequence.name.should.equal("J23119 promoter"); // (p.18 SBol2.3)
+    result[0].parsedSequence.description.should.equal("Constitutive promoter");
+    result[0].parsedSequence.circular.should.equal(false);
+    result[0].parsedSequence.sequence.should.equal("ttgacagctagctcagtcctaggtataatgctagcc");
+    result[0].parsedSequence.size.should.equal(36); // sequence.length
+    result[0].parsedSequence.features[0].type.should.equal('Promoter'); // (p.24 Sbol 2.3)
   });
   it("should parse an sbol xml file to our json representation correctly", async function() {
     const string = fs.readFileSync(
