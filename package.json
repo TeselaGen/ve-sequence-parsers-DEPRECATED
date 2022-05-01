@@ -5,9 +5,9 @@
   "main": "lib/parsers/index.js",
   "scripts": {
     "build": "nwb build-react-component --copy-files --no-demo",
-    "prepare": "npm run build",
-    "precommit": "npm run test",
-    "prepush": "npm run test",
+    "prepare": "yarn run build",
+    "precommit": "yarn run test",
+    "prepush": "yarn run test",
     "version": "auto-changelog -p && git add CHANGELOG.md",
     "test-browser": "jest ./src/test",
     "test": "jest --env=node ./src/test",
