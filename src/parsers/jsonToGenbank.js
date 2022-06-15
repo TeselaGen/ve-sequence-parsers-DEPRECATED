@@ -81,6 +81,10 @@ export default function(_serSeq, options) {
       lines.push("DEFINITION  " + (serSeq.definition || serSeq.description));
     }
     
+    if (serSeq.accession ) {
+      lines.push("ACCESSION  " + (serSeq.accession));
+    }
+
     if (serSeq.version ) {
       lines.push("VERSION  " + (serSeq.version));
     }
