@@ -56,15 +56,27 @@ const generalizedJsonFormat = {
     "circular": true,
     "name": "pBbS8c-RFP",
     "description": "",
-    "chromatogramData": { //only if parsing in an ab1 file
-      "aTrace": [], //same as cTrace but for a
-      "tTrace": [], //same as cTrace but for t
-      "gTrace": [], //same as cTrace but for g
-      "cTrace": [0,0,0,1,3,5,11,24,56,68,54,30,21,3,1,4,1,0,0, ...etc], //heights of the curve spaced 1 per x position (aka if the cTrace.length === 1000, then the max basePos can be is 1000)
-      "basePos": [33, 46, 55, ...etc], //x position of the bases (can be unevenly spaced)
-      "baseCalls": ["A", "T", ...etc],
-      "qualNums": [], //or undefined if no qualNums are detected on the file
-    },
+    "parts": [
+      {
+        "name": "part 1",
+        "type": "CDS", //optional for parts
+        "id": "092j92", //Must be a unique id. If no id is provided, we'll autogenerate one for you
+        "start": 10, //0-based inclusive index
+        "end": 30, //0-based inclusive index
+        "strand": 1,
+        "notes": {},
+      }
+    ],
+    "primers": [
+      {
+        "name": "primer 1",
+        "id": "092j92", //Must be a unique id. If no id is provided, we'll autogenerate one for you
+        "start": 10, //0-based inclusive index
+        "end": 30, //0-based inclusive index
+        "strand": 1,
+        "notes": {},
+      }
+    ],
     "features": [
         {
             "name": "anonymous feature",
@@ -85,6 +97,16 @@ const generalizedJsonFormat = {
             "notes": {},
         }
     ],
+    //only if parsing in an ab1 file
+    "chromatogramData": { 
+      "aTrace": [], //same as cTrace but for a
+      "tTrace": [], //same as cTrace but for t
+      "gTrace": [], //same as cTrace but for g
+      "cTrace": [0,0,0,1,3,5,11,24,56,68,54,30,21,3,1,4,1,0,0, ...etc], //heights of the curve spaced 1 per x position (aka if the cTrace.length === 1000, then the max basePos can be is 1000)
+      "basePos": [33, 46, 55, ...etc], //x position of the bases (can be unevenly spaced)
+      "baseCalls": ["A", "T", ...etc],
+      "qualNums": [], //or undefined if no qualNums are detected on the file
+    },
 }
 ```
 
