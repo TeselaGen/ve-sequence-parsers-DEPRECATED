@@ -236,7 +236,7 @@ describe("genbank exporter/parser conversion", function() {
       "promoter seq from pBAD33."
     );
     result[0].parsedSequence.circular.should.equal(true);
-    result[0].parsedSequence.extraLines.length.should.equal(2);
+    result[0].parsedSequence.extraLines.length.should.equal(1);
     result[0].parsedSequence.features.length.should.equal(16);
     result[0].parsedSequence.features.should.containSubset([
       {
@@ -276,7 +276,7 @@ describe("genbank exporter/parser conversion", function() {
     res[0].parsedSequence.name.should.equal("pj5_00001");
     res[0].parsedSequence.definition.should.equal("promoter seq from pBAD33.");
     res[0].parsedSequence.circular.should.equal(true);
-    res[0].parsedSequence.extraLines.length.should.equal(2);
+    res[0].parsedSequence.extraLines.length.should.equal(1);
     res[0].parsedSequence.features.length.should.equal(16);
     res[0].parsedSequence.parts.should.containSubset([
       {
