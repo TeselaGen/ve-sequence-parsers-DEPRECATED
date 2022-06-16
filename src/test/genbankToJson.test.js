@@ -94,7 +94,7 @@ ORIGIN
     const string = `LOCUS       Tt2-PstI-SphI-rev(dna)        7628 bp    DNA     circular
     04-FEB-2021
 DEFINITION  [Heavy]
-ACCESSION   Tt2-PstI-SphI-rev(dna)
+ACCESSION   NT_123456 
 VERSION     Tt2-PstI-SphI-rev(dna).0
 KEYWORDS    .
 SOURCE      Homo sapiens
@@ -119,6 +119,8 @@ FEATURES             Location/Qualifiers
 //
 `;
     const result = genbankToJson(string, {allowOverflowAnnotations: true});
+
+    result[0].parsedSequence.accession.should.equal("NT_123456");
     result[0].parsedSequence.name.should.equal("Tt2-PstI-SphI-rev(dna)");
     result[0].parsedSequence.circular.should.equal(true);
     result[0].parsedSequence.type.should.equal("DNA");
@@ -637,7 +639,7 @@ ORIGIN
 
     result[0].parsedSequence.name.should.equal("pj5_00001");
     result[0].parsedSequence.circular.should.equal(true);
-    result[0].parsedSequence.extraLines.length.should.equal(2);
+    result[0].parsedSequence.extraLines.length.should.equal(1);
     result[0].parsedSequence.features.length.should.equal(16);
     result[0].parsedSequence.parts.length.should.equal(1);
     result[0].parsedSequence.parts.should.include.something.that.deep.equals({
