@@ -148,7 +148,14 @@ function genbankToJson(string, options = {}) {
           line = line.replace(/ACCESSION/, "");
           line = line.trim();
           if (result.parsedSequence) {
-            result.parsedSequence.accession = line
+            result.parsedSequence.accession = line;
+          }
+          break;
+        case genbankAnnotationKey.VERSION_TAG:
+          line = line.replace(/VERSION/, "");
+          line = line.trim();
+          if (result.parsedSequence) {
+            result.parsedSequence.version = line;
           }
           break;
         case "COMMENT":

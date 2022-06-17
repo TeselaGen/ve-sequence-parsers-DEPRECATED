@@ -80,15 +80,15 @@ export default function(_serSeq, options) {
     if (serSeq.definition || serSeq.description) {
       lines.push("DEFINITION  " + (serSeq.definition || serSeq.description));
     }
-    
-    if (serSeq.accession ) {
-      lines.push("ACCESSION  " + (serSeq.accession));
+
+    if (serSeq.accession) {
+      lines.push("ACCESSION  " + serSeq.accession);
     }
 
-    if (serSeq.version ) {
-      lines.push("VERSION  " + (serSeq.version));
+    if (serSeq.version) {
+      lines.push("VERSION  " + serSeq.version);
     }
-    
+
     if (serSeq.extraLines) {
       lines = lines.concat(serSeq.extraLines);
     }

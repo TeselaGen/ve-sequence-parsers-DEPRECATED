@@ -128,7 +128,6 @@ FEATURES             Location/Qualifiers
     result[0].parsedSequence.features[0].name.should.equal("Homo sapiens")
     result[0].parsedSequence.features[0].start.should.equal(0)
     result[0].parsedSequence.features[0].end.should.equal(75)
-    console.log(`parsedSequence.features:`,JSON.stringify(result[0].parsedSequence.features,null,4))
 
 
     // result[0].parsedSequence.isProtein.should.be.

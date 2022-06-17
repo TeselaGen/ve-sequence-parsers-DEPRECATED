@@ -356,9 +356,12 @@ describe("genbank exporter/parser conversion", function() {
       features: {
         feat1: { start: 2, end: 4 },
       },
+      accession: "some thing",
+      version: "v12312",
     });
     const result = parseGenbank(exportedGenbankString);
-
+    result[0].parsedSequence.accession = "some thing";
+    result[0].parsedSequence.version = "v12312";
     result[0].parsedSequence.features.should.containSubset([
       {
         start: 2,
