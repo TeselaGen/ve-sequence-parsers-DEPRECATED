@@ -26,13 +26,15 @@ describe("snapgene file parser", function() {
     );
   });
   it(`an invalid file should return an unsuccessful response`, async () => {
+    console.log(`^^^^^^^^^^^^^^^^^^^^^^^THIS SHOULD FAIL!! ^^^^^^^^^^^^^^^^^^^^^^^`)
     const results = await snapgeneToJson(
       { zoink: "berg" },
       {
         fileName: "GFPuv_025_fwdfeature_linear.dna",
       }
-    );
-    results[0].success.should.equal(false);
+      );
+      results[0].success.should.equal(false);
+    console.log(`^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^`)
   });
   it("linear dna w/feature on forward strand", async function() {
     const fileObj = fs.readFileSync(
