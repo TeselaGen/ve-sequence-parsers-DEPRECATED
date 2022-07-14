@@ -301,7 +301,7 @@ function genbankToJson(string, options = {}) {
   function parseLocus(line) {
     result = createInitialSequence(options);
     let locusName;
-    let linear;
+    let circular;
 
     let gbDivision;
     let date;
@@ -317,10 +317,11 @@ function genbankToJson(string, options = {}) {
     locusName = lineArr[1];
 
     // Linear vs Circular?
-    linear = true;
     for (let i = 1; i < lineArr.length; i++) {
       if (lineArr[i].match(/circular/gi)) {
-        linear = false;
+        circular = true;
+      } else if (lineArr[i].match(/linear/gi)) {
+        circular = false;
       }
     }
 
@@ -366,7 +367,8 @@ function genbankToJson(string, options = {}) {
     result.parsedSequence.gbDivision = gbDivision;
     result.parsedSequence.sequenceTypeFromLocus = options.sequenceTypeFromLocus;
     result.parsedSequence.date = date;
-    result.parsedSequence.circular = !linear;
+    console.log(circular)
+    result.parsedSequence.circular = circular;
   }
 
   function extractExtraLine(line) {

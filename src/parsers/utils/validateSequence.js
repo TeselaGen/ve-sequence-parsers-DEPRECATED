@@ -28,8 +28,7 @@ export default function validateSequence(sequence, options = {}) {
     inclusive1BasedStart,
     inclusive1BasedEnd,
     additionalValidChars,
-    allowOverflowAnnotations,
-    circularityExplicitlyDefined
+    allowOverflowAnnotations
   } = options;
   const response = {
     validatedAndCleanedSequence: {},
@@ -116,12 +115,15 @@ export default function validateSequence(sequence, options = {}) {
       ? sequence.proteinSequence.length * 3
       : sequence.sequence.length;
   }
+
+  let circularityExplicitlyDefined;
   if (
     sequence.circular === false ||
     sequence.circular === "false" ||
     sequence.circular === -1
   ) {
     sequence.circular = false;
+    circularityExplicitlyDefined = true;
   } else if (!sequence.circular) {
     sequence.circular = false;
     circularityExplicitlyDefined = circularityExplicitlyDefined || false
