@@ -367,7 +367,6 @@ function genbankToJson(string, options = {}) {
     result.parsedSequence.gbDivision = gbDivision;
     result.parsedSequence.sequenceTypeFromLocus = options.sequenceTypeFromLocus;
     result.parsedSequence.date = date;
-    console.log(circular)
     result.parsedSequence.circular = circular;
   }
 
