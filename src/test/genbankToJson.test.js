@@ -855,28 +855,25 @@ ORIGIN
     );
     done();
   });
+  it("genbank parses with different circularityExplicitlyDefined option", (done) => {
+    const string = fs.readFileSync(
+      path.join(__dirname, "./testData/genbank/test_circularity_explicitly_defined.gb"),
+      "utf8"
+    );
+  
+    const string2 = fs.readFileSync(
+      path.join(__dirname, './testData/genbank/test_circularity_not_defined.gb'),
+      'utf8'
+    );
+  
+    const result = genbankToJson(string);
+    expect(result[0].parsedSequence.circular).toBe(false);
+  
+    const result2 = genbankToJson(string2);
+    expect(result2[0].parsedSequence.circular).toBe(true);
+    done();
+  });
 });
-
-it("genbank parses with different circularityExplicitlyDefined option", (done) => {
-  const string = fs.readFileSync(
-    path.join(__dirname, "./testData/genbank/test_circularity_explicitly_defined.gb"),
-    "utf8"
-  );
-
-  const string2 = fs.readFileSync(
-    path.join(__dirname, './testData/genbank/test_circularity_not_defined.gb'),
-    'utf8'
-  );
-
-  const result = genbankToJson(string);
-  expect(result[0].parsedSequence.circular).toBe(false);
-
-  const result2 = genbankToJson(string2);
-  expect(result2[0].parsedSequence.circular).toBe(true);
-  done();
-});
-
-
 
 // const string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
 // const string = fs.readFileSync(__dirname + '/testGenbankFile.gb', "utf8");

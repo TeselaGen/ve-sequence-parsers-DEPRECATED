@@ -28,7 +28,7 @@ export default function validateSequence(sequence, options = {}) {
     inclusive1BasedStart,
     inclusive1BasedEnd,
     additionalValidChars,
-    allowOverflowAnnotations
+    allowOverflowAnnotations,
   } = options;
   const response = {
     validatedAndCleanedSequence: {},
@@ -115,7 +115,6 @@ export default function validateSequence(sequence, options = {}) {
       ? sequence.proteinSequence.length * 3
       : sequence.sequence.length;
   }
-
   let circularityExplicitlyDefined;
   if (
     sequence.circular === false ||
@@ -126,7 +125,7 @@ export default function validateSequence(sequence, options = {}) {
     circularityExplicitlyDefined = true;
   } else if (!sequence.circular) {
     sequence.circular = false;
-    circularityExplicitlyDefined = circularityExplicitlyDefined || false
+    circularityExplicitlyDefined = circularityExplicitlyDefined || false;
   } else {
     sequence.circular = true;
   }
@@ -136,7 +135,7 @@ export default function validateSequence(sequence, options = {}) {
     sequence.features = [];
   }
   //tnr: maybe this should be wrapped in its own function (in case we want to use it elsewhere)
-  sequence.features = sequence.features.filter(function(feature) {
+  sequence.features = sequence.features.filter(function (feature) {
     if (!feature || typeof feature !== "object") {
       response.messages.push("Invalid feature detected and removed");
       return false;
@@ -222,7 +221,7 @@ export default function validateSequence(sequence, options = {}) {
     if (
       !feature.type ||
       typeof feature.type !== "string" ||
-      !FeatureTypes.some(function(featureType) {
+      !FeatureTypes.some(function (featureType) {
         if (featureType.toLowerCase() === feature.type.toLowerCase()) {
           feature.type = featureType; //this makes sure the feature.type is being set to the exact value of the accepted featureType
           return true;
