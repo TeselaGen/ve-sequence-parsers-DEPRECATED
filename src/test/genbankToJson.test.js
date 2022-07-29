@@ -13,6 +13,51 @@ chai.use(require("chai-things"));
 chai.should();
 
 describe("genbankToJson tests", function() {
+  it(`correctly handles features with a direction of BOTH`, () => {
+    const string = `LOCUS       kc2         108 bp    DNA     linear    01-NOV-2016
+COMMENT             teselagen_unique_id: 581929a7bc6d3e00ac7394e8
+FEATURES             Location/Qualifiers
+      CDS             1..108
+                      /label="GFPuv"
+                      /direction="BOTH"
+      misc_feature    61..108
+                      /label="gly_ser_linker"
+                      /direction="NONE"
+ORIGIN      
+        1 atgaaggtct acggcaagga acagtttttg cggatgcgcc agagcatgtt ccccgatcgc
+        61 ggtggcagtg gtagcgggag ctcgggtggc tcaggctctg ggg
+//
+    
+`;
+    const result = genbankToJson(string);
+    result[0].parsedSequence.features.should.containSubset([
+      {
+        name: "GFPuv",
+        strand: 1,
+        arrowheadType: 'BOTH'
+      },
+      {
+        name: "gly_ser_linker",
+        strand: 1,
+        arrowheadType: 'NONE'
+      },
+    ]);
+    const gb = jsonToGenbank(result[0].parsedSequence)
+    //we should retain the direction information on a round trip
+    const result2 = genbankToJson(gb);
+    result2[0].parsedSequence.features.should.containSubset([
+      {
+        name: "GFPuv",
+        strand: 1,
+        arrowheadType: 'BOTH'
+      },
+      {
+        name: "gly_ser_linker",
+        strand: 1,
+        arrowheadType: 'NONE'
+      },
+    ]);
+  });
   it(`correctly handles a multi-line DEFINITION converting it to description`, () => {
     const string = `LOCUS       Tt2-PstI-SphI-rev(dna)        7628 bp    DNA     circular
     04-FEB-2021
@@ -52,6 +97,7 @@ ORIGIN
       `[Heavy] lalalal more description here and still more`
     );
   });
+  
   it(`correctly handles a multi-line LOCUS and parses the sequence as circular`, () => {
     const string = `LOCUS       Tt2-PstI-SphI-rev(dna)        7628 bp    DNA     circular
     04-FEB-2021

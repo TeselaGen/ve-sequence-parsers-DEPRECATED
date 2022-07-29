@@ -10,7 +10,7 @@ const StringUtil = {
    * @param {string} line
    * @returns {string} line
    */
-  trim: function(line) {
+  trim: function (line) {
     return line.replace(/^\s+|\s+$/g, "");
   },
 
@@ -18,7 +18,7 @@ const StringUtil = {
    * @param {string} line
    * @returns {string} line
    */
-  ltrim: function(line) {
+  ltrim: function (line) {
     return line.replace(/^\s+/, "");
   },
 
@@ -26,7 +26,7 @@ const StringUtil = {
    * @param {string} line
    * @returns {string} line
    */
-  rtrim: function(line) {
+  rtrim: function (line) {
     return line.replace(/\s+$/, "");
   },
 
@@ -34,7 +34,7 @@ const StringUtil = {
    * @param {string} line
    * @returns {string} line
    */
-  lpad: function(line, padString, length) {
+  lpad: function (line, padString, length) {
     let str = line;
     while (str.length < length) str = padString + str;
     return str;
@@ -44,7 +44,7 @@ const StringUtil = {
    * @param {string} line
    * @returns {string} line
    */
-  rpad: function(line, padString, length) {
+  rpad: function (line, padString, length) {
     let str = line;
     while (str.length < length) str = str + padString;
     return str;
@@ -59,7 +59,7 @@ function cutUpStr(val, start, end) {
   return val.slice(start, end);
 }
 
-export default function(_serSeq, options) {
+export default function (_serSeq, options) {
   options = options || {};
   options.reformatSeqName = options.reformatSeqName !== false;
   const serSeq = cloneDeep(_serSeq);
@@ -93,7 +93,7 @@ export default function(_serSeq, options) {
       lines = lines.concat(serSeq.extraLines);
     }
     if (serSeq.comments) {
-      serSeq.comments.forEach(function(comment) {
+      serSeq.comments.forEach(function (comment) {
         lines.push("COMMENT             " + comment);
       });
     }
@@ -134,7 +134,7 @@ export default function(_serSeq, options) {
     });
 
     let printedFeatureHeader;
-    each(serSeq.features, function(feat, index) {
+    each(serSeq.features, function (feat, index) {
       if (!printedFeatureHeader) {
         printedFeatureHeader = true;
         lines.push("FEATURES             Location/Qualifiers");
@@ -305,6 +305,16 @@ function featureToGenbankString(feat, options) {
   if (feat.overlapsSelf) {
     addToNotes(feat, "pragma", "overlapsSelf");
   }
+  if (feat.arrowheadType) {
+    const valToAdd =
+      feat.arrowheadType.toUpperCase() === "BOTH"
+        ? "BOTH"
+        : feat.arrowheadType.toUpperCase() === "NONE"
+        ? "NONE"
+        : undefined;
+
+    if (valToAdd) addToNotes(feat, "direction", valToAdd);
+  }
   let notes = feat.notes;
 
   if (notes) {
@@ -317,10 +327,10 @@ function featureToGenbankString(feat, options) {
           notes = {}; //set the notes to a blank object
         }
       }
-      Object.keys(notes).forEach(function(key) {
+      Object.keys(notes).forEach(function (key) {
         if (key === "color" || key === "labelColor") return; //we'll handle this below
         if (notes[key] instanceof Array) {
-          notes[key].forEach(function(value) {
+          notes[key].forEach(function (value) {
             lines.push(featureNoteInDataToGenbankString(key, value));
           });
         } else {

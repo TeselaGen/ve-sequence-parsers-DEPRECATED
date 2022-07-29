@@ -57,7 +57,7 @@ function genbankToJson(string, options = {}) {
       addMessage("Import Error: Sequence file is empty");
     }
 
-    lines.some(function(line) {
+    lines.some(function (line) {
       if (line === null) {
         return true; //break the some loop
       }
@@ -397,9 +397,8 @@ function genbankToJson(string, options = {}) {
 
     if (lastLineWasFeaturesTag) {
       //we need to get the indentation of feature locations
-      featureLocationIndentation = getLengthOfWhiteSpaceBeforeStartOfLetters(
-        line
-      );
+      featureLocationIndentation =
+        getLengthOfWhiteSpaceBeforeStartOfLetters(line);
       //set lastLineWasFeaturesTag to false
       lastLineWasFeaturesTag = false;
     }
@@ -417,9 +416,9 @@ function genbankToJson(string, options = {}) {
           //append to the currentFeatureNote
           // only trim file formatting spaces (i.e. the left ones)
           // spaces on the right are necessary (e.g. spacing between words, etc.)
-          currentFeatureNote[
-            currentFeatureNote.length - 1
-          ] += line.trimLeft().replace(/"/g, "");
+          currentFeatureNote[currentFeatureNote.length - 1] += line
+            .trimLeft()
+            .replace(/"/g, "");
         }
         lastLineWasLocation = false;
       }
@@ -466,12 +465,7 @@ function genbankToJson(string, options = {}) {
     /*if (line.charAt(21) === "/") {//T.H. Hard coded method
            qual = true;
          }*/
-    if (
-      line
-        .trim()
-        .charAt(0)
-        .match(/\//)
-    ) {
+    if (line.trim().charAt(0).match(/\//)) {
       // searches based on looking for / in beginning of line
       qual = true;
     } else if (line.match(/^[\s]*\/[\w]+=[\S]+/)) {
@@ -484,7 +478,7 @@ function genbankToJson(string, options = {}) {
   function parseFeatureLocation(locStr, options) {
     locStr = locStr.trim();
     const locArr = [];
-    locStr.replace(/(\d+)/g, function(string, match) {
+    locStr.replace(/(\d+)/g, function (string, match) {
       locArr.push(match);
     });
     for (let i = 0; i < locArr.length; i += 2) {
@@ -624,6 +618,16 @@ function genbankToJson(string, options = {}) {
       addMessage(
         `Warning: Shortening name of feature ${oldName} (max 100 chars)`
       );
+    }
+
+    if (feat.notes.direction) {
+      feat.arrowheadType =
+        feat.notes.direction[0].toUpperCase() === "BOTH"
+          ? "BOTH"
+          : feat.notes.direction[0].toUpperCase() === "NONE"
+          ? "NONE"
+          : undefined;
+      delete feat.notes.direction;
     }
     return feat;
   }
