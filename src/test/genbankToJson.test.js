@@ -13,7 +13,7 @@ chai.use(require("chai-things"));
 chai.should();
 
 describe("genbankToJson tests", function() {
-  it(`correctly handles features with a direction of BOTH`, () => {
+  it(`correctly handles features with a direction of BOTH and NONE`, () => {
     const string = `LOCUS       kc2         108 bp    DNA     linear    01-NOV-2016
 COMMENT             teselagen_unique_id: 581929a7bc6d3e00ac7394e8
 FEATURES             Location/Qualifiers
