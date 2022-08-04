@@ -1,10 +1,10 @@
 /* eslint-disable no-var*/
-import { parseString } from "xml2js";
-
 import flatmap from "flatmap";
 import access from "safe-access";
 import validateSequenceArray from "./utils/validateSequenceArray";
 import searchWholeObjByName from "./utils/searchWholeObjByName";
+
+import { XMLParser } from "fast-xml-parser";
 
 //Here's what should be in the callback:
 // {
@@ -14,7 +14,7 @@ import searchWholeObjByName from "./utils/searchWholeObjByName";
 // }
 async function sbolXmlToJson(string, options) {
   options = options || {};
-  const onFileParsed = function(sequences) {
+  const onFileParsed = function (sequences) {
     //before we call the onFileParsed callback, we need to validate the sequence
     return validateSequenceArray(sequences, options);
   };
@@ -24,13 +24,9 @@ async function sbolXmlToJson(string, options) {
     success: true,
   };
   try {
-    const result = await new Promise((resolve, reject) =>
-      parseString(string, (err, result) => {
-        if (err) reject(err);
-        else resolve(result);
-      })
-    );
-
+    const result = new XMLParser({
+      isArray: () => true
+    }).parse(string);
     const sbolJsonMatches = searchWholeObjByName("DnaComponent", result);
     if (sbolJsonMatches[0]) {
       const resultArray = [];
@@ -95,14 +91,14 @@ function parseSbolJson(sbolJson, options) {
     circular: false,
     sequence: access(sbolJson, "dnaSequence[0].DnaSequence[0].nucleotides"),
     name: name,
-    features: flatmap(sbolJson.annotation, function(annotation) {
+    features: flatmap(sbolJson.annotation, function (annotation) {
       const feature = access(annotation, "SequenceAnnotation[0]");
       if (feature) {
         const notes = searchWholeObjByName("ns2:about", feature);
         const otherNotes = searchWholeObjByName("ns2:resource", feature);
         notes.push.apply(notes, otherNotes);
         const newNotes = {};
-        notes.forEach(function(note) {
+        notes.forEach(function (note) {
           if (newNotes[note.prop]) {
             newNotes[note.prop].push(note.value);
           } else {

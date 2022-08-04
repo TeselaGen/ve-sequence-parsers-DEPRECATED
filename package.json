@@ -30,10 +30,10 @@
   "author": "teselagen",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^28.1.1",
+    "@types/jest": "^28.1.6",
     "@types/lodash": "npm:@types/lodash-es",
     "auto-changelog": "^2.4.0",
-    "babel-jest": "^28.1.1",
+    "babel-jest": "^28.1.3",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
@@ -41,15 +41,15 @@
     "chai": "^4.3.6",
     "chai-subset": "^1.6.0",
     "chai-things": "^0.2.0",
-    "eslint": "^8.17.0",
+    "eslint": "^8.21.0",
     "eslint-config-teselagen": "^6.0.3",
     "husky": "^8.0.1",
-    "jest": "^28.1.1",
-    "lint-staged": "^13.0.1",
+    "jest": "^28.1.3",
+    "lint-staged": "^13.0.3",
     "nwb": "^0.25.2",
     "prettier": "^2.7.1",
-    "ve-range-utils": "^2.6.5",
-    "ve-sequence-utils": "5.1.20"
+    "ve-range-utils": "^2.6.6",
+    "ve-sequence-utils": "5.1.32"
   },
   "peerDependencies": {
     "ve-range-utils": "*",
@@ -60,12 +60,12 @@
     "buffer": "^6.0.3",
     "bufferpack": "^0.0.6",
     "color": "^4.2.3",
+    "fast-xml-parser": "^4.0.9",
     "flatmap": "0.0.3",
     "lodash": "^4.17.21",
     "safe-access": "^0.1.0",
     "string_decoder": "^1.3.0",
-    "validate.io-nonnegative-integer-array": "^1.0.1",
-    "xml2js": "^0.4.23"
+    "validate.io-nonnegative-integer-array": "^1.0.1"
   },
   "directories": {
     "test": "test"

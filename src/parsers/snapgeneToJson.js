@@ -2,13 +2,13 @@
 // https://github.com/IsaacLuo/SnapGeneFileReader
 
 import bufferpack from "bufferpack";
-import xml2Js from "xml2js";
 import { StringDecoder } from "string_decoder";
 import getArrayBufferFromFile from "./utils/getArrayBufferFromFile";
 import createInitialSequence from "./utils/createInitialSequence";
 import validateSequenceArray from "./utils/validateSequenceArray";
 import flattenSequenceArray from "./utils/flattenSequenceArray";
 import { get } from "lodash";
+import { XMLParser } from "fast-xml-parser";
 
 const Buffer = require("buffer/").Buffer;
 
@@ -101,68 +101,68 @@ async function snapgeneToJson(fileObj, options = {}) {
         data.sequence = await read(size, "ascii");
       } else if (ord(next_byte) === 10) {
         //   # READ THE FEATURES
-        const strand_dict = { "0": ".", "1": "+", "2": "-", "3": "=" };
+        const strand_dict = { 0: ".", 1: "+", 2: "-", 3: "=" };
         //   const format_dict = {'@text': parse, '@int': int}
 
         const xml = await read(block_size, "utf8");
-        const b = await parseXml(xml);
+        const b = new XMLParser({
+          ignoreAttributes: false,
+          attributeNamePrefix: "",
+          isArray: (name) => name === "Feature" || name === 'Segment',
+        }).parse(xml);
         const { Features: { Feature = [] } = {} } = b;
         data.features = [];
-        Feature.forEach(
-          ({ $: attrs, Q: additionalAttrs = [], Segment = [] }) => {
-            let color;
-            let maxStart = 0;
-            let maxEnd = 0;
-            const segments =
-              Segment &&
-              Segment.map(({ $: seg }) => {
-                if (!seg) throw new Error("invalid feature definition");
-                const { range } = seg;
-                color = seg.color;
-                const { start, end } = getStartAndEndFromRangeString(range);
-                maxStart = Math.max(maxStart, start);
-                maxEnd = Math.max(maxEnd, end);
-                return {
-                  ...seg,
-                  start,
-                  end,
-                };
-              });
-            const { directionality } = attrs;
-            data.features.push({
-              ...attrs,
-              strand: strand_dict[directionality],
-              start: maxStart,
-              end: maxEnd,
-              color,
-              segments,
+        Feature.forEach((feat) => {
+          const { directionality, Segment = [] } = feat;
+
+          let color;
+          let maxStart = 0;
+          let maxEnd = 0;
+          const segments =
+            Segment &&
+            Segment.map((seg) => {
+              if (!seg) throw new Error("invalid feature definition");
+              const { range } = seg;
+              color = seg.color;
+              const { start, end } = getStartAndEndFromRangeString(range);
+              maxStart = Math.max(maxStart, start);
+              maxEnd = Math.max(maxEnd, end);
+              return {
+                ...seg,
+                start,
+                end,
+              };
             });
-          }
-        );
+          data.features.push({
+            ...feat,
+            strand: strand_dict[directionality],
+            start: maxStart,
+            end: maxEnd,
+            color,
+            segments,
+          });
+        });
       } else if (ord(next_byte) === 6) {
         //       # READ THE NOTES
 
         const xml = await read(block_size, "utf8");
-        const b = await parseXml(xml);
-
-        const name = get(b, "Notes.CustomMapLabel[0]");
+        const b = new XMLParser({
+        }).parse(xml);
+        const name = get(b, "Notes.CustomMapLabel");
         if (name) {
           data.name = name;
         }
 
-        const description = get(b, "Notes.Description[0]");
-        if (description && typeof description === 'string') {
-          data.description = description.replace('<html><body>', '').replace('</body></html>', '') //fixes https://github.com/TeselaGen/ve-sequence-parsers/issues/225
+        const description = get(b, "Notes.Description");
+        if (description && typeof description === "string") {
+          data.description = description
+            .replace("<html><body>", "")
+            .replace("</body></html>", ""); //fixes https://github.com/TeselaGen/ve-sequence-parsers/issues/225
         }
       } else {
         // # WE IGNORE THE WHOLE BLOCK
         await read(block_size); //we don't do anything with this
-        // console.log(`next_byte:`,next_byte)
-        // console.log(`ord(string):`, ord(next_byte));
         // const a = await read(block_size, "utf8");
-        // console.log(`a:`, a);
-        // const b = await parseXml(xml);
-        // console.log(`b:`,b)
       }
     }
     returnVal.parsedSequence = data;
@@ -229,15 +229,6 @@ function ord(string) {
   return code;
 }
 
-function parseXml(string) {
-  return new Promise((resolve, reject) => {
-    xml2Js.parseString(string, (err, result) => {
-      err && reject(err);
-      resolve(result);
-    });
-  });
-}
-
 export default snapgeneToJson;
 
 function dec2bin(dec) {
@@ -245,12 +236,5 @@ function dec2bin(dec) {
 }
 
 function isFirstBitA1(num) {
-  return (
-    Number(
-      num
-        .toString()
-        .split("")
-        .pop()
-    ) === 1
-  );
+  return Number(num.toString().split("").pop()) === 1;
 }
