@@ -8,12 +8,14 @@ import assert from "assert";
 import chai from "chai";
 import example1OutputChromatogram from "./testData/ab1/example1_output_chromatogram.json";
 import ab1ToJson from "../parsers/ab1ToJson";
+import chaiSubset from "chai-subset";
 chai.use(require("chai-things"));
 
+chai.use(chaiSubset);
 chai.should();
 
-describe("anyToJsonPromise", function() {
-  it("should do the same thing as anyToJson but have a standard promise interface", async function() {
+describe("anyToJsonPromise", function () {
+  it("should do the same thing as anyToJson but have a standard promise interface", async function () {
     const results = await anyToJson(
       fs.readFileSync(
         path.join(__dirname, "./testData/pBbS0c-RFP_no_name.txt"),
@@ -25,8 +27,8 @@ describe("anyToJsonPromise", function() {
     results[0].parsedSequence.name.should.equal("pBbS0c-RFP_no_name");
   });
 });
-describe("anyToJson", function() {
-  it("should not break on LQNKMVSDKGRAHKPAWYMGMVNNAYNLSIISTMIL parsed with isProtein=true", async function() {
+describe("anyToJson", function () {
+  it("should not break on LQNKMVSDKGRAHKPAWYMGMVNNAYNLSIISTMIL parsed with isProtein=true", async function () {
     const results = await anyToJson("LQNKMVSDKGRAHKPAWYMGMVNNAYNLSIISTMIL", {
       fileName: "randomString.txt",
       isProtein: true,
@@ -35,7 +37,7 @@ describe("anyToJson", function() {
     results[0].parsedSequence.sequence.length.should.equal(36);
     results[0].parsedSequence.name.should.equal("randomString");
   });
-  it("addgene-plasmid.dna file should parse correctly", async function() {
+  it("addgene-plasmid.dna file should parse correctly", async function () {
     const results = await anyToJson(
       // src/test/testData/dna/addgene-plasmid.dna
       fs.readFileSync(
@@ -53,7 +55,7 @@ describe("anyToJson", function() {
     );
     // results[0].parsedSequence.name.should.equal("randomString");
   });
-  it("parses a simple .txt file as fasta", async function() {
+  it("parses a simple .txt file as fasta", async function () {
     const result = await anyToJson(
       fs.readFileSync(
         path.join(__dirname, "./testData/pBbS0c-RFP_no_name.txt"),
@@ -70,7 +72,7 @@ describe("anyToJson", function() {
     result[0].parsedSequence.circular.should.equal(true);
     result[0].parsedSequence.name.should.equal("pBbS0c-RFP_no_name");
   });
-  it("handles parseFastaAsCircular=true", async function() {
+  it("handles parseFastaAsCircular=true", async function () {
     const result = await anyToJson(
       ">simpleFasta \n gatggagagag",
 
@@ -80,7 +82,22 @@ describe("anyToJson", function() {
     result[0].parsedSequence.circular.should.equal(true);
     result[0].parsedSequence.name.should.equal("simpleFasta");
   });
-  it("parse in an ab1 file without failing :)", async function() {
+  it("allows in JSON files", async function () {
+    const fileObj = fs.readFileSync(
+      path.join(__dirname, "./testData/json/1.json")
+    );
+    const result = await anyToJson(fileObj, { fileName: "1.json" });
+    result[0].parsedSequence.sequence.length.should.equal(5901);
+    result[0].parsedSequence.circular.should.equal(true);
+    result[0].parsedSequence.name.should.equal("pRS414__modified");
+    result[0].parsedSequence.features.should.containSubset([
+      { name: "Ampicillin", type: "CDS", start: 714 },
+    ]);
+    result[0].parsedSequence.features[0].notes.gene[0].should.equal(
+      "Ampicillin"
+    );
+  });
+  it("parse in an ab1 file without failing :)", async function () {
     const fileObj = fs.readFileSync(
       path.join(__dirname, "./testData/ab1/example1.ab1")
     );
@@ -94,7 +111,7 @@ describe("anyToJson", function() {
       "NANTCTATAGGCGAATTCGAGCTCGGTACCCGGGGATCCTCTAGAGTCGACCTGCAGGCATGCAAGCTTGAGTATTCTATAGTGTCACCTAAATAGCTTGGCGTAATCATGGTCATAGCTGTTTCCTGTGTGAAATTGTTATCCGCTCACAATTCCACACAACATACGAGCCGGAAGCATAAAGTGTAAAGCCTGGGGTGCCTAATGAGTGAGCTAACTCACATTAATTGCGTTGCGCTCACTGCCCGCTTTCCAGTCGGGAAACCTGTCGTGCCAGCTGCATTAATGAATCGGCCAACGCGCGGGGAGAGGCGGTTTGCGTATTGGGCGCTCTTCCGCTTCCTCGCTCACTGACTCGCTGCGCTCGGTCGTTCGGCTGCGGCGAGCGGTATCAGCTCACTCAAAGGCGGTAATACGGTTATCCACAGAATCAGGGGATAACGCAGGAAAGAACATGTGAGCAAAAGGCCAGCAAAAGGCCAGGAACCGTAAAAAGGCCGCGTTGCTGGCGTTTTTCCATAGGCTCCGCCCCCCTGACGAGCATCACAAAAATCGACGCTCAAGTCAGAGGTGGCGAAACCCGACAGGACTATAAAGATACCAGGCGTTTCCCCCTGGAAGCTCCCTCGTGCGCTCTCCTGTTCCGACCCTGCCGCTTACCGGATACCTGTCCGCCTTTCTCCCTTCGGGAAGCGTGGCGCTTTCTCATAGCTCACGCTGTAGGTATCTCAGTTCGGTGTAGGTCGTTCGCTCCAAGCTGGGCTGTGTGCACGAACCCCCCGTTCAGCCCGACCGCTGCGCCTTATCCGGTAACTATCGTCTTGAGTCCAACCCGGTAAGACACGACTTATCGCCACTGGCAGCAGCCACTGGTAACAGGATTAGCAGAGCGAGGTATGTAGGCGGTGCTACAGAGTTCTTGAAGTGGTGGCCTAACTACGGCTACACTAGAAGAACAGTATTTGGTATCTGCGCTCTGCTGAAGCCAGTTACCTTCGGAAAAAGAGTTGGTAGCTCTNGATCCGGCAACAACCACCGCTGGTAGCGGNGGTTTTTTGTTNGCAAGCAGCANATTACNCNCAAAAAAAAANGATCTCAANAAAATCCTTNGATNTTTTNNACGGGGNCTGACNCTNAGGGNAAAAAAACTCCCNTTAAGGGATTTNGNCNTGAANTTTNAAAAAGANNTTNCCCNAAAACNNTTNAATTAAAAAAANNTTTAAACNNCCNAAAAATTTNNAAAAAATTGNGGGGAANNNCCAGGNTTTNNTNGGGGGGCCCTNCCCCNNNGGGGTTTTTTTNCCCAAANGNGGCCCCCCCCCNGGNAAAAAAAANAANNGGGGNN"
     );
   });
-  it("parses a .fasta file without a name and use the file name", async function() {
+  it("parses a .fasta file without a name and use the file name", async function () {
     const result = await anyToJson(
       fs.readFileSync(
         path.join(__dirname, "./testData/pBbS0c-RFP_no_name.fasta"),
@@ -106,7 +123,7 @@ describe("anyToJson", function() {
     result[0].parsedSequence.name.should.equal("pBbS0c-RFP_no_name");
   });
 
-  it("should call the success callback for an ambiguously named file only once (it shouldn't break parsing the file)", async function() {
+  it("should call the success callback for an ambiguously named file only once (it shouldn't break parsing the file)", async function () {
     await anyToJson(
       fs.readFileSync(
         path.join(__dirname, "./testData/pBbS0c-RFP_no_name.gb"),
@@ -115,7 +132,7 @@ describe("anyToJson", function() {
       { fileName: "pBbS0c-RFP", isProtein: false }
     );
   });
-  it("parses the pBbE0c-RFP plasmid represented in various filetypes to the same end result", async function() {
+  it("parses the pBbE0c-RFP plasmid represented in various filetypes to the same end result", async function () {
     const options = {
       fastaFilePath: "pBbE0c-RFP.fasta",
       genbankFilePath: "pBbE0c-RFP.gb",
@@ -169,9 +186,9 @@ describe("anyToJson", function() {
     //sbolXml to genbank check
     //can't make checks for circularity because sbol sequences are assumed to be linear
     // assert(sbolXMLResult[0].parsedSequence.circular === genbankResult[0].parsedSequence.circular);
-    sbolXMLResult[0].parsedSequence.features.forEach(function(feat1) {
+    sbolXMLResult[0].parsedSequence.features.forEach(function (feat1) {
       assert(
-        genbankResult[0].parsedSequence.features.filter(function(feat2) {
+        genbankResult[0].parsedSequence.features.filter(function (feat2) {
           //can't make checks for start or end because features are split on the origin in sbol
           if (feat1.name === feat2.name) {
             if (feat1.name === "RFP cassette") return true; //this feature is not specified in SBOL
@@ -187,7 +204,7 @@ describe("anyToJson", function() {
       );
     });
   });
-  it("parses a gff file", async function() {
+  it("parses a gff file", async function () {
     const result = await anyToJson(
       fs.readFileSync(
         path.join(__dirname, "./testData/gff/example.gff3"),

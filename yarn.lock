@@ -5194,10 +5194,10 @@ eslint-config-react-app@^6.0.0:
   dependencies:
     confusing-browser-globals "^1.0.10"
 
-eslint-config-teselagen@^6.0.3:
-  version "6.0.3"
-  resolved "https://registry.npmjs.org/eslint-config-teselagen/-/eslint-config-teselagen-6.0.3.tgz"
-  integrity sha512-LefZ1ddhWB5lQl18FuPbeo6GFRZCEBwTBM7pMP7zKqi5l/vJViPB9skGJjgxYd5zd5+7oL6PWPn1Kjjaes1BBw==
+eslint-config-teselagen@^6.0.6:
+  version "6.0.6"
+  resolved "https://registry.yarnpkg.com/eslint-config-teselagen/-/eslint-config-teselagen-6.0.6.tgz#3dc95e54a184c2f3f290ba314bd5ac72561028d8"
+  integrity sha512-e8bEUzZscMsWlCTyKyvtn4r3gI+U0i8ktI4t/5sVJaxOrBkqgH+87WhC1plKdnuQ/ZbFRAnk4LHlza0YcLG2jQ==
   dependencies:
     "@rushstack/eslint-patch" "^1.1.0"
     "@typescript-eslint/eslint-plugin" "^4.0.0"
@@ -5209,7 +5209,7 @@ eslint-config-teselagen@^6.0.3:
     eslint-plugin-flowtype "^5.2.0"
     eslint-plugin-import "^2.22.0"
     eslint-plugin-jsx-a11y "^6.3.1"
-    eslint-plugin-no-only-tests "^2.6.0"
+    eslint-plugin-no-only-tests "^3.0.0"
     eslint-plugin-react "^7.20.3"
     eslint-plugin-react-app "^6.2.2"
     eslint-plugin-react-hooks "^4.0.8"
@@ -5289,10 +5289,10 @@ eslint-plugin-jsx-a11y@6.x, eslint-plugin-jsx-a11y@^6.3.1:
     language-tags "^1.0.5"
     minimatch "^3.0.4"
 
-eslint-plugin-no-only-tests@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.npmjs.org/eslint-plugin-no-only-tests/-/eslint-plugin-no-only-tests-2.6.0.tgz"
-  integrity sha512-T9SmE/g6UV1uZo1oHAqOvL86XWl7Pl2EpRpnLI8g/bkJu+h7XBCB+1LnubRZ2CUQXj805vh4/CYZdnqtVaEo2Q==
+eslint-plugin-no-only-tests@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-only-tests/-/eslint-plugin-no-only-tests-3.0.0.tgz#026cbc8cb069c8da6b7e19d03654be7ad49893f6"
+  integrity sha512-I0PeXMs1vu21ap45hey4HQCJRqpcoIvGcNTPJe+UhUm8TwjQ6//mCrDqF8q0WS6LgmRDwQ4ovQej0AQsAHb5yg==
 
 eslint-plugin-react-app@^6.2.2:
   version "6.2.2"
@@ -5438,10 +5438,10 @@ eslint@7.32.0:
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
 
-eslint@^8.21.0:
-  version "8.21.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.21.0.tgz#1940a68d7e0573cef6f50037addee295ff9be9ef"
-  integrity sha512-/XJ1+Qurf1T9G2M5IHrsjp+xrGT73RZf23xA1z5wB1ZzzEAWSZKvRwhWxTFp1rvkvCfwcvAUNAP31bhKTTGfDA==
+eslint@^8.22.0:
+  version "8.22.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.22.0.tgz#78fcb044196dfa7eef30a9d65944f6f980402c48"
+  integrity sha512-ci4t0sz6vSRKdmkOGmprBo6fmI4PrphDFMy5JEq/fNS0gQkJM3rLmrqcp8ipMcdobH3KtUP40KniAE9W19S4wA==
   dependencies:
     "@eslint/eslintrc" "^1.3.0"
     "@humanwhocodes/config-array" "^0.10.4"
@@ -10543,7 +10543,7 @@ safe-regex@^1.1.0:
   resolved "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sax@>=0.6.0, sax@^1.2.4, sax@~1.2.4:
+sax@^1.2.4, sax@~1.2.4:
   version "1.2.4"
   resolved "https://registry.npmjs.org/sax/-/sax-1.2.4.tgz"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
@@ -11929,10 +11929,10 @@ ve-range-utils@^2.6.6:
   dependencies:
     lodash "^4.17.4"
 
-ve-sequence-utils@5.1.32:
-  version "5.1.32"
-  resolved "https://registry.yarnpkg.com/ve-sequence-utils/-/ve-sequence-utils-5.1.32.tgz#747d2a547fc712477c97ae91f2343bad2c35aecb"
-  integrity sha512-Lk+crYdrQzHQOIdwuPpnddt8YVBHGMSCyeLpg4i9/d8BsFgZqX+w+R24mSdp1lE60/KyOoXjGJIlb5IOeMUh6Q==
+ve-sequence-utils@5.1.34:
+  version "5.1.34"
+  resolved "https://registry.yarnpkg.com/ve-sequence-utils/-/ve-sequence-utils-5.1.34.tgz#a3c3a36c9fc2b7bf131e4a573c8180f63d70f314"
+  integrity sha512-yKeuSy1lGO+fHwHgqt4dJ6buOkaml/iA0KOLDX9Bkd5pgB4QKnS9R25HjbSFBKfoBdNS1ZopA7D3gqyv3EGBIw==
   dependencies:
     bson-objectid "^1.1.1"
     escape-string-regexp "^1.0.5"
@@ -12244,19 +12244,6 @@ ws@~7.4.2:
   version "7.4.6"
   resolved "https://registry.npmjs.org/ws/-/ws-7.4.6.tgz"
   integrity sha512-YmhHDO4MzaDLB+M9ym/mDA5z0naX8j7SIlT8f8z+I0VtzsRbekxEutHSme7NPS2qE8StCYQNUnfWdXta/Yu85A==
-
-xml2js@^0.4.23:
-  version "0.4.23"
-  resolved "https://registry.npmjs.org/xml2js/-/xml2js-0.4.23.tgz"
-  integrity sha512-ySPiMjM0+pLDftHgXY4By0uswI3SPKLDw/i3UXbnO8M/p28zqexCUoPmQFrYD+/1BzhGJSs2i1ERWKJAtiLrug==
-  dependencies:
-    sax ">=0.6.0"
-    xmlbuilder "~11.0.0"
-
-xmlbuilder@~11.0.0:
-  version "11.0.1"
-  resolved "https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-11.0.1.tgz"
-  integrity sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==
 
 xmlhttprequest-ssl@~1.6.2:
   version "1.6.3"

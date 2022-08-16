@@ -6,6 +6,7 @@ import snapgeneToJson from "./snapgeneToJson";
 import ab1ToJson from "./ab1ToJson";
 import gffToJson from "./gffToJson";
 import isBrowser from "./utils/isBrowser";
+import { tidyUpSequenceData } from "ve-sequence-utils";
 
 /**
  * takes in file content string and its file name and determines what parser it needs to be sent to.
@@ -48,6 +49,23 @@ async function anyToJson(fileContentStringOrFileObj, options) {
   } else if (/^(gb|gp|gbk)$/.test(ext)) {
     // GENBANK
     return genbankToJson(fileContentString, options);
+  } else if (/^(json)$/.test(ext)) {
+    // GENBANK
+    const failure = {
+      messages: [`Unable to parse JSON file ${fileName}`],
+      success: false,
+    };
+    try {
+      const cleaned = tidyUpSequenceData(
+        JSON.parse(fileContentString),
+        options
+      );
+      if (!cleaned.sequence.length) return [failure];
+      return [{ parsedSequence: cleaned, success: true }];
+    } catch (error) {
+      console.error(`error:`, error);
+      return [failure];
+    }
   } else if (/^(gp)$/.test(ext)) {
     // PROTEIN GENBANK
     return genbankToJson(fileContentString, { ...options, isProtein: true });
@@ -90,7 +108,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
       let toReturn = await parser.fn(fileContentString, options);
       if (successfulParsing(toReturn)) {
         //continue on to through the normal flow
-        toReturn.forEach(function(result) {
+        toReturn.forEach(function (result) {
           result.messages.push("Parsed using " + parser.name + ".");
         });
         return toReturn;
@@ -110,7 +128,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
 
   //helper function to determine whether or not the parsing was successful or not
   function successfulParsing(resultArray) {
-    return resultArray.some(function(result) {
+    return resultArray.some(function (result) {
       return result.success;
     });
   }
