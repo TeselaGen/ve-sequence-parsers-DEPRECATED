@@ -281,7 +281,7 @@ export default function validateSequence(sequence, options = {}) {
     }
     feature.notes.note &&
       some(feature.notes.note, (n) => {
-        if (n && n.toLowerCase().includes("sequence:")) {
+        if (n && typeof n === "string" && n.toLowerCase().includes("sequence:")) {
           //remove it after we're parsed it out
           feature.notes.note = filter(
             feature.notes.note,

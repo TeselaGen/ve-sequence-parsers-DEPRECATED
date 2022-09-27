@@ -919,6 +919,19 @@ ORIGIN
     expect(result2[0].parsedSequence.circular).toBe(true);
     done();
   });
+
+
+  it('genbank parses should parse /note=123 correctly', (done) => {
+    const string = fs.readFileSync(
+      path.join(__dirname, './testData/pBbE0c-RFP-number-note.gb'),
+      'utf8'
+    );
+    const result = genbankToJson(string);
+    expect(result[0].success).toBe(true);
+    expect(result[0].parsedSequence.features[2].notes.note[0]).toBe(456);
+    expect(result[0].parsedSequence.features[3].notes.note[0]).toBe(123);
+    done();
+  });
 });
 
 // const string = fs.readFileSync(path.join(__dirname, '../../../..', './testData/genbank (JBEI Private)/46.gb'), "utf8");
