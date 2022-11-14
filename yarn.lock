@@ -11929,10 +11929,10 @@ ve-range-utils@^2.6.6:
   dependencies:
     lodash "^4.17.4"
 
-ve-sequence-utils@5.1.34:
-  version "5.1.34"
-  resolved "https://registry.yarnpkg.com/ve-sequence-utils/-/ve-sequence-utils-5.1.34.tgz#a3c3a36c9fc2b7bf131e4a573c8180f63d70f314"
-  integrity sha512-yKeuSy1lGO+fHwHgqt4dJ6buOkaml/iA0KOLDX9Bkd5pgB4QKnS9R25HjbSFBKfoBdNS1ZopA7D3gqyv3EGBIw==
+ve-sequence-utils@5.2.5:
+  version "5.2.5"
+  resolved "https://registry.yarnpkg.com/ve-sequence-utils/-/ve-sequence-utils-5.2.5.tgz#feaab7bc198aa98b788924affbed88d2f85f9f7f"
+  integrity sha512-D2OH6E/sRvnQjOqvAdN5qX8cdqPl7xH9fU3K2Od8b+VJf1zztfNpSEe34weePBHbtM3M8k9zxJG3fngtpxDq5A==
   dependencies:
     bson-objectid "^1.1.1"
     escape-string-regexp "^1.0.5"

@@ -49,7 +49,7 @@
     "nwb": "^0.25.2",
     "prettier": "^2.7.1",
     "ve-range-utils": "^2.6.6",
-    "ve-sequence-utils": "5.1.34"
+    "ve-sequence-utils": "5.2.5"
   },
   "peerDependencies": {
     "ve-range-utils": "*",

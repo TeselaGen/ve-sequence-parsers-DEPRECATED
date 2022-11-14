@@ -1,5 +1,5 @@
 import areNonNegativeIntegers from "validate.io-nonnegative-integer-array";
-import { FeatureTypes } from "ve-sequence-utils";
+import { getFeatureTypes } from "ve-sequence-utils";
 import NameUtils from "./NameUtils.js";
 import {
   filterAminoAcidSequenceString,
@@ -29,6 +29,7 @@ export default function validateSequence(sequence, options = {}) {
     inclusive1BasedEnd,
     additionalValidChars,
     allowOverflowAnnotations,
+    coerceFeatureTypes,
   } = options;
   const response = {
     validatedAndCleanedSequence: {},
@@ -221,7 +222,7 @@ export default function validateSequence(sequence, options = {}) {
     if (
       !feature.type ||
       typeof feature.type !== "string" ||
-      !FeatureTypes.some(function (featureType) {
+      !getFeatureTypes({ includeHidden: true }).some(function (featureType) {
         if (featureType.toLowerCase() === feature.type.toLowerCase()) {
           feature.type = featureType; //this makes sure the feature.type is being set to the exact value of the accepted featureType
           return true;
@@ -229,17 +230,20 @@ export default function validateSequence(sequence, options = {}) {
         return false;
       })
     ) {
-      response.messages.push(
-        'Invalid feature type detected:  "' +
-          feature.type +
-          '" within ' +
-          feature.name +
-          ". set type to misc_feature"
-      );
-      if (typeof feature.type === "string") {
-        invalidFeatureType = feature.type;
+      //tnr: commenting this logic out
+      if (coerceFeatureTypes) {
+        response.messages.push(
+          'Invalid feature type detected:  "' +
+            feature.type +
+            '" within ' +
+            feature.name +
+            ". set type to misc_feature"
+        );
+        if (typeof feature.type === "string") {
+          invalidFeatureType = feature.type;
+        }
+        feature.type = "misc_feature";
       }
-      feature.type = "misc_feature";
     }
     if (!feature.notes) {
       feature.notes = {};
@@ -281,7 +285,11 @@ export default function validateSequence(sequence, options = {}) {
     }
     feature.notes.note &&
       some(feature.notes.note, (n) => {
-        if (n && typeof n === "string" && n.toLowerCase().includes("sequence:")) {
+        if (
+          n &&
+          typeof n === "string" &&
+          n.toLowerCase().includes("sequence:")
+        ) {
           //remove it after we're parsed it out
           feature.notes.note = filter(
             feature.notes.note,

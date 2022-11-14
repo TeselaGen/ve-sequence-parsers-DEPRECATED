@@ -4,7 +4,7 @@ import color from "color";
 
 import nameUtils from "./utils/NameUtils.js";
 import pragmasAndTypes from "./utils/pragmasAndTypes.js";
-import { featureColors } from "ve-sequence-utils";
+import { getFeatureToColorMap } from "ve-sequence-utils";
 const StringUtil = {
   /** Trims white space at beginning and end of string
    * @param {string} line
@@ -348,7 +348,9 @@ function featureToGenbankString(feat, options) {
   if (
     feat.color &&
     color.rgb(feat.color).string() !==
-      color.rgb(featureColors[feat.type]).string() //don't save a color note if the color is already the same as our defaults
+      color
+        .rgb(getFeatureToColorMap({ includeHidden: true })[feat.type])
+        .string() //don't save a color note if the color is already the same as our defaults
   ) {
     lines.push(featureNoteInDataToGenbankString("color", feat.color));
   }
