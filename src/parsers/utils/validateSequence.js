@@ -231,7 +231,7 @@ export default function validateSequence(sequence, options = {}) {
       })
     ) {
       //tnr: commenting this logic out
-      if (coerceFeatureTypes) {
+      if (coerceFeatureTypes || !feature.type) {
         response.messages.push(
           'Invalid feature type detected:  "' +
             feature.type +
