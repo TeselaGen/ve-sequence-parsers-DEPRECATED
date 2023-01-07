@@ -176,6 +176,43 @@ describe("genbank exporter/parser conversion", function() {
 
     result[0].parsedSequence.features[0].notes.should.to.not.be.null;
   });
+  it("should strip URLs correctly", function() {
+    const feat1 = {
+      notes: {
+        someNote: ["I include a URL https://github.com/TeselaGen/microbyre-support/issues/70"],
+      },
+      name: "araC",
+      start: 6,
+      end: 11,
+      type: "CDS",
+      strand: -1,
+    };
+    const description = "I include multiple URLs https://github.com/TeselaGen/fake/url and anotha one https://github.com/TeselaGen/fake/url/the/2nd"
+    const string = jsonToGenbank({
+      sequence: "agagagagagag",
+      features: [feat1],
+      description,
+      parts: [ 
+        {
+          id: "part1",
+          name: "overlapper",
+          overlapsSelf: true,
+          start: 2,
+          end: 6,
+        },
+      ],
+    });
+    console.log(`string:`,string)
+    
+    string.should.not.include('https://github.com/TeselaGen/fake/url')
+    string.should.not.include('https://github.com/TeselaGen/microbyre-support/issues/70')
+
+    const result = parseGenbank(string);
+    result[0].parsedSequence.features.should.include.something.that.deep.equals(
+      feat1
+    );
+    result[0].parsedSequence.description.should.equal(description)
+  });
 
   it("can interconvert between our parser and our exporter with a malformed genbank", function() {
     const string = fs.readFileSync(

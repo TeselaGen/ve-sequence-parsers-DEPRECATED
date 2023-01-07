@@ -1,4 +1,5 @@
 import { tidyUpSequenceData } from "ve-sequence-utils";
+import { mangleUrls } from "./utils/unmangleUrls";
 
 export default function jsonToFasta(jsonSequence, options) {
   const cleanedData = tidyUpSequenceData(jsonSequence);
@@ -24,7 +25,7 @@ export default function jsonToFasta(jsonSequence, options) {
   let fastaString = "";
   fastaString += `>${name || "Untitled Sequence"}|`;
   fastaString += "|" + sizeToUse;
-  fastaString += description ? "|" + description : "";
+  fastaString += description ? "|" + mangleUrls(description) : "";
   fastaString += "|" + (circular ? "circular" : "linear");
   fastaString += "\n";
   fastaString += (seqToUse.match(/.{1,80}/g) || []).join("\n");

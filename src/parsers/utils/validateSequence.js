@@ -8,6 +8,9 @@ import {
 } from "ve-sequence-utils";
 import { filter, some, upperFirst } from "lodash";
 import pragmasAndTypes from "./pragmasAndTypes.js";
+import { forEach } from "lodash";
+import { map } from "lodash";
+import { unmangleUrls } from "./unmangleUrls";
 
 //validation checking
 /**
@@ -48,6 +51,9 @@ export default function validateSequence(sequence, options = {}) {
   }
   if (!sequence.comments) {
     sequence.comments = [];
+  }
+  if (sequence.description) {
+    sequence.description = unmangleUrls(sequence.description);
   }
   const oldName = sequence.name;
   if (reformatSeqName) {
@@ -331,6 +337,12 @@ export default function validateSequence(sequence, options = {}) {
         return false; //don't include the features
       }
     }
+    forEach(feature.notes, (noteArray, key) => {
+      feature.notes[key] = map(noteArray, (note) => {
+        // console.log(`noteArray`, noteArray)
+        return unmangleUrls(note);
+      });
+    });
     return true;
   });
   response.validatedAndCleanedSequence = sequence;

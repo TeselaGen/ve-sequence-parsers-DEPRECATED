@@ -1,5 +1,7 @@
 import jsonToFasta from "../parsers/jsonToFasta";
 import chai from "chai";
+import fastaToJson from "../parsers/fastaToJson";
+
 
 chai.should();
 describe("fasta exporter/parser conversion", function() {
@@ -12,6 +14,32 @@ describe("fasta exporter/parser conversion", function() {
     string.should.equal(`>Untitled Sequence||7|linear
 MMHLRLF`);
   });
+
+  //tnw: I don't think this is possible because fasta does not have a well defined ordering of fields within the header 
+  // it("the description coming in should be the same as the description coming out", function() {
+  //   const description = "Some sort of description"
+  //   const string = jsonToFasta({
+  //     sequence: "agagagagagag",
+  //     description,
+  //   });
+  //   console.log(`string:`,string)
+ 
+  //   const result = fastaToJson(string);
+  //   result[0].parsedSequence.description.should.equal(description)
+  // });
+
+  it("should mangle and unmangle URLs correctly", function() {
+    const description = "I include multiple URLs https://github.com/TeselaGen/fake/url and anotha one https://github.com/TeselaGen/fake/url/the/2nd"
+    const string = jsonToFasta({
+      sequence: "agagagagagag",
+      description,
+    });
+    string.should.not.include('https://github.com/TeselaGen/fake/url')
+    string.should.not.include('https://github.com/TeselaGen/fake/url/the/2nd')
+    const result = fastaToJson(string);
+    result[0].parsedSequence.description.should.include(description)
+  });
+
   it("should correctly make a fasta file", function() {
     // const breakingJSON = require('./testData/json/breakingJSON_stringified')
     const breakingJSON = require("./testData/json/1.json");

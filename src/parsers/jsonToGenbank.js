@@ -5,6 +5,7 @@ import color from "color";
 import nameUtils from "./utils/NameUtils.js";
 import pragmasAndTypes from "./utils/pragmasAndTypes.js";
 import { getFeatureToColorMap } from "ve-sequence-utils";
+import { mangleUrls } from "./utils/unmangleUrls.js";
 const StringUtil = {
   /** Trims white space at beginning and end of string
    * @param {string} line
@@ -78,7 +79,7 @@ export default function (_serSeq, options) {
     let lines = [];
     lines.push(createGenbankLocus(serSeq, options));
     if (serSeq.definition || serSeq.description) {
-      lines.push("DEFINITION  " + (serSeq.definition || serSeq.description));
+      lines.push("DEFINITION  " + mangleUrls(serSeq.definition || serSeq.description));
     }
 
     if (serSeq.accession) {
@@ -235,7 +236,7 @@ function getCurrentDateString() {
 }
 
 function featureNoteInDataToGenbankString(name, value) {
-  return StringUtil.lpad("/", " ", 22) + name + '="' + value + '"';
+  return StringUtil.lpad("/", " ", 22) + name + '="' + mangleUrls(value) + '"';
 }
 
 function featureToGenbankString(feat, options) {
@@ -379,3 +380,4 @@ function addToNotes(ann, key, val) {
   }
   ann.notes[key].push(val);
 }
+
