@@ -202,7 +202,6 @@ describe("genbank exporter/parser conversion", function() {
         },
       ],
     });
-    console.log(`string:`,string)
     
     string.should.not.include('https://github.com/TeselaGen/fake/url')
     string.should.not.include('https://github.com/TeselaGen/microbyre-support/issues/70')
