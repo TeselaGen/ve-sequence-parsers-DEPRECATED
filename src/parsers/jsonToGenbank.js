@@ -1,5 +1,5 @@
 /* eslint-disable no-var*/
-import { cloneDeep, map, each, isObject, flatMap } from "lodash";
+import { get, cloneDeep, map, each, isObject, flatMap } from "lodash";
 import color from "color";
 
 import nameUtils from "./utils/NameUtils.js";
@@ -50,6 +50,21 @@ const StringUtil = {
     while (str.length < length) str = str + padString;
     return str;
   },
+};
+
+const DIGEST_PART_EXPORT_FIELD_MAP = {
+  isDigestPart: "isDigestPart",
+  isDigestValid: "isDigestValid",
+  "re5Prime.name": "re5PrimeName",
+  "re5Prime.recognitionRegex": "re5PrimePattern",
+  re5PrimeOverhang: "re5PrimeOverhang",
+  re5PrimeOverhangStrand: "re5PrimeOverhangStrand",
+  re5PrimeRecognitionTypeCode: "re5PrimeRecognitionTypeCode",
+  "re3Prime.name": "re3PrimeName",
+  "re3Prime.recognitionRegex": "re3PrimePattern",
+  re3PrimeOverhang: "re3PrimeOverhang",
+  re3PrimeOverhangStrand: "re3PrimeOverhangStrand",
+  re3PrimeRecognitionTypeCode: "re3PrimeRecognitionTypeCode",
 };
 
 function cutUpArray(val, start, end) {
@@ -117,6 +132,9 @@ export default function (_serSeq, options) {
           }
           if (type === "primers") {
             ann.type = "primer_bind";
+          }
+          if (type === "parts" && ann.isDigestPart) {
+            addDigestPartFieldsToNotes(ann);
           }
           ann.notes = pragma
             ? {
@@ -381,3 +399,8 @@ function addToNotes(ann, key, val) {
   ann.notes[key].push(val);
 }
 
+function addDigestPartFieldsToNotes(ann) {
+  Object.entries(DIGEST_PART_EXPORT_FIELD_MAP).forEach(([digestFieldPath, digestFieldName]) => {
+    addToNotes(ann, digestFieldName, String(get(ann, digestFieldPath)));
+  });
+}
