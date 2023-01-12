@@ -52,6 +52,21 @@ const StringUtil = {
   },
 };
 
+const DIGEST_PART_EXPORT_FIELD_MAP = {
+  isDigestPart: "isDigestPart",
+  isDigestValid: "isDigestValid",
+  "re5Prime.name": "re5PrimeName",
+  "re5Prime.recognitionRegex": "re5PrimePattern",
+  re5PrimeOverhang: "re5PrimeOverhang",
+  re5PrimeOverhangStrand: "re5PrimeOverhangStrand",
+  re5PrimeRecognitionTypeCode: "re5PrimeRecognitionTypeCode",
+  "re3Prime.name": "re3PrimeName",
+  "re3Prime.recognitionRegex": "re3PrimePattern",
+  re3PrimeOverhang: "re3PrimeOverhang",
+  re3PrimeOverhangStrand: "re3PrimeOverhangStrand",
+  re3PrimeRecognitionTypeCode: "re3PrimeRecognitionTypeCode",
+};
+
 function cutUpArray(val, start, end) {
   return val.slice(start, end).join("");
 }
@@ -385,20 +400,6 @@ function addToNotes(ann, key, val) {
 }
 
 function addDigestPartFieldsToNotes(ann) {
-  const DIGEST_PART_EXPORT_FIELD_MAP = {
-    isDigestPart: "isDigestPart",
-    isDigestValid: "isDigestValid",
-    "re5Prime.name": "re5PrimeName",
-    "re5Prime.recognitionRegex": "re5PrimePattern",
-    re5PrimeOverhang: "re5PrimeOverhang",
-    re5PrimeOverhangStrand: "re5PrimeOverhangStrand",
-    re5PrimeRecognitionTypeCode: "re5PrimeRecognitionTypeCode",
-    "re3Prime.name": "re3PrimeName",
-    "re3Prime.recognitionRegex": "re3PrimePattern",
-    re3PrimeOverhang: "re3PrimeOverhang",
-    re3PrimeOverhangStrand: "re3PrimeOverhangStrand",
-    re3PrimeRecognitionTypeCode: "re3PrimeRecognitionTypeCode",
-  };
   Object.entries(DIGEST_PART_EXPORT_FIELD_MAP).forEach(([digestFieldPath, digestFieldName]) => {
     addToNotes(ann, digestFieldName, String(get(ann, digestFieldPath)));
   });
