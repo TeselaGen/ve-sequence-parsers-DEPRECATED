@@ -7,10 +7,11 @@ npm-debug.log*
 /docs
 /.github
 /.vscode
-jest.transform.js 
+jest.transform.js
 umd_demo.html
 yarn-error.log
 tslint.json
 nwb.config.js
 Changelog.md
 .travis.yml
+.npmrc
