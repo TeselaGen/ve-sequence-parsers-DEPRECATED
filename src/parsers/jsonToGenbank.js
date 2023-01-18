@@ -5,7 +5,7 @@ import color from "color";
 import nameUtils from "./utils/NameUtils.js";
 import pragmasAndTypes from "./utils/pragmasAndTypes.js";
 import { getFeatureToColorMap } from "ve-sequence-utils";
-import { mangleUrls } from "./utils/unmangleUrls.js";
+import { mangleOrStripUrls } from "./utils/unmangleUrls.js";
 const StringUtil = {
   /** Trims white space at beginning and end of string
    * @param {string} line
@@ -94,7 +94,10 @@ export default function (_serSeq, options) {
     let lines = [];
     lines.push(createGenbankLocus(serSeq, options));
     if (serSeq.definition || serSeq.description) {
-      lines.push("DEFINITION  " + mangleUrls(serSeq.definition || serSeq.description));
+      lines.push(
+        "DEFINITION  " +
+          mangleOrStripUrls(serSeq.definition || serSeq.description, options)
+      );
     }
 
     if (serSeq.accession) {
@@ -253,8 +256,14 @@ function getCurrentDateString() {
   return day + "-" + month + "-" + year;
 }
 
-function featureNoteInDataToGenbankString(name, value) {
-  return StringUtil.lpad("/", " ", 22) + name + '="' + mangleUrls(value) + '"';
+function featureNoteInDataToGenbankString(name, value, options) {
+  return (
+    StringUtil.lpad("/", " ", 22) +
+    name +
+    '="' +
+    mangleOrStripUrls(value, options) +
+    '"'
+  );
 }
 
 function featureToGenbankString(feat, options) {
@@ -312,7 +321,11 @@ function featureToGenbankString(feat, options) {
   lines.push(line + locStr);
 
   lines.push(
-    featureNoteInDataToGenbankString("label", feat.name || "Untitled Feature")
+    featureNoteInDataToGenbankString(
+      "label",
+      feat.name || "Untitled Feature",
+      options
+    )
   );
 
   if (feat.bases && feat.bases.length && feat.type === "primer_bind") {
@@ -350,7 +363,7 @@ function featureToGenbankString(feat, options) {
         if (key === "color" || key === "labelColor") return; //we'll handle this below
         if (notes[key] instanceof Array) {
           notes[key].forEach(function (value) {
-            lines.push(featureNoteInDataToGenbankString(key, value));
+            lines.push(featureNoteInDataToGenbankString(key, value, options));
           });
         } else {
           console.warn("Warning: Note object expected array values");
@@ -371,10 +384,12 @@ function featureToGenbankString(feat, options) {
         .rgb(getFeatureToColorMap({ includeHidden: true })[feat.type])
         .string() //don't save a color note if the color is already the same as our defaults
   ) {
-    lines.push(featureNoteInDataToGenbankString("color", feat.color));
+    lines.push(featureNoteInDataToGenbankString("color", feat.color, options));
   }
   if (feat.labelColor) {
-    lines.push(featureNoteInDataToGenbankString("labelColor", feat.labelColor));
+    lines.push(
+      featureNoteInDataToGenbankString("labelColor", feat.labelColor, options)
+    );
   }
 
   return lines.join("\r\n");
@@ -400,7 +415,9 @@ function addToNotes(ann, key, val) {
 }
 
 function addDigestPartFieldsToNotes(ann) {
-  Object.entries(DIGEST_PART_EXPORT_FIELD_MAP).forEach(([digestFieldPath, digestFieldName]) => {
-    addToNotes(ann, digestFieldName, String(get(ann, digestFieldPath)));
-  });
+  Object.entries(DIGEST_PART_EXPORT_FIELD_MAP).forEach(
+    ([digestFieldPath, digestFieldName]) => {
+      addToNotes(ann, digestFieldName, String(get(ann, digestFieldPath)));
+    }
+  );
 }
