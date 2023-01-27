@@ -2,7 +2,7 @@
  * test file for the ab1ToJson parser
  * @author Thomas Rich @tnrich
  */
-import jsonToJson from "../parsers/jsonToJson";
+import jsonToJsonString from "../parsers/jsonToJsonString";
 
 import assert from "assert";
 import chai from "chai";
@@ -31,7 +31,7 @@ describe("json to json parser", function() {
         ]
       };
       
-      const jsonOutput = jsonToJson(jsonInfo)
+      const jsonOutput = jsonToJsonString(jsonInfo)
       assert(typeof(jsonOutput) === "string")
 
       try {
@@ -40,7 +40,6 @@ describe("json to json parser", function() {
           assert(false)
       }
       assert(true)
-
   });
 });
 
@@ -64,7 +63,7 @@ describe("json to json parser", function() {
         ]
       };
       
-      const jsonOutput = jsonToJson(jsonInfo)
+      const jsonOutput = jsonToJsonString(jsonInfo)
 
       assert(!jsonOutput.includes("orfs"))
       assert(jsonOutput.includes("name"))
