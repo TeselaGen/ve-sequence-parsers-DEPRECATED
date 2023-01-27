@@ -12,7 +12,7 @@ chai.use(require("chai-things"));
 chai.should();
 
 describe("json to json parser", function() {
-  it("should produce output a string", async function() {
+  it("should output a json string", async function() {
     const jsonInfo = {
         name: "testseq",
         orfs: "123",
@@ -33,11 +33,19 @@ describe("json to json parser", function() {
       
       const jsonOutput = jsonToJson(jsonInfo)
       assert(typeof(jsonOutput) === "string")
+
+      try {
+        JSON.parse(jsonOutput);
+      } catch (e) {
+          assert(false)
+      }
+      assert(true)
+
   });
 });
 
 describe("json to json parser", function() {
-  it("should extraneous sequence fields and keep others", async function() {
+  it("should remove extraneous sequence fields and keep others", async function() {
     const jsonInfo = {
         name: "testseq",
         orfs: "123",
