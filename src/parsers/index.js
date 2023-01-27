@@ -9,3 +9,4 @@ export { default as snapgeneToJson } from "./snapgeneToJson";
 export { default as jsonToBed } from "./jsonToBed";
 export { default as cleanUpTeselagenJsonForExport } from "./utils/cleanUpTeselagenJsonForExport";
 export { default as parseUracilFeatures } from "./utils/parseUracilFeatures";
+export {default as jsonToJsonString} from "./jsonToJsonString"
