@@ -37,9 +37,6 @@ describe("json to json parser", function() {
       }
       assert(true)
   });
-});
-
-describe("json to json parser", function() {
   it("should remove extraneous sequence fields and keep others", async function() {
     const jsonInfo = {
         name: "testseq",
