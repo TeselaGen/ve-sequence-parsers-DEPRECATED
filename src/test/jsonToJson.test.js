@@ -1,7 +1,3 @@
-/**
- * test file for the ab1ToJson parser
- * @author Thomas Rich @tnrich
- */
 import jsonToJsonString from "../parsers/jsonToJsonString";
 
 import assert from "assert";
