@@ -1,10 +1,12 @@
 /* eslint-disable no-var*/
-import flatmap from "flatmap";
-import access from "safe-access";
 import validateSequenceArray from "./utils/validateSequenceArray";
-import searchWholeObjByName from "./utils/searchWholeObjByName";
+import searchWholeObjByName, {
+  searchWholeObjByNameSimple,
+  searchWholeObjByNameSimpleArray,
+} from "./utils/searchWholeObjByName";
 
 import { XMLParser } from "fast-xml-parser";
+import { flatMap, get } from "lodash";
 
 //Here's what should be in the callback:
 // {
@@ -25,7 +27,8 @@ async function sbolXmlToJson(string, options) {
   };
   try {
     const result = new XMLParser({
-      isArray: () => true
+      isArray: () => true,
+      ignoreAttributes: false,
     }).parse(string);
     const sbolJsonMatches = searchWholeObjByName("DnaComponent", result);
     if (sbolJsonMatches[0]) {
@@ -46,7 +49,7 @@ async function sbolXmlToJson(string, options) {
           console.error("error.stack: ", e.stack);
           resultArray.push({
             success: false,
-            messages: "Error while parsing Sbol format",
+            messages: ["Error while parsing Sbol format"],
           });
         }
         if (response.parsedSequence.features.length > 0) {
@@ -60,13 +63,13 @@ async function sbolXmlToJson(string, options) {
     } else {
       return onFileParsed({
         success: false,
-        messages: "XML is not valid Jbei or Sbol format",
+        messages: ["Error: XML is not valid Jbei or Sbol format"],
       });
     }
   } catch (e) {
     return onFileParsed({
       success: false,
-      messages: "Error parsing XML to JSON",
+      messages: ["Error parsing XML to JSON"],
     });
   }
 }
@@ -81,44 +84,34 @@ async function sbolXmlToJson(string, options) {
 // tnrtodo: this should be tested with a wider variety of sbol file types!
 function parseSbolJson(sbolJson, options) {
   let name;
-  if (access(sbolJson, "name[0]")) {
-    name = access(sbolJson, "name[0]");
+  if (get(sbolJson, "name[0]")) {
+    name = get(sbolJson, "name[0]");
   } else {
-    name = access(sbolJson, "displayId[0]");
+    name = get(sbolJson, "displayId[0]");
   }
   return {
-    // circular: access(sbolJson, "seq:circular[0]"), //tnrtodo this needs to be changed
+    // circular: get(sbolJson, "seq:circular[0]"), //tnrtodo this needs to be changed
     circular: false,
-    sequence: access(sbolJson, "dnaSequence[0].DnaSequence[0].nucleotides"),
+    sequence: get(sbolJson, "dnaSequence[0].DnaSequence[0].nucleotides"),
     name: name,
-    features: flatmap(sbolJson.annotation, function (annotation) {
-      const feature = access(annotation, "SequenceAnnotation[0]");
+    features: flatMap(sbolJson.annotation, function (annotation) {
+      const feature = get(annotation, "SequenceAnnotation[0]");
       if (feature) {
-        const notes = searchWholeObjByName("ns2:about", feature);
-        const otherNotes = searchWholeObjByName("ns2:resource", feature);
-        notes.push.apply(notes, otherNotes);
+        const notes = searchWholeObjByNameSimpleArray("@_ns2:about", feature);
+        const otherNotes = searchWholeObjByNameSimpleArray(
+          "@_ns2:resource",
+          feature
+        );
         const newNotes = {};
-        notes.forEach(function (note) {
-          if (newNotes[note.prop]) {
-            newNotes[note.prop].push(note.value);
-          } else {
-            newNotes[note.prop] = [note.value];
+        [...notes, ...otherNotes].forEach(function (note) {
+          if (note) {
+            if (!newNotes.about) newNotes.about = [];
+            newNotes.about.push(note);
           }
         });
-        let featureName;
-        const nameMatches = searchWholeObjByName("name", feature);
-        if (nameMatches[0] && nameMatches[0].value && nameMatches[0].value[0]) {
-          featureName = nameMatches[0].value[0];
-        } else {
-          const displayMatches = searchWholeObjByName("displayId", feature);
-          if (
-            displayMatches[0] &&
-            displayMatches[0].value &&
-            displayMatches[0].value[0]
-          ) {
-            featureName = displayMatches[0].value[0];
-          }
-        }
+        const featureName =
+          searchWholeObjByNameSimple("name", feature) ||
+          searchWholeObjByNameSimple("displayId", feature);
         return {
           name: featureName,
           notes: newNotes,
@@ -126,13 +119,12 @@ function parseSbolJson(sbolJson, options) {
           // type: feature['seq:label'], //tnrtodo: figure out if an annotation type is passed
           // id: feature['seq:label'],
           start: parseInt(
-            access(feature, "bioStart[0]") -
-              (options.inclusive1BasedStart ? 0 : 1)
+            get(feature, "bioStart[0]") - (options.inclusive1BasedStart ? 0 : 1)
           ),
           end: parseInt(
-            access(feature, "bioEnd[0]") - (options.inclusive1BasedEnd ? 0 : 1)
+            get(feature, "bioEnd[0]") - (options.inclusive1BasedEnd ? 0 : 1)
           ),
-          strand: access(feature, "strand[0]"), //+ or -
+          strand: get(feature, "strand[0]"), //+ or -
           // notes: feature['seq:label'],
         };
       }

@@ -22,7 +22,6 @@ MMHLRLF`);
   //     sequence: "agagagagagag",
   //     description,
   //   });
-  //   console.log(`string:`,string)
  
   //   const result = fastaToJson(string);
   //   result[0].parsedSequence.description.should.equal(description)

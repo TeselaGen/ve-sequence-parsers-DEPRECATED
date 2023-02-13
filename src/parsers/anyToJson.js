@@ -7,6 +7,8 @@ import ab1ToJson from "./ab1ToJson";
 import gffToJson from "./gffToJson";
 import isBrowser from "./utils/isBrowser";
 import { tidyUpSequenceData } from "ve-sequence-utils";
+import geneiousXmlToJson from "./geneiousXmlToJson";
+import { unzipSync } from "fflate";
 
 /**
  * takes in file content string and its file name and determines what parser it needs to be sent to.
@@ -34,6 +36,12 @@ async function anyToJson(fileContentStringOrFileObj, options) {
       // snapgene file (always requires that the full filename be passed in to anyToJson otherwise it won't parse properly)
       //we will always want to pass the file obj and not the string to the snapgene parser because it expects a binary file
       return snapgeneToJson(fileContentStringOrFileObj, options);
+    } else if (/^(geneious)$/.test(ext)) {
+      const a = await getUint8ArrayFromFile(fileContentStringOrFileObj);
+      const b = unzipSync(a);
+      const c = Object.values(b)[0];
+      const d = new TextDecoder().decode(c, { stream: false });
+      return geneiousXmlToJson(d, options);
     } else {
       // we want to get the string from the file obj
       fileContentString = await getUtf8StringFromFile(
@@ -146,11 +154,37 @@ function getUtf8StringFromFile(file, { emulateBrowser } = {}) {
       ? file.buffer.toString("utf-8")
       : file;
   }
-  let reader = new window.FileReader();
+  const reader = new window.FileReader();
   reader.readAsText(file, "UTF-8");
   return new Promise((resolve, reject) => {
     reader.onload = (evt) => {
       resolve(evt.target.result);
+    };
+    reader.onerror = (err) => {
+      console.error("err:", err);
+      reject(err);
+    };
+  });
+}
+function getUint8ArrayFromFile(file, { emulateBrowser } = {}) {
+  if (!isBrowser && !emulateBrowser) {
+    //emulate browser is only used for testing purposes
+    //we're in a node context
+    return Buffer.isBuffer(file)
+      ? new Uint8Array(file)
+      : Buffer.isBuffer(file.buffer)
+      ? new Uint8Array(file.buffer)
+      : file;
+  }
+  const reader = new window.FileReader();
+  // reader.readAsText(file, "UTF-8");
+  reader.readAsArrayBuffer(file);
+
+  return new Promise((resolve, reject) => {
+    reader.onload = (evt) => {
+      const arrayBuffer = evt.target.result;
+      const bytes = new Uint8Array(arrayBuffer);
+      resolve(bytes);
     };
     reader.onerror = (err) => {
       console.error("err:", err);

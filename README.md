@@ -35,6 +35,7 @@ fastaToJson //handles fasta files (.fa, .fasta)
 genbankToJson //handles genbank files (.gb, .gbk)
 ab1ToJson //handles .ab1 sequencing read files 
 sbolXmlToJson //handles .sbol files
+geneiousXmlToJson //handles .genious files
 snapgeneToJson //handles snapgene (.dna) files
 anyToJson    //this handles any of the above file types based on file extension
 ```

@@ -2,9 +2,6 @@
 /* eslint-disable eqeqeq */
 import { isEqual } from "lodash";
 
-
-
-
 class Match {
   constructor(props) {
     Object.assign(this, props);
@@ -12,17 +9,15 @@ class Match {
   }
 
   toString() {
-    let {path, type} = this;
+    const { path, type } = this;
     return `${path} -> (${type}) ${this.logValue()}`;
   }
 
   logValue() {
     const val = this.value;
     // if value is an object then just toString it
-    const isPrimitive = x => Object(x) !== x;
-    return isPrimitive(val) || Array.isArray(val) ?
-      val :
-      {}.toString.call(val);
+    const isPrimitive = (x) => Object(x) !== x;
+    return isPrimitive(val) || Array.isArray(val) ? val : {}.toString.call(val);
   }
 
   log() {
@@ -30,59 +25,73 @@ class Match {
   }
 }
 
+const GLOBAL = typeof window == "object" ? window : global;
 
-const GLOBAL = (typeof window == 'object') ? window : global;
-
-
-export default function searchWholeObjByName( what, where) {
+export default function searchWholeObjByName(what, where) {
   const searchBy = (what, where, prop) => what == prop;
 
   let data;
   let alreadySeen;
 
-  const path = (where == GLOBAL) ? 'GLOBAL' : 'SRC';
-  let queue = [{ where, path }];
-  let seen = [];
+  const path = where == GLOBAL ? "GLOBAL" : "SRC";
+  const queue = [{ where, path }];
+  const seen = [];
 
-  let matches = [];
+  const matches = [];
   matches.log = function () {
-    this.forEach(m => m.log());
+    this.forEach((m) => m.log());
   };
 
   // a non-recursive solution to avoid call stack limits
   // http://www.jslab.dk/articles/non.recursive.preorder.traversal.part4
   while ((data = queue.pop())) {
-    let {where, path} = data;
+    const { where, path } = data;
 
     for (const prop in where) {
       // IE may throw errors when accessing/coercing some properties
       try {
         if (where.hasOwnProperty(prop)) {
           // inspect objects
-          if ([where[prop]] == '[object Object]') {
+          if ([where[prop]] == "[object Object]") {
             // check if already searched (prevents circular references)
             for (
               let i = -1;
-              seen[++i] && !(alreadySeen = isEqual(seen[i].where, where[prop]) && seen[i]);
+              seen[++i] &&
+              !(alreadySeen = isEqual(seen[i].where, where[prop]) && seen[i]);
+
             );
             // add to stack
             if (!alreadySeen) {
-              data = { where: where[prop], path: `${path}.${prop}`};
+              data = { where: where[prop], path: `${path}.${prop}` };
               queue.push(data);
               seen.push(data);
             }
           }
           // if match detected, push it.
           if (searchBy(what, where, prop)) {
-            const type = alreadySeen ? `<${alreadySeen.path}>` : typeof where[prop];
-            const match = new Match(
-              {path: `${path}.${prop}`, obj: where, prop, type});
+            const type = alreadySeen
+              ? `<${alreadySeen.path}>`
+              : typeof where[prop];
+            const match = new Match({
+              path: `${path}.${prop}`,
+              obj: where,
+              prop,
+              type,
+            });
             matches.push(match);
           }
         }
-      } catch(e) {}
+      } catch (e) {
+        // don't throw errs
+      }
     }
   }
 
   return matches;
+}
+export function searchWholeObjByNameSimple(what, where) {
+  return searchWholeObjByName(what, where)?.[0]?.value?.[0];
+}
+export function searchWholeObjByNameSimpleArray(what, where) {
+  return searchWholeObjByName(what, where)?.[0]?.value;
 }

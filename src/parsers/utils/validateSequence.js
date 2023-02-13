@@ -339,7 +339,6 @@ export default function validateSequence(sequence, options = {}) {
     }
     forEach(feature.notes, (noteArray, key) => {
       feature.notes[key] = map(noteArray, (note) => {
-        // console.log(`noteArray`, noteArray)
         return unmangleUrls(note);
       });
     });
