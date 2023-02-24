@@ -54,7 +54,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
   if (/^(fasta|fas|fa|fna|ffn)$/.test(ext)) {
     // FASTA
     return fastaToJson(fileContentString, options);
-  } else if (/^(gb|gp|gbk)$/.test(ext)) {
+  } else if (/^(gb|gbk)$/.test(ext)) {
     // GENBANK
     return genbankToJson(fileContentString, options);
   } else if (/^(json)$/.test(ext)) {
@@ -74,7 +74,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
       console.error(`error:`, error);
       return [failure];
     }
-  } else if (/^(gp)$/.test(ext)) {
+  } else if (/^(gp|genpep)$/.test(ext)) {
     // PROTEIN GENBANK
     return genbankToJson(fileContentString, { ...options, isProtein: true });
   } else if (/^(xml|rdf)$/.test(ext)) {
