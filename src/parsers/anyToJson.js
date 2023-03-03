@@ -1,6 +1,6 @@
 import fastaToJson from "./fastaToJson";
 import genbankToJson from "./genbankToJson";
-import xmlParser from "./sbolXmlToJson";
+import sbolXmlToJson from "./sbolXmlToJson";
 import extractFileExtension from "./utils/extractFileExtension.js";
 import snapgeneToJson from "./snapgeneToJson";
 import ab1ToJson from "./ab1ToJson";
@@ -79,7 +79,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
     return genbankToJson(fileContentString, { ...options, isProtein: true });
   } else if (/^(xml|rdf)$/.test(ext)) {
     // XML/RDF
-    return xmlParser(fileContentStringOrFileObj, options);
+    return sbolXmlToJson(fileContentStringOrFileObj, options);
   } else if (/^(gff|gff3)$/.test(ext)) {
     // GFF
     return gffToJson(fileContentStringOrFileObj, options);
