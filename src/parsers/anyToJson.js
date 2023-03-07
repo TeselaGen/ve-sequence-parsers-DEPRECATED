@@ -23,6 +23,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
   let fileName = options.fileName || "";
   if (!fileName && typeof fileContentStringOrFileObj !== "string") {
     fileName = fileContentStringOrFileObj.name;
+    options.fileName = fileName
   }
   const ext = extractFileExtension(fileName);
   if (typeof fileContentStringOrFileObj === "string") {
@@ -32,7 +33,16 @@ async function anyToJson(fileContentStringOrFileObj, options) {
       // AB1 sequencing read
       //we will always want to pass the file obj and not the string to ab1
       return ab1ToJson(fileContentStringOrFileObj, options);
-    } else if (/^(dna)$/.test(ext)) {
+    } 
+    else if (/^(prot)$/.test(ext)) {
+      // fileContentString = await getUtf8StringFromFile(
+      //   fileContentStringOrFileObj,
+      //   options
+      // );
+      // snapgene file (always requires that the full filename be passed in to anyToJson otherwise it won't parse properly)
+      //we will always want to pass the file obj and not the string to the snapgene parser because it expects a binary file
+      return snapgeneToJson(fileContentStringOrFileObj, options);
+    }else if (/^(dna)$/.test(ext)) {
       // snapgene file (always requires that the full filename be passed in to anyToJson otherwise it won't parse properly)
       //we will always want to pass the file obj and not the string to the snapgene parser because it expects a binary file
       return snapgeneToJson(fileContentStringOrFileObj, options);

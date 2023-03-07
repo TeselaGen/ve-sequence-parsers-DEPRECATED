@@ -14,7 +14,7 @@ export default function getArrayBufferFromFile(file) {
       console.error("err:", err);
       reject(err);
     };
-    reader.readAsArrayBuffer(file);
+    reader.readAsArrayBuffer(Buffer.isBuffer(file) ? file : file.buffer || file);
   });
 }
 

@@ -37,6 +37,25 @@ describe("anyToJson", function () {
     results[0].parsedSequence.sequence.length.should.equal(36);
     results[0].parsedSequence.name.should.equal("randomString");
   });
+  it(`snapgene protein file should parse correctly`, async () => {
+    const fileObj = fs.readFileSync(
+      path.join(__dirname, "./testData/prot/3DHZ_B.prot")
+    );
+
+    const result = await anyToJson(fileObj, {
+      fileName: "3DHZ_B.prot",
+    });
+
+    console.log(
+      `result[0].parsedSequence.features[0]:`,
+      JSON.stringify(result[0].parsedSequence.features[0], null, 4)
+    );
+    result[0].parsedSequence.isProtein.should.equal(true);
+    result[0].parsedSequence.sequence.should.equal(
+      `msneydeyianhtdpvkainwnvipdekdlevwdrltgnfwlpekipvsndiqswnkmtpqeqlatmrvftgltlldtiqgtvgaisllpdaetmheeavytniafmesvhaksysnifmtlastpqineafrwseenenlqrkakiimsyyngddplkkkvastllesflfysgfylpmylssrakltntadiirliirdesvhgyyigykyqqgvkklseaeqeeykaytfdlmydlyeneieytediyddlgwtedvkrflrynankalnnlgyeglfptdetkvspailsslspnadenhdffsgsgssyvigkaedttdddwdf`
+    );
+    // result[0].parsedSequence.description.should.equal("");
+  });
   it("addgene-plasmid.dna file should parse correctly", async function () {
     const results = await anyToJson(
       // src/test/testData/dna/addgene-plasmid.dna
