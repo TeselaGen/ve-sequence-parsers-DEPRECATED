@@ -3,6 +3,7 @@ export { default as fastaToJson } from "./fastaToJson";
 export { default as genbankToJson } from "./genbankToJson";
 export { default as sbolXmlToJson } from "./sbolXmlToJson";
 export { default as geneiousXmlToJson } from "./geneiousXmlToJson";
+export { default as jbeiXmlToJson } from "./jbeiXmlToJson";
 export { default as jsonToGenbank } from "./jsonToGenbank";
 export {
   default as ab1ToJson,
