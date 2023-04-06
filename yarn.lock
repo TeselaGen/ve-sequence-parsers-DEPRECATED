@@ -5959,11 +5959,6 @@ flat@^4.1.0:
   dependencies:
     is-buffer "~2.0.3"
 
-flatmap@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.npmjs.org/flatmap/-/flatmap-0.0.3.tgz"
-  integrity "sha1-Hxik2TgVLUlZZfnJWNkjqy3WabQ= sha512-OuR+o7kHVe+x9RtIujPay7Uw3bvDZBZFSBXClEphZuSDLmZTqMdclasf4vFSsogC8baDz0eaC2NdO/2dlXHBKQ=="
-
 flatted@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.2.tgz#4575b21e2bcee7434aa9be662f4b7b5f9c2b5138"

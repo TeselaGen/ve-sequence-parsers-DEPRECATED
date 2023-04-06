@@ -46,10 +46,6 @@ describe("anyToJson", function () {
       fileName: "3DHZ_B.prot",
     });
 
-    console.log(
-      `result[0].parsedSequence.features[0]:`,
-      JSON.stringify(result[0].parsedSequence.features[0], null, 4)
-    );
     result[0].parsedSequence.isProtein.should.equal(true);
     result[0].parsedSequence.sequence.should.equal(
       `msneydeyianhtdpvkainwnvipdekdlevwdrltgnfwlpekipvsndiqswnkmtpqeqlatmrvftgltlldtiqgtvgaisllpdaetmheeavytniafmesvhaksysnifmtlastpqineafrwseenenlqrkakiimsyyngddplkkkvastllesflfysgfylpmylssrakltntadiirliirdesvhgyyigykyqqgvkklseaeqeeykaytfdlmydlyeneieytediyddlgwtedvkrflrynankalnnlgyeglfptdetkvspailsslspnadenhdffsgsgssyvigkaedttdddwdf`
@@ -151,11 +147,26 @@ describe("anyToJson", function () {
       { fileName: "pBbS0c-RFP", isProtein: false }
     );
   });
+
+  it("should parse a jbei .xml file correctly (not requiring the .seq extension)", async function () {
+    const res = await anyToJson(
+      fs.readFileSync(path.join(__dirname, "./testData/P2A_3.xml"), "utf8"),
+      { fileName: "P2A_3.xml", isProtein: false }
+    );
+    assert(res[0].success);
+    assert(res[0].parsedSequence.name === "P2A_3");
+    assert(
+      res[0].parsedSequence.sequence ===
+        "ggttctggtgctactaatttttctttgttgaaacaagctggtgatgttgaagaaaatccaggtcca"
+    );
+  });
+
   it("parses the pBbE0c-RFP plasmid represented in various filetypes to the same end result", async function () {
     const options = {
       fastaFilePath: "pBbE0c-RFP.fasta",
       genbankFilePath: "pBbE0c-RFP.gb",
       sbolFilePath: "pBbE0c-RFP.xml",
+      jbeiFilePath: "pBbE0c-RFP.seq",
     };
 
     const fastaResult = await anyToJson(
@@ -190,6 +201,16 @@ describe("anyToJson", function () {
         isProtein: false,
       }
     );
+    const jbeiXMLResult = await anyToJson(
+      fs.readFileSync(
+        path.join(__dirname, "./testData/", options.jbeiFilePath),
+        "utf8"
+      ),
+      {
+        fileName: options.jbeiFilePath,
+        isProtein: false,
+      }
+    );
 
     //fasta to genbank check
     fastaResult[0].parsedSequence.sequence.should.equal(
@@ -198,8 +219,14 @@ describe("anyToJson", function () {
     sbolXMLResult[0].parsedSequence.features.length.should.equal(
       genbankResult[0].parsedSequence.features.length
     );
+    jbeiXMLResult[0].parsedSequence.features.length.should.equal(
+      genbankResult[0].parsedSequence.features.length
+    );
     // sbolXMLResult[0].parsedSequence.circular.should.equal(genbankResult[0].parsedSequence.circular);
     sbolXMLResult[0].parsedSequence.sequence
+      .toLowerCase()
+      .should.equal(genbankResult[0].parsedSequence.sequence.toLowerCase());
+    jbeiXMLResult[0].parsedSequence.sequence
       .toLowerCase()
       .should.equal(genbankResult[0].parsedSequence.sequence.toLowerCase());
     //sbolXml to genbank check
@@ -214,6 +241,19 @@ describe("anyToJson", function () {
             if (feat1.start === 0 && feat1.end === 0) {
               return true;
             }
+            if (feat1.start === feat2.start && feat1.end === feat2.end) {
+              return true;
+            }
+          }
+          return false;
+        }).length
+      );
+    });
+    //jbeiXml to genbank check
+    jbeiXMLResult[0].parsedSequence.features.forEach(function (feat1) {
+      assert(
+        genbankResult[0].parsedSequence.features.filter(function (feat2) {
+          if (feat1.name === feat2.name) {
             if (feat1.start === feat2.start && feat1.end === feat2.end) {
               return true;
             }

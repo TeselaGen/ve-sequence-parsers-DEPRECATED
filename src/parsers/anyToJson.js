@@ -8,6 +8,7 @@ import gffToJson from "./gffToJson";
 import isBrowser from "./utils/isBrowser";
 import { tidyUpSequenceData } from "ve-sequence-utils";
 import geneiousXmlToJson from "./geneiousXmlToJson";
+import jbeiXmlToJson from "./jbeiXmlToJson";
 import { unzipSync } from "fflate";
 
 /**
@@ -23,7 +24,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
   let fileName = options.fileName || "";
   if (!fileName && typeof fileContentStringOrFileObj !== "string") {
     fileName = fileContentStringOrFileObj.name;
-    options.fileName = fileName
+    options.fileName = fileName;
   }
   const ext = extractFileExtension(fileName);
   if (typeof fileContentStringOrFileObj === "string") {
@@ -33,8 +34,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
       // AB1 sequencing read
       //we will always want to pass the file obj and not the string to ab1
       return ab1ToJson(fileContentStringOrFileObj, options);
-    } 
-    else if (/^(prot)$/.test(ext)) {
+    } else if (/^(prot)$/.test(ext)) {
       // fileContentString = await getUtf8StringFromFile(
       //   fileContentStringOrFileObj,
       //   options
@@ -42,7 +42,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
       // snapgene file (always requires that the full filename be passed in to anyToJson otherwise it won't parse properly)
       //we will always want to pass the file obj and not the string to the snapgene parser because it expects a binary file
       return snapgeneToJson(fileContentStringOrFileObj, options);
-    }else if (/^(dna)$/.test(ext)) {
+    } else if (/^(dna)$/.test(ext)) {
       // snapgene file (always requires that the full filename be passed in to anyToJson otherwise it won't parse properly)
       //we will always want to pass the file obj and not the string to the snapgene parser because it expects a binary file
       return snapgeneToJson(fileContentStringOrFileObj, options);
@@ -60,15 +60,24 @@ async function anyToJson(fileContentStringOrFileObj, options) {
       );
     }
   }
-
+// console.log(`fileContentString.includes("seq:seq"):`,fileContentString.includes("seq:seq"))
+// console.log(`fileContentString.includes("jbei")):`,fileContentString.includes("jbei"))
   if (/^(fasta|fas|fa|fna|ffn)$/.test(ext)) {
     // FASTA
     return fastaToJson(fileContentString, options);
   } else if (/^(gb|gbk)$/.test(ext)) {
     // GENBANK
     return genbankToJson(fileContentString, options);
+  } else if (
+    /^(seq)$/.test(ext) ||
+    (/^(xml)$/.test(ext) &&
+      fileContentString.includes("seq:seq") &&
+      fileContentString.includes("jbei"))
+  ) {
+    // JBEI
+    return jbeiXmlToJson(fileContentString, options);
   } else if (/^(json)$/.test(ext)) {
-    // GENBANK
+    // TG JSON Probably
     const failure = {
       messages: [`Unable to parse JSON file ${fileName}`],
       success: false,
@@ -137,7 +146,7 @@ async function anyToJson(fileContentStringOrFileObj, options) {
     return [
       {
         messages: [
-          "Unable to parse .seq file as FASTA, genbank, JBEI, or SBOL formats",
+          "Unable to parse file as FASTA, genbank, JBEI, or SBOL formats",
         ],
         success: false,
       },
