@@ -15,7 +15,7 @@
           "id": { "type": "string", "required": false }
         },
         "required": ["name", "start", "end"]
-      }z
+      }
     },
     "features": {
       "type": "array",
