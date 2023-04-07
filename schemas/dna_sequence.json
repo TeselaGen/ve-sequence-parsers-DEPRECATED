@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/TeselaGen/ve-sequence-parser/blob/master/schemas/sequence.json",
-  "title": "DNA Project",
+  "title": "DNA Sequence",
   "type": "object",
   "properties": {
     "parts": {
