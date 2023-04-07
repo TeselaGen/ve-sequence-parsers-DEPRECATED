@@ -12,7 +12,11 @@
           "name": { "type": "string" },
           "start": { "type": "integer", "minimum": 0 },
           "end": { "type": "integer", "minimum": 0 },
-          "id": { "type": "string", "required": false }
+          "id": { "type": "string", "required": false },
+          "strand": {
+            "type": "integer",
+            "enum": [-1, 1]
+          }
         },
         "required": ["name", "start", "end"]
       }
@@ -30,7 +34,11 @@
             }
           },
           "type": { "type": "string" },
-          "strand": { "type": "integer" },
+          "id": { "type": "string", "required": false },
+          "strand": {
+            "type": "integer",
+            "enum": [-1, 1]
+          },
           "name": { "type": "string" },
           "start": { "type": "integer", "minimum": 0 },
           "end": { "type": "integer", "minimum": 0 },
@@ -54,6 +62,11 @@
       "items": {
         "type": "object",
         "properties": {
+          "id": { "type": "string", "required": false },
+          "strand": {
+            "type": "integer",
+            "enum": [-1, 1]
+          },
           "name": { "type": "string" },
           "sequence": { "type": "string" },
           "start": { "type": "integer", "minimum": 0 },
