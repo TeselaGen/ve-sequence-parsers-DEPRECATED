@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/TeselaGen/ve-sequence-parser/blob/master/schemas/design.json",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": ["forward", "reverse"]
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "forced_assembly_strategy": {
+                  "type": "string",
+                  "enum": ["DIGEST", "PCR", null]
+                }
+              },
+              "required": ["index"],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "dsf": {
+            "type": "boolean"
+          }
+        },
+        "required": ["index", "name", "icon", "direction", "parts"],
+        "additionalProperties": false
+      }
+    },
+    "assembly_method": {
+      "type": "string",
+      "enum": ["Gibson/SLIC/CPEC", "Golden Gate", "gateway"]
+    },
+    "restriction_enzyme": {
+      "type": ["string", "null"]
+    },
+    "layout_type": {
+      "type": "string",
+      "enum": ["list", "combinatorial"]
+    },
+    "circular": {
+      "type": "boolean"
+    }
+  },
+  "required": ["name", "columns", "assembly_method", "layout_type", "circular"],
+  "additionalProperties": false
+}

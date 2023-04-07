@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/TeselaGen/ve-sequence-parser/blob/master/schemas/sequence.json",
+  "title": "DNA Project",
+  "type": "object",
+  "properties": {
+    "parts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "start": { "type": "integer", "minimum": 0 },
+          "end": { "type": "integer", "minimum": 0 },
+          "id": { "type": "string", "required": false }
+        },
+        "required": ["name", "start", "end"]
+      }z
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "notes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "type": { "type": "string" },
+          "strand": { "type": "integer" },
+          "name": { "type": "string" },
+          "start": { "type": "integer", "minimum": 0 },
+          "end": { "type": "integer", "minimum": 0 },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "start": { "type": "integer", "minimum": 0 },
+                "end": { "type": "integer", "minimum": 0 }
+              },
+              "required": ["start", "end"]
+            }
+          }
+        },
+        "required": ["notes", "type", "strand", "name", "start", "end"]
+      }
+    },
+    "primers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "sequence": { "type": "string" },
+          "start": { "type": "integer", "minimum": 0 },
+          "end": { "type": "integer", "minimum": 0 },
+          "direction": { "type": "string", "enum": ["forward", "reverse"] }
+        },
+        "required": ["name", "sequence", "start", "end", "direction"]
+      }
+    },
+    "name": { "type": "string" },
+    "sequence": { "type": "string" }
+  },
+  "required": ["parts", "features", "name", "sequence", "primers"]
+}
