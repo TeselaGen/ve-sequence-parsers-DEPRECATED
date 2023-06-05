@@ -1,6 +1,12 @@
 # THIS REPO HAS MOVED! 
 It now lives in our OSS monorepo - https://github.com/TeselaGen/tg-oss
 
+It can now be installed as 
+`npm install @teselagen/bio-parsers`
+
+
+
+
 # Bio Parsers
 <!-- TOC -->
 
