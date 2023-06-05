@@ -1,6 +1,10 @@
+# THIS REPO HAS MOVED! 
+It now lives in our OSS monorepo - https://github.com/TeselaGen/tg-oss
+
 # Bio Parsers
 <!-- TOC -->
 
+- [THIS REPO HAS MOVED!](#this-repo-has-moved)
 - [Bio Parsers](#bio-parsers)
   - [About this Repo](#about-this-repo)
   - [[CHANGELOG](CHANGELOG.md)](#changelogchangelogmd)
